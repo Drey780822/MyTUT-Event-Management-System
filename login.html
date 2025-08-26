@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUT Emalahleni Events - Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>TUT Emalahleni Events</h1>
+      <p id="user-info">Welcome, Guest (student)</p>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="create-event.html" id="create-event-link" style="display: none;">Create Event</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+
+    <div class="event-form">
+      <h2>Login</h2>
+      <form id="login-form">
+        <label for="userId">Student/Staff ID</label>
+        <input type="text" id="userId" required>
+        <label for="password">Password</label>
+        <input type="password" id="password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+  <script src="scripts.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      updateUserInfo();
+      document.getElementById('login-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const userId = document.getElementById('userId').value;
+        // Simulate authentication
+        user = { id: userId, name: 'John Doe', role: userId.startsWith('S') ? 'student' : 'organizer' };
+        console.log(`Logged in user ${userId}`);
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
+</body>
+</html>

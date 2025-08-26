@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+  <title>Past Events - myTUT Events</title>
+
+  <!-- Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'tut-blue': '#0A2463',
+            'tut-red': '#990000',
+            'tut-yellow': '#E6A817',
+            'dark-bg': '#121212',
+            'dark-card': '#1E1E1E',
+          },
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    :root {
+      --blue-primary: #4322B9;
+      --red-primary: #B92222;
+      --yellow-primary: #DBCA05;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+      background-color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    .btn {
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--yellow-primary);
+      color: #333;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+      background-color: #c4b504;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .header {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, #0A2463 0%, #990000 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.1;
+    }
+
+    .event-card {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      background: white;
+      position: relative;
+    }
+
+    .event-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .event-card .event-image {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .event-card .success-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(34, 197, 94, 0.9);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .event-card .attendance-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(59, 130, 246, 0.9);
+      color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .timeline {
+      position: relative;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 2rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, #E6A817, #0A2463);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 5rem;
+      margin-bottom: 3rem;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 1.5rem;
+      top: 1rem;
+      width: 1rem;
+      height: 1rem;
+      background: #E6A817;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 3px #E6A817;
+      z-index: 1;
+    }
+
+    .filter-button {
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      border: 2px solid #e5e7eb;
+      background: white;
+      color: #6b7280;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-button.active {
+      border-color: #0A2463;
+      background: #0A2463;
+      color: white;
+    }
+
+    .filter-button:hover {
+      border-color: #0A2463;
+      color: #0A2463;
+    }
+
+    .filter-button.active:hover {
+      background: #082056;
+      border-color: #082056;
+      color: white;
+    }
+
+    .stats-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body x-data="{
+  mobileMenuOpen: false,
+  showLoginModal: false,
+  showSignupModal: false,
+  selectedYear: '2025',
+  viewMode: 'grid',
+  pastEvents: [
+    {
+      id: 1,
+      title: 'New Year Welcome Ceremony',
+      organizer: 'University Management',
+      date: '2025-01-15',
+      time: '10:00 AM',
+      location: 'Main Auditorium, Pretoria Campus',
+      category: 'ceremony',
+      attendance: 850,
+      rating: 4.8,
+      image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Official welcome ceremony for the 2025 academic year with inspiring speeches from university leadership.',
+      highlights: ['Vice Chancellor\'s Address', 'Student Awards', 'Cultural Performances'],
+      feedback: 'Amazing start to the year! Great organization and inspiring speakers.'
+    },
+    {
+      id: 2,
+      title: 'AI & Machine Learning Workshop',
+      organizer: 'ICT Faculty',
+      date: '2025-02-20',
+      time: '2:00 PM',
+      location: 'Computer Labs, Soshanguve Campus',
+      category: 'workshop',
+      attendance: 120,
+      rating: 4.9,
+      image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Hands-on workshop covering the fundamentals of AI and machine learning with practical exercises.',
+      highlights: ['Practical Coding Sessions', 'Industry Expert Speakers', 'Certificate of Completion'],
+      feedback: 'Excellent workshop! Learned so much about AI applications in real-world scenarios.'
+    },
+    {
+      id: 3,
+      title: 'Heritage Day Celebration',
+      organizer: 'Cultural Committee',
+      date: '2024-09-24',
+      time: '12:00 PM',
+      location: 'Central Courtyard, Arts Campus',
+      category: 'cultural',
+      attendance: 600,
+      rating: 4.7,
+      image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'A vibrant celebration of South African heritage with traditional music, dance, and food.',
+      highlights: ['Traditional Dance Performances', 'Cultural Food Festival', 'Heritage Exhibitions'],
+      feedback: 'Beautiful celebration of our diverse cultures! The food was amazing.'
+    },
+    {
+      id: 4,
+      title: 'Engineering Innovation Expo',
+      organizer: 'Engineering Faculty',
+      date: '2024-11-10',
+      time: '9:00 AM',
+      location: 'Engineering Building, Pretoria Campus',
+      category: 'academic',
+      attendance: 300,
+      rating: 4.6,
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Showcase of innovative engineering projects by final-year students.',
+      highlights: ['Student Project Exhibitions', 'Industry Panel Discussions', 'Networking Sessions'],
+      feedback: 'Inspiring to see what our fellow students have created. Great innovation!'
+    },
+    {
+      id: 5,
+      title: 'Career Development Seminar',
+      organizer: 'Student Affairs',
+      date: '2024-10-05',
+      time: '1:00 PM',
+      location: 'Conference Hall, Emalahleni Campus',
+      category: 'career',
+      attendance: 200,
+      rating: 4.5,
+      image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Professional development seminar focusing on resume building and interview skills.',
+      highlights: ['Resume Writing Workshop', 'Mock Interview Sessions', 'Industry Insights'],
+      feedback: 'Very practical advice that helped me improve my job application materials.'
+    },
+    {
+      id: 6,
+      title: 'Spring Sports Festival',
+      organizer: 'Sports Department',
+      date: '2024-09-15',
+      time: '8:00 AM',
+      location: 'Sports Complex, Soshanguve Campus',
+      category: 'sports',
+      attendance: 1200,
+      rating: 4.8,
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Annual inter-campus sports competition featuring various athletic events.',
+      highlights: ['Inter-Campus Competition', 'Athletic Championships', 'Team Building Activities'],
+      feedback: 'Great team spirit and excellent organization. Looking forward to next year!'
+    }
+  ],
+  get filteredEvents() {
+    return this.pastEvents
+      .filter(event => event.date.startsWith(this.selectedYear))
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  },
+  get eventStats() {
+    const events = this.filteredEvents;
+    return {
+      total: events.length,
+      totalAttendance: events.reduce((sum, event) => sum + event.attendance, 0),
+      avgRating: events.length ? (events.reduce((sum, event) => sum + event.rating, 0) / events.length).toFixed(1) : 0,
+      categories: [...new Set(events.map(event => event.category))].length
+    };
+  },
+  getCategoryColor(category) {
+    const colors = {
+      ceremony: 'bg-purple-500',
+      workshop: 'bg-blue-500',
+      cultural: 'bg-green-500',
+      academic: 'bg-indigo-500',
+      career: 'bg-orange-500',
+      sports: 'bg-red-500'
+    };
+    return colors[category] || 'bg-gray-500';
+  },
+  formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  },
+  getYearFromDate(dateStr) {
+    return new Date(dateStr).getFullYear().toString();
+  }
+}">
+  <!-- Header -->
+  <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center">
+          <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3">
+          <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
+        </a>
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:block">
+          <ul class="flex items-center space-x-8">
+            <li>
+              <a href="index.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Home
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a>
+            </li>
+            <li><a href="about.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                About
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a></li>
+            <li><a href="upcoming.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Upcoming Events
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a></li>
+            <li><a href="past.html"
+                class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Past
+                Events</a></li>
+            <li><a href="gallery.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Gallery
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a></li>
+            <li>
+              <div class="flex items-center space-x-3">
+                <button @click="showLoginModal = true"
+                  class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 flex items-center gap-2">
+                  <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button @click="showSignupModal = true"
+                  class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                  <i class="fas fa-rocket"></i>
+                  Join Now
+                </button>
+              </div>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen"
+          class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <i class="fas fa-bars text-xl text-gray-700" x-show="!mobileMenuOpen"></i>
+          <i class="fas fa-times text-xl text-gray-700" x-show="mobileMenuOpen"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform -translate-y-4"
+        x-transition:enter-end="opacity-100 transform translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform -translate-y-4"
+        class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div class="py-4 space-y-1">
+          <a href="about.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-info-circle mr-3 w-5"></i>About
+          </a>
+          <a href="upcoming.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-calendar-alt mr-3 w-5"></i>Upcoming Events
+          </a>
+          <a href="past.html" class="flex items-center px-4 py-3 text-tut-blue font-semibold bg-blue-50">
+            <i class="fas fa-history mr-3 w-5"></i>Past Events
+          </a>
+          <a href="gallery.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-images mr-3 w-5"></i>Gallery
+          </a>
+          <hr class="my-2">
+          <button @click="showLoginModal = true"
+            class="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-sign-in-alt mr-3 w-5"></i>Login
+          </button>
+          <button @click="showSignupModal = true"
+            class="mx-4 my-2 w-auto bg-gradient-to-r from-tut-yellow to-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2">
+            <i class="fas fa-rocket"></i>Join Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-white py-20 relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <div
+          class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 mb-6">
+          <i class="fas fa-history text-tut-yellow"></i>
+          <span class="text-sm font-medium">Past Events</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+          Celebrating Our
+          <span class="block text-tut-yellow">Event History</span>
+        </h1>
+        <p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto animate-fade-in">
+          Relive the memorable moments and successful events that brought our TUT community together.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div class="stats-card">
+            <div class="text-3xl font-bold text-tut-blue mb-2" x-text="eventStats.total"></div>
+            <div class="text-gray-600">Events Completed</div>
+          </div>
+          <div class="stats-card">
+            <div class="text-3xl font-bold text-tut-red mb-2" x-text="eventStats.totalAttendance.toLocaleString()">
+            </div>
+            <div class="text-gray-600">Total Attendance</div>
+          </div>
+          <div class="stats-card">
+            <div class="text-3xl font-bold text-tut-yellow mb-2" x-text="eventStats.avgRating"></div>
+            <div class="text-gray-600">Average Rating</div>
+          </div>
+          <div class="stats-card">
+            <div class="text-3xl font-bold text-green-600 mb-2" x-text="eventStats.categories"></div>
+            <div class="text-gray-600">Categories</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters and View Options -->
+  <section class="py-8 bg-gray-50 border-b">
+    <div class="container mx-auto px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+          <!-- Year Filter -->
+          <div class="flex items-center gap-3">
+            <span class="font-medium text-gray-700">Filter by Year:</span>
+            <div class="flex gap-2">
+              <button @click="selectedYear = '2025'" :class="selectedYear === '2025' ? 'active' : ''"
+                class="filter-button">2025</button>
+              <button @click="selectedYear = '2024'" :class="selectedYear === '2024' ? 'active' : ''"
+                class="filter-button">2024</button>
+              <button @click="selectedYear = '2023'" :class="selectedYear === '2023' ? 'active' : ''"
+                class="filter-button">2023</button>
+            </div>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="flex items-center gap-3">
+            <span class="font-medium text-gray-700">View:</span>
+            <div class="flex bg-gray-200 rounded-lg p-1">
+              <button @click="viewMode = 'grid'" :class="viewMode === 'grid' ? 'bg-white shadow' : ''"
+                class="px-3 py-1 rounded text-sm font-medium transition-all">
+                <i class="fas fa-th-large mr-1"></i> Grid
+              </button>
+              <button @click="viewMode = 'timeline'" :class="viewMode === 'timeline' ? 'bg-white shadow' : ''"
+                class="px-3 py-1 rounded text-sm font-medium transition-all">
+                <i class="fas fa-list mr-1"></i> Timeline
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events Content -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="max-w-7xl mx-auto">
+        <!-- Grid View -->
+        <div x-show="viewMode === 'grid'" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <template x-for="event in filteredEvents" :key="event.id">
+            <div class="event-card animate-fade-in">
+              <!-- Event Image -->
+              <div class="event-image" :style="`background-image: url('${event.image}')`">
+                <div class="success-badge">
+                  <i class="fas fa-check mr-1"></i>
+                  Completed
+                </div>
+                <div class="attendance-badge" x-text="`${event.attendance} attended`"></div>
+              </div>
+
+              <!-- Event Content -->
+              <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-2">
+                    <div :class="getCategoryColor(event.category)" class="w-3 h-3 rounded-full"></div>
+                    <span class="text-sm font-medium text-gray-600 capitalize" x-text="event.category"></span>
+                  </div>
+                  <div class="flex items-center gap-1 text-yellow-500">
+                    <i class="fas fa-star text-sm"></i>
+                    <span class="text-sm font-medium" x-text="event.rating"></span>
+                  </div>
+                </div>
+
+                <h3 class="font-bold text-xl mb-2" x-text="event.title"></h3>
+                <p class="text-gray-600 text-sm mb-3" x-text="event.organizer"></p>
+
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center text-gray-600">
+                    <i class="far fa-calendar-alt mr-2 w-5"></i>
+                    <span x-text="formatDate(event.date)"></span>
+                  </div>
+                  <div class="flex items-center text-gray-600">
+                    <i class="fas fa-map-marker-alt mr-2 w-5"></i>
+                    <span x-text="event.location" class="text-sm"></span>
+                  </div>
+                </div>
+
+                <p class="text-gray-600 text-sm mb-4" x-text="event.description"></p>
+
+                <!-- Event Highlights -->
+                <div class="mb-4">
+                  <h4 class="font-semibold text-sm text-gray-800 mb-2">Event Highlights:</h4>
+                  <ul class="text-xs text-gray-600 space-y-1">
+                    <template x-for="highlight in event.highlights">
+                      <li class="flex items-center gap-2">
+                        <i class="fas fa-check text-green-500 text-xs"></i>
+                        <span x-text="highlight"></span>
+                      </li>
+                    </template>
+                  </ul>
+                </div>
+
+                <!-- Feedback -->
+                <div class="bg-gray-50 rounded-lg p-3 mb-4">
+                  <div class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-quote-left text-tut-blue text-sm"></i>
+                    <span class="font-medium text-sm">Student Feedback</span>
+                  </div>
+                  <p class="text-sm text-gray-600 italic" x-text="event.feedback"></p>
+                </div>
+
+                <button class="btn btn-primary w-full flex items-center justify-center gap-2">
+                  <i class="fas fa-images"></i>
+                  View Gallery
+                </button>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- Timeline View -->
+        <div x-show="viewMode === 'timeline'" class="max-w-4xl mx-auto">
+          <div class="timeline">
+            <template x-for="event in filteredEvents" :key="event.id">
+              <div class="timeline-item animate-fade-in">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                  <div class="flex flex-col lg:flex-row gap-6">
+                    <div class="lg:w-1/3">
+                      <div class="rounded-lg overflow-hidden h-48 lg:h-full"
+                        :style="`background-image: url('${event.image}'); background-size: cover; background-position: center;`">
+                      </div>
+                    </div>
+                    <div class="lg:w-2/3">
+                      <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                          <div :class="getCategoryColor(event.category)" class="w-3 h-3 rounded-full"></div>
+                          <span class="text-sm font-medium text-gray-600 capitalize" x-text="event.category"></span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                          <span class="text-sm text-gray-500" x-text="formatDate(event.date)"></span>
+                          <div class="flex items-center gap-1 text-yellow-500">
+                            <i class="fas fa-star text-sm"></i>
+                            <span class="text-sm font-medium" x-text="event.rating"></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <h3 class="font-bold text-xl mb-2" x-text="event.title"></h3>
+                      <p class="text-gray-600 text-sm mb-3" x-text="event.organizer"></p>
+
+                      <p class="text-gray-600 mb-4" x-text="event.description"></p>
+
+                      <div class="flex items-center gap-6 mb-4 text-sm text-gray-600">
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-users"></i>
+                          <span x-text="`${event.attendance} attended`"></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                          <i class="fas fa-map-marker-alt"></i>
+                          <span x-text="event.location"></span>
+                        </div>
+                      </div>
+
+                      <div class="bg-gray-50 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                          <i class="fas fa-quote-left text-tut-blue text-sm"></i>
+                          <span class="font-medium text-sm">Student Feedback</span>
+                        </div>
+                        <p class="text-sm text-gray-600 italic" x-text="event.feedback"></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- No Events Message -->
+        <div x-show="filteredEvents.length === 0" class="text-center py-16">
+          <i class="fas fa-calendar-times text-6xl text-gray-300 mb-6"></i>
+          <h3 class="text-2xl font-semibold text-gray-600 mb-4">No Events Found</h3>
+          <p class="text-gray-500 mb-8">No events found for the selected year. Try a different year.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-tut-blue text-white">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-3xl font-bold mb-6">Don't Miss Future Events!</h2>
+      <p class="text-xl max-w-2xl mx-auto mb-8">Join MyTUT Events to stay updated on upcoming events and be part of
+        creating more memorable moments.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="upcoming.html"
+          class="bg-tut-yellow text-gray-900 font-semibold px-8 py-3 rounded-full hover:bg-yellow-500 transition-all duration-300 flex items-center justify-center gap-2">
+          <i class="fas fa-calendar-alt"></i>
+          View Upcoming Events
+        </a>
+        <button @click="showSignupModal = true"
+          class="bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded-full hover:bg-white hover:text-tut-blue transition-all duration-300 flex items-center justify-center gap-2">
+          <i class="fas fa-rocket"></i>
+          Join MyTUT Events
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-tut-blue text-white py-10">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">MyTUT Events</h3>
+          <p class="text-gray-300 mb-4">The official event management platform for Tshwane University of Technology.</p>
+          <div class="flex space-x-4">
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-twitter"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-instagram"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="index.html" class="hover:text-white">Home</a></li>
+            <li><a href="about.html" class="hover:text-white">About</a></li>
+            <li><a href="upcoming.html" class="hover:text-white">Upcoming Events</a></li>
+            <li><a href="gallery.html" class="hover:text-white">Gallery</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Contact</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+              <span>Staatsartillerie Rd, Pretoria West, Pretoria, 0183</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone mr-3"></i>
+              <span>+27 12 382 0000</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope mr-3"></i>
+              <span>events@tut.ac.za</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-blue-800 mt-8 pt-8 text-center text-gray-300">
+        <p>&copy; 2025 MyTUT Events. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div x-show="showLoginModal" x-cloak
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Login Required</h3>
+      <p class="mb-6">Please log in to access additional features.</p>
+      <div class="flex gap-4">
+        <button @click="showLoginModal = false" class="btn btn-secondary flex-1">Close</button>
+        <button class="btn btn-primary flex-1">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div x-show="showSignupModal" x-cloak
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Join MyTUT Events</h3>
+      <p class="mb-6">Create your account to start discovering amazing events.</p>
+      <div class="flex gap-4">
+        <button @click="showSignupModal = false" class="btn btn-secondary flex-1">Close</button>
+        <button class="btn btn-primary flex-1">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f3f4f6;
+  margin: 0;
+  padding: 20px;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.header {
+  background-color: #003087;
+  color: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+.header nav a {
+  color: #FFC107;
+  margin-right: 16px;
+  text-decoration: none;
+}
+.header nav a:hover {
+  text-decoration: underline;
+}
+.event-form, .event-card, .event-details {
+  background-color: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+.event-form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #003087;
+}
+.event-form input, .event-form select, .event-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+}
+.event-form button, .event-card button, .event-details button {
+  background-color: #C8102E;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.event-form button:hover, .event-card button:not(:disabled):hover, .event-details button:not(:disabled):hover {
+  background-color: #a1122a;
+}
+.event-card button:disabled, .event-details button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.event-card h3, .event-details h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #003087;
+}
+.event-card a {
+  color: #FFC107;
+  text-decoration: none;
+}
+.event-card a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 600px) {
+  .event-grid {
+    grid-template-columns: 1fr;
+  }
+}

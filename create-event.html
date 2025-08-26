@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TUT Emalahleni Events - Create Event</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>TUT Emalahleni Events</h1>
+      <p id="user-info">Welcome, Guest (student)</p>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="create-event.html" id="create-event-link" style="display: none;">Create Event</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+
+    <div class="event-form">
+      <h2>Create Event</h2>
+      <form id="event-form">
+        <label for="title">Title</label>
+        <input type="text" id="title" required>
+        <label for="date">Date</label>
+        <input type="date" id="date" required>
+        <label for="time">Time</label>
+        <input type="time" id="time" required>
+        <label for="venue">Venue</label>
+        <input type="text" id="venue" required>
+        <label for="category">Category</label>
+        <select id="category">
+          <option value="academic">Academic</option>
+          <option value="social">Social</option>
+          <option value="sports">Sports</option>
+          <option value="career">Career</option>
+        </select>
+        <label for="capacity">Capacity</label>
+        <input type="number" id="capacity" min="1" required>
+        <label for="description">Description</label>
+        <textarea id="description"></textarea>
+        <label for="image">Event Image (URL)</label>
+        <input type="url" id="image">
+        <button type="submit">Create Event</button>
+      </form>
+    </div>
+  </div>
+  <script src="scripts.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      updateUserInfo();
+      if (!isOrganizerOrAdmin()) {
+        window.location.href = 'index.html';
+      }
+      document.getElementById('event-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const newEvent = {
+          id: events.length + 1,
+          title: document.getElementById('title').value,
+          date: document.getElementById('date').value,
+          time: document.getElementById('time').value,
+          venue: document.getElementById('venue').value,
+          category: document.getElementById('category').value,
+          capacity: parseInt(document.getElementById('capacity').value),
+          description: document.getElementById('description').value,
+          image: document.getElementById('image').value || 'https://via.placeholder.com/300',
+          registered: 0,
+          attendees: []
+        };
+        events.push(newEvent);
+        // Simulate WhatsApp notification
+        console.log(`Sending WhatsApp notification for ${newEvent.title}`);
+        e.target.reset();
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
+</body>
+</html>

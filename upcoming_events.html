@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+  <title>Upcoming Events - myTUT Events</title>
+
+  <!-- Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'tut-blue': '#0A2463',
+            'tut-red': '#990000',
+            'tut-yellow': '#E6A817',
+            'dark-bg': '#121212',
+            'dark-card': '#1E1E1E',
+          },
+          fontFamily: {
+            sans: ['Poppins', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    :root {
+      --blue-primary: #4322B9;
+      --red-primary: #B92222;
+      --yellow-primary: #DBCA05;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+      background-color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    .btn {
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--yellow-primary);
+      color: #333;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+      background-color: #c4b504;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary {
+      background-color: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #3a1ea0;
+    }
+
+    .header {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, #0A2463 0%, #990000 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.1;
+    }
+
+    .event-card {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      background: white;
+      position: relative;
+    }
+
+    .event-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .event-card .event-image {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .event-card .category-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+    }
+
+    .event-card .seats-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .filter-button {
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      border: 2px solid #e5e7eb;
+      background: white;
+      color: #6b7280;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .filter-button.active {
+      border-color: #0A2463;
+      background: #0A2463;
+      color: white;
+    }
+
+    .filter-button:hover {
+      border-color: #0A2463;
+      color: #0A2463;
+    }
+
+    .filter-button.active:hover {
+      background: #082056;
+      border-color: #082056;
+      color: white;
+    }
+
+    .search-input {
+      border: 2px solid #e5e7eb;
+      border-radius: 2rem;
+      padding: 0.75rem 1.5rem;
+      padding-left: 3rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: #0A2463;
+      box-shadow: 0 0 0 3px rgba(10, 36, 99, 0.1);
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body x-data="{
+  mobileMenuOpen: false,
+  showLoginModal: false,
+  showSignupModal: false,
+  selectedCategory: 'all',
+  searchQuery: '',
+  events: [
+    {
+      id: 1,
+      title: 'Annual Tech Summit 2025',
+      organizer: 'ICT Faculty',
+      date: '2025-05-15',
+      time: '09:00 AM',
+      location: 'Building 3 Auditorium, Pretoria Campus',
+      category: 'academic',
+      seatsLeft: 60,
+      image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Join industry leaders and fellow students for the biggest tech event of the year.'
+    },
+    {
+      id: 2,
+      title: 'Career Fair 2025',
+      organizer: 'Student Affairs',
+      date: '2025-06-03',
+      time: '10:00 AM',
+      location: 'Main Hall, Soshanguve Campus',
+      category: 'career',
+      seatsLeft: 120,
+      image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Meet potential employers and explore career opportunities across various industries.'
+    },
+    {
+      id: 3,
+      title: 'Arts & Culture Festival',
+      organizer: 'Faculty of Arts',
+      date: '2025-05-28',
+      time: '2:00 PM',
+      location: 'Arts Theatre, Arts Campus',
+      category: 'cultural',
+      seatsLeft: 25,
+      image: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Celebrate diversity through art, music, and cultural performances.'
+    },
+    {
+      id: 4,
+      title: 'Engineering Innovation Workshop',
+      organizer: 'Engineering Faculty',
+      date: '2025-05-20',
+      time: '1:00 PM',
+      location: 'Engineering Labs, Pretoria Campus',
+      category: 'workshop',
+      seatsLeft: 40,
+      image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Hands-on workshop exploring cutting-edge engineering solutions.'
+    },
+    {
+      id: 5,
+      title: 'Student Leadership Summit',
+      organizer: 'Student Council',
+      date: '2025-06-10',
+      time: '9:00 AM',
+      location: 'Conference Center, Emalahleni Campus',
+      category: 'leadership',
+      seatsLeft: 80,
+      image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Develop leadership skills and network with student leaders from all campuses.'
+    },
+    {
+      id: 6,
+      title: 'Sports Day Extravaganza',
+      organizer: 'Sports Department',
+      date: '2025-05-25',
+      time: '8:00 AM',
+      location: 'Sports Complex, Soshanguve Campus',
+      category: 'sports',
+      seatsLeft: 200,
+      image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      description: 'Inter-campus sports competition featuring various athletic events.'
+    }
+  ],
+  get filteredEvents() {
+    let filtered = this.events;
+    
+    if (this.selectedCategory !== 'all') {
+      filtered = filtered.filter(event => event.category === this.selectedCategory);
+    }
+    
+    if (this.searchQuery) {
+      const query = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(event => 
+        event.title.toLowerCase().includes(query) ||
+        event.organizer.toLowerCase().includes(query) ||
+        event.location.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
+  },
+  getCategoryBadgeColor(category) {
+    const colors = {
+      academic: 'bg-blue-500/20 text-blue-700 border border-blue-300',
+      career: 'bg-green-500/20 text-green-700 border border-green-300',
+      cultural: 'bg-purple-500/20 text-purple-700 border border-purple-300',
+      workshop: 'bg-orange-500/20 text-orange-700 border border-orange-300',
+      leadership: 'bg-red-500/20 text-red-700 border border-red-300',
+      sports: 'bg-teal-500/20 text-teal-700 border border-teal-300'
+    };
+    return colors[category] || 'bg-gray-500/20 text-gray-700';
+  },
+  getSeatsBadgeColor(seats) {
+    if (seats <= 25) return 'bg-red-500';
+    if (seats <= 50) return 'bg-orange-500';
+    if (seats <= 100) return 'bg-blue-500';
+    return 'bg-green-500';
+  },
+  formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  }
+}">
+  <!-- Header -->
+  <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center">
+          <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3">
+          <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:block">
+          <ul class="flex items-center space-x-8">
+            <li>
+              <a href="index.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Home
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a>
+            </li>
+            <li><a href="about.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                About
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a></li>
+            <li><a href="upcoming.html"
+                class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Upcoming
+                Events</a></li>
+            <li><a href="past_events.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Past Events
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a></li>
+            <li><a href="gallery.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Gallery
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a></li>
+            <li>
+              <div class="flex items-center space-x-3">
+                <button @click="showLoginModal = true"
+                  class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 flex items-center gap-2">
+                  <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button @click="showSignupModal = true"
+                  class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                  <i class="fas fa-rocket"></i>
+                  Join Now
+                </button>
+              </div>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen"
+          class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <i class="fas fa-bars text-xl text-gray-700" x-show="!mobileMenuOpen"></i>
+          <i class="fas fa-times text-xl text-gray-700" x-show="mobileMenuOpen"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform -translate-y-4"
+        x-transition:enter-end="opacity-100 transform translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform -translate-y-4"
+        class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div class="py-4 space-y-1">
+          <a href="about.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-info-circle mr-3 w-5"></i>About
+          </a>
+          <a href="upcoming.html" class="flex items-center px-4 py-3 text-tut-blue font-semibold bg-blue-50">
+            <i class="fas fa-calendar-alt mr-3 w-5"></i>Upcoming Events
+          </a>
+          <a href="past.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-history mr-3 w-5"></i>Past Events
+          </a>
+          <a href="gallery.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-images mr-3 w-5"></i>Gallery
+          </a>
+          <hr class="my-2">
+          <button @click="showLoginModal = true"
+            class="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-sign-in-alt mr-3 w-5"></i>Login
+          </button>
+          <button @click="showSignupModal = true"
+            class="mx-4 my-2 w-auto bg-gradient-to-r from-tut-yellow to-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2">
+            <i class="fas fa-rocket"></i>Join Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-white py-20 relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <div
+          class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 mb-6">
+          <i class="fas fa-calendar-alt text-tut-yellow"></i>
+          <span class="text-sm font-medium">Upcoming Events</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+          Discover Amazing
+          <span class="block text-tut-yellow">TUT Events</span>
+        </h1>
+        <p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto animate-fade-in">
+          From tech summits to cultural festivals, find events that match your interests and connect with fellow
+          students.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search and Filters -->
+  <section class="py-12 bg-white border-b border-gray-200">
+    <div class="container mx-auto px-6">
+      <div class="max-w-6xl mx-auto">
+        <!-- Search Bar -->
+        <div class="relative max-w-md mx-auto mb-8">
+          <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+          <input x-model="searchQuery" type="text" placeholder="Search events..." class="search-input w-full">
+        </div>
+
+        <!-- Category Filters -->
+        <div class="flex flex-wrap justify-center gap-3">
+          <button @click="selectedCategory = 'all'" :class="selectedCategory === 'all' ? 'active' : ''"
+            class="filter-button">
+            All Events
+          </button>
+          <button @click="selectedCategory = 'academic'" :class="selectedCategory === 'academic' ? 'active' : ''"
+            class="filter-button">
+            Academic
+          </button>
+          <button @click="selectedCategory = 'career'" :class="selectedCategory === 'career' ? 'active' : ''"
+            class="filter-button">
+            Career
+          </button>
+          <button @click="selectedCategory = 'cultural'" :class="selectedCategory === 'cultural' ? 'active' : ''"
+            class="filter-button">
+            Cultural
+          </button>
+          <button @click="selectedCategory = 'workshop'" :class="selectedCategory === 'workshop' ? 'active' : ''"
+            class="filter-button">
+            Workshop
+          </button>
+          <button @click="selectedCategory = 'leadership'" :class="selectedCategory === 'leadership' ? 'active' : ''"
+            class="filter-button">
+            Leadership
+          </button>
+          <button @click="selectedCategory = 'sports'" :class="selectedCategory === 'sports' ? 'active' : ''"
+            class="filter-button">
+            Sports
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events Grid -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="max-w-7xl mx-auto">
+        <!-- Results Counter -->
+        <div class="mb-8 text-center">
+          <p class="text-gray-600"
+            x-text="`Showing ${filteredEvents.length} ${filteredEvents.length === 1 ? 'event' : 'events'}`"></p>
+        </div>
+
+        <!-- Events Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" x-show="filteredEvents.length > 0">
+          <template x-for="event in filteredEvents" :key="event.id">
+            <div class="event-card animate-fade-in">
+              <!-- Event Image -->
+              <div class="event-image" :style="`background-image: url('${event.image}')`">
+                <div class="category-badge" :class="getCategoryBadgeColor(event.category)"
+                  x-text="event.category.charAt(0).toUpperCase() + event.category.slice(1)"></div>
+                <div class="seats-badge" :class="getSeatsBadgeColor(event.seatsLeft)"
+                  x-text="`${event.seatsLeft} seats left`"></div>
+              </div>
+
+              <!-- Event Content -->
+              <div class="p-6">
+                <div class="mb-4">
+                  <h3 class="font-bold text-xl mb-2" x-text="event.title"></h3>
+                  <p class="text-gray-600 text-sm" x-text="event.organizer"></p>
+                </div>
+
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center text-gray-600">
+                    <i class="far fa-calendar-alt mr-2 w-5"></i>
+                    <span x-text="formatDate(event.date)"></span>
+                  </div>
+                  <div class="flex items-center text-gray-600">
+                    <i class="far fa-clock mr-2 w-5"></i>
+                    <span x-text="event.time"></span>
+                  </div>
+                  <div class="flex items-center text-gray-600">
+                    <i class="fas fa-map-marker-alt mr-2 w-5"></i>
+                    <span x-text="event.location" class="text-sm"></span>
+                  </div>
+                </div>
+
+                <p class="text-gray-600 text-sm mb-6" x-text="event.description"></p>
+
+                <button @click="showLoginModal = true"
+                  class="btn btn-primary w-full flex items-center justify-center gap-2">
+                  <i class="fas fa-ticket-alt"></i>
+                  Register Now
+                </button>
+              </div>
+            </div>
+          </template>
+        </div>
+
+        <!-- No Events Found -->
+        <div x-show="filteredEvents.length === 0" class="text-center py-16">
+          <i class="fas fa-search text-6xl text-gray-300 mb-6"></i>
+          <h3 class="text-2xl font-semibold text-gray-600 mb-4">No Events Found</h3>
+          <p class="text-gray-500 mb-8">Try adjusting your search or filter criteria.</p>
+          <button @click="selectedCategory = 'all'; searchQuery = ''" class="btn btn-primary">
+            Show All Events
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-tut-blue text-white">
+    <div class="container mx-auto px-6 text-center">
+      <h2 class="text-3xl font-bold mb-6">Don't Miss Out!</h2>
+      <p class="text-xl max-w-2xl mx-auto mb-8">Join MyTUT Events to get personalized event recommendations and never
+        miss an opportunity to connect and grow.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button @click="showSignupModal = true"
+          class="bg-tut-yellow text-gray-900 font-semibold px-8 py-3 rounded-full hover:bg-yellow-500 transition-all duration-300 flex items-center justify-center gap-2">
+          <i class="fas fa-rocket"></i>
+          Join Now
+        </button>
+        <button
+          class="bg-transparent border-2 border-white text-white font-semibold px-8 py-3 rounded-full hover:bg-white hover:text-tut-blue transition-all duration-300 flex items-center justify-center gap-2">
+          <i class="fas fa-bell"></i>
+          Get Notifications
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-tut-blue text-white py-10">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">MyTUT Events</h3>
+          <p class="text-gray-300 mb-4">The official event management platform for Tshwane University of Technology.</p>
+          <div class="flex space-x-4">
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-twitter"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-instagram"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="index.html" class="hover:text-white">Home</a></li>
+            <li><a href="about.html" class="hover:text-white">About</a></li>
+            <li><a href="past.html" class="hover:text-white">Past Events</a></li>
+            <li><a href="gallery.html" class="hover:text-white">Gallery</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Contact</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+              <span>Staatsartillerie Rd, Pretoria West, Pretoria, 0183</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone mr-3"></i>
+              <span>+27 12 382 0000</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope mr-3"></i>
+              <span>events@tut.ac.za</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-blue-800 mt-8 pt-8 text-center text-gray-300">
+        <p>&copy; 2025 MyTUT Events. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div x-show="showLoginModal" x-cloak
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Login Required</h3>
+      <p class="mb-6">Please log in to register for events.</p>
+      <div class="flex gap-4">
+        <button @click="showLoginModal = false" class="btn btn-secondary flex-1">Close</button>
+        <button class="btn btn-primary flex-1">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div x-show="showSignupModal" x-cloak
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Join MyTUT Events</h3>
+      <p class="mb-6">Create your account to start discovering amazing events.</p>
+      <div class="flex gap-4">
+        <button @click="showSignupModal = false" class="btn btn-secondary flex-1">Close</button>
+        <button class="btn btn-primary flex-1">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+</body>
+
+</html>

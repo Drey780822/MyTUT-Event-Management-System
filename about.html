@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+  <title>About - myTUT Events</title>
+
+  <!-- Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tut-blue": "#0A2463",
+            "tut-red": "#990000",
+            "tut-yellow": "#E6A817",
+            "dark-bg": "#121212",
+            "dark-card": "#1E1E1E",
+          },
+          fontFamily: {
+            sans: ["Poppins", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    :root {
+      --blue-primary: #4322b9;
+      --red-primary: #b92222;
+      --yellow-primary: #dbca05;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      color: #333;
+      background-color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    .btn {
+      font-weight: 500;
+      padding: 10px 20px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: var(--yellow-primary);
+      color: #333;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+      background-color: #c4b504;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .header {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .hero-section {
+      background: linear-gradient(135deg, #0a2463 0%, #990000 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+      background-size: cover;
+      background-position: center;
+      opacity: 0.1;
+    }
+
+    .card {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.9) 0%,
+          rgba(255, 255, 255, 0.8) 100%);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .team-card {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .team-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0a2463, #990000, #e6a817);
+    }
+
+    .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 12px;
+      height: 12px;
+      background: #e6a817;
+      border-radius: 50%;
+      border: 3px solid white;
+      box-shadow: 0 0 0 3px #e6a817;
+    }
+
+    .timeline-item::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      top: 1.5rem;
+      bottom: -2rem;
+      width: 2px;
+      background: linear-gradient(to bottom, #e6a817, transparent);
+    }
+
+    .timeline-item:last-child::after {
+      display: none;
+    }
+  </style>
+</head>
+
+<body x-data="{
+  mobileMenuOpen: false,
+  showLoginModal: false,
+  showSignupModal: false,
+  activeTab: 'mission'
+}">
+  <!-- Header -->
+  <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
+    <div class="container mx-auto px-4">
+      <div class="flex items-center justify-between py-4">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center">
+          <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3" />
+          <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden md:block">
+          <ul class="flex items-center space-x-8">
+            <li>
+              <a href="index.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Home
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a>
+            </li>
+            <li>
+              <a href="about.html"
+                class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">About</a>
+            </li>
+            <li>
+              <a href="upcoming_events.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Upcoming Events
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a>
+            </li>
+            <li>
+              <a href="past_events.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Past Events
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a>
+            </li>
+            <li>
+              <a href="gallery.html"
+                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                Gallery
+                <span
+                  class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+              </a>
+            </li>
+            <li>
+              <div class="flex items-center space-x-3">
+                <button @click="showLoginModal = true"
+                  class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 flex items-center gap-2">
+                  <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button @click="showSignupModal = true"
+                  class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                  <i class="fas fa-rocket"></i>
+                  Join Now
+                </button>
+              </div>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button @click="mobileMenuOpen = !mobileMenuOpen"
+          class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <i class="fas fa-bars text-xl text-gray-700" x-show="!mobileMenuOpen"></i>
+          <i class="fas fa-times text-xl text-gray-700" x-show="mobileMenuOpen"></i>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform -translate-y-4"
+        x-transition:enter-end="opacity-100 transform translate-y-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform translate-y-0"
+        x-transition:leave-end="opacity-0 transform -translate-y-4"
+        class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+        <div class="py-4 space-y-1">
+          <a href="about.html" class="flex items-center px-4 py-3 text-tut-blue font-semibold bg-blue-50">
+            <i class="fas fa-info-circle mr-3 w-5"></i>About
+          </a>
+          <a href="upcoming.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-calendar-alt mr-3 w-5"></i>Upcoming Events
+          </a>
+          <a href="past.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-history mr-3 w-5"></i>Past Events
+          </a>
+          <a href="gallery.html"
+            class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-images mr-3 w-5"></i>Gallery
+          </a>
+          <hr class="my-2" />
+          <button @click="showLoginModal = true"
+            class="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+            <i class="fas fa-sign-in-alt mr-3 w-5"></i>Login
+          </button>
+          <button @click="showSignupModal = true"
+            class="mx-4 my-2 w-auto bg-gradient-to-r from-tut-yellow to-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2">
+            <i class="fas fa-rocket"></i>Join Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section text-white py-20 relative">
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <div
+          class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 mb-6">
+          <i class="fas fa-info-circle text-tut-yellow"></i>
+          <span class="text-sm font-medium">About MyTUT Events</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+          Connecting TUT Students
+          <span class="block text-tut-yellow">Through Events</span>
+        </h1>
+        <p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto animate-fade-in">
+          The official event management platform for Tshwane University of
+          Technology, bringing together students, faculty, and the community.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission, Vision, Values -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="flex justify-center mb-12">
+        <div class="flex bg-gray-100 rounded-full p-1">
+          <button @click="activeTab = 'mission'"
+            :class="activeTab === 'mission' ? 'bg-tut-blue text-white' : 'text-gray-600'"
+            class="px-6 py-3 rounded-full font-semibold transition-all duration-300">
+            Mission
+          </button>
+          <button @click="activeTab = 'vision'"
+            :class="activeTab === 'vision' ? 'bg-tut-blue text-white' : 'text-gray-600'"
+            class="px-6 py-3 rounded-full font-semibold transition-all duration-300">
+            Vision
+          </button>
+          <button @click="activeTab = 'values'"
+            :class="activeTab === 'values' ? 'bg-tut-blue text-white' : 'text-gray-600'"
+            class="px-6 py-3 rounded-full font-semibold transition-all duration-300">
+            Values
+          </button>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        <div x-show="activeTab === 'mission'" class="text-center animate-fade-in">
+          <div class="mb-8">
+            <i class="fas fa-bullseye text-6xl text-tut-blue mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Our Mission</h2>
+          </div>
+          <p class="text-lg text-gray-600 leading-relaxed mb-8">
+            To revolutionize campus life at TUT by providing a seamless,
+            user-friendly platform that connects students with meaningful
+            events, fostering community engagement, personal growth, and
+            academic excellence across all campuses.
+          </p>
+          <div class="grid md:grid-cols-3 gap-8">
+            <div class="feature-card card p-6">
+              <i class="fas fa-users text-3xl text-tut-blue mb-4"></i>
+              <h3 class="font-bold text-lg mb-2">Community Building</h3>
+              <p class="text-gray-600">
+                Bringing students together through shared experiences
+              </p>
+            </div>
+            <div class="feature-card card p-6">
+              <i class="fas fa-graduation-cap text-3xl text-tut-red mb-4"></i>
+              <h3 class="font-bold text-lg mb-2">Academic Support</h3>
+              <p class="text-gray-600">
+                Enhancing learning through educational events
+              </p>
+            </div>
+            <div class="feature-card card p-6">
+              <i class="fas fa-rocket text-3xl text-tut-yellow mb-4"></i>
+              <h3 class="font-bold text-lg mb-2">Innovation</h3>
+              <p class="text-gray-600">
+                Using technology to improve student experiences
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div x-show="activeTab === 'vision'" class="text-center animate-fade-in">
+          <div class="mb-8">
+            <i class="fas fa-eye text-6xl text-tut-red mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Our Vision</h2>
+          </div>
+          <p class="text-lg text-gray-600 leading-relaxed mb-12">
+            To be the leading digital hub for campus life in South Africa,
+            where every TUT student has access to enriching events that
+            support their academic journey, personal development, and
+            professional growth.
+          </p>
+          <div class="bg-gradient-to-r from-tut-blue to-tut-red p-8 rounded-2xl text-white">
+            <h3 class="text-2xl font-bold mb-4">By 2030, we envision:</h3>
+            <div class="grid md:grid-cols-2 gap-6 text-left">
+              <div class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-tut-yellow text-xl mt-1"></i>
+                <span>100% of TUT students actively engaged through our
+                  platform</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-tut-yellow text-xl mt-1"></i>
+                <span>Seamless integration across all TUT campuses</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-tut-yellow text-xl mt-1"></i>
+                <span>AI-powered personalized event recommendations</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <i class="fas fa-check-circle text-tut-yellow text-xl mt-1"></i>
+                <span>Partnership with industry leaders for career events</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div x-show="activeTab === 'values'" class="animate-fade-in">
+          <div class="text-center mb-12">
+            <i class="fas fa-heart text-6xl text-tut-yellow mb-4"></i>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Our Values</h2>
+            <p class="text-lg text-gray-600">
+              The principles that guide everything we do
+            </p>
+          </div>
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="card p-6 text-center">
+              <div class="w-16 h-16 bg-tut-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-handshake text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-lg mb-3 text-tut-blue">
+                Inclusivity
+              </h3>
+              <p class="text-gray-600">
+                Every student deserves equal access to opportunities and
+                events
+              </p>
+            </div>
+            <div class="card p-6 text-center">
+              <div class="w-16 h-16 bg-tut-red rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-lightbulb text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-lg mb-3 text-tut-red">Innovation</h3>
+              <p class="text-gray-600">
+                Continuously improving through technology and creativity
+              </p>
+            </div>
+            <div class="card p-6 text-center">
+              <div class="w-16 h-16 bg-tut-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-star text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-lg mb-3 text-tut-yellow">
+                Excellence
+              </h3>
+              <p class="text-gray-600">
+                Delivering the highest quality experiences for our users
+              </p>
+            </div>
+            <div class="card p-6 text-center">
+              <div class="w-16 h-16 bg-tut-blue rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-shield-alt text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-lg mb-3 text-tut-blue">Integrity</h3>
+              <p class="text-gray-600">
+                Transparent, honest, and ethical in all our interactions
+              </p>
+            </div>
+            <div class="card p-6 text-center">
+              <div class="w-16 h-16 bg-tut-red rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-users text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-lg mb-3 text-tut-red">Community</h3>
+              <p class="text-gray-600">
+                Building strong connections between students and faculty
+              </p>
+            </div>
+            <div class="card p-6 text-center">
+              <div class="w-16 h-16 bg-tut-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-leaf text-white text-2xl"></i>
+              </div>
+              <h3 class="font-bold text-lg mb-3 text-tut-yellow">Growth</h3>
+              <p class="text-gray-600">
+                Supporting personal and professional development
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          MyTUT Events by Numbers
+        </h2>
+        <p class="text-xl text-gray-600">
+          The impact we're making across TUT campuses
+        </p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="text-4xl font-bold text-tut-blue mb-2">10,000+</div>
+          <div class="text-gray-600 font-medium">Students Connected</div>
+        </div>
+        <div class="stat-item">
+          <div class="text-4xl font-bold text-tut-red mb-2">500+</div>
+          <div class="text-gray-600 font-medium">Events Hosted</div>
+        </div>
+        <div class="stat-item">
+          <div class="text-4xl font-bold text-tut-yellow mb-2">6</div>
+          <div class="text-gray-600 font-medium">TUT Campuses</div>
+        </div>
+        <div class="stat-item">
+          <div class="text-4xl font-bold text-tut-blue mb-2">98%</div>
+          <div class="text-gray-600 font-medium">User Satisfaction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            Our Story
+          </h2>
+          <p class="text-xl text-gray-600">How MyTUT Events came to life</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <div class="timeline-item">
+              <h3 class="font-bold text-lg text-tut-blue mb-2">
+                2023 - The Idea
+              </h3>
+              <p class="text-gray-600">
+                Born from student frustration with fragmented event
+                information across TUT campuses.
+              </p>
+            </div>
+            <div class="timeline-item">
+              <h3 class="font-bold text-lg text-tut-red mb-2">
+                2024 - Development
+              </h3>
+              <p class="text-gray-600">
+                A dedicated team of TUT students and faculty collaborated to
+                build the platform.
+              </p>
+            </div>
+            <div class="timeline-item">
+              <h3 class="font-bold text-lg text-tut-yellow mb-2">
+                2025 - Launch
+              </h3>
+              <p class="text-gray-600">
+                MyTUT Events officially launches, connecting students across
+                all campuses.
+              </p>
+            </div>
+          </div>
+          <div class="bg-gradient-to-br from-tut-blue to-tut-red rounded-2xl p-8 text-white">
+            <h3 class="text-2xl font-bold mb-4">Why We Started</h3>
+            <p class="text-lg opacity-90 mb-6">
+              "We noticed students were missing out on amazing opportunities
+              simply because they didn't know about them. Events were
+              scattered across different platforms, making it hard to discover
+              what was happening on campus."
+            </p>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fas fa-quote-right text-tut-yellow"></i>
+              </div>
+              <div>
+                <div class="font-semibold">TUT Development Team</div>
+                <div class="text-sm opacity-75">MyTUT Events Founders</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          Meet the Team
+        </h2>
+        <p class="text-xl text-gray-600">The people behind MyTUT Events</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="team-card">
+          <div
+            class="w-20 h-20 bg-gradient-to-r from-tut-blue to-tut-red rounded-full mx-auto mb-4 flex items-center justify-center">
+            <i class="fas fa-user text-white text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Sarah Johnson</h3>
+          <p class="text-tut-blue font-medium mb-2">Project Manager</p>
+          <p class="text-gray-600 text-sm">
+            Coordinating platform development and student engagement
+            initiatives.
+          </p>
+        </div>
+        <div class="team-card">
+          <div
+            class="w-20 h-20 bg-gradient-to-r from-tut-red to-tut-yellow rounded-full mx-auto mb-4 flex items-center justify-center">
+            <i class="fas fa-user text-white text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Michael Chen</h3>
+          <p class="text-tut-red font-medium mb-2">Lead Developer</p>
+          <p class="text-gray-600 text-sm">
+            Building the technical foundation for seamless event management.
+          </p>
+        </div>
+        <div class="team-card">
+          <div
+            class="w-20 h-20 bg-gradient-to-r from-tut-yellow to-tut-blue rounded-full mx-auto mb-4 flex items-center justify-center">
+            <i class="fas fa-user text-white text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Priya Patel</h3>
+          <p class="text-tut-yellow font-medium mb-2">UX Designer</p>
+          <p class="text-gray-600 text-sm">
+            Creating intuitive and beautiful user experiences for all
+            students.
+          </p>
+        </div>
+        <div class="team-card">
+          <div
+            class="w-20 h-20 bg-gradient-to-r from-tut-blue to-tut-yellow rounded-full mx-auto mb-4 flex items-center justify-center">
+            <i class="fas fa-user text-white text-2xl"></i>
+          </div>
+          <h3 class="font-bold text-lg mb-2">David Mokoena</h3>
+          <p class="text-tut-blue font-medium mb-2">Campus Liaison</p>
+          <p class="text-gray-600 text-sm">
+            Connecting with student organizations and faculty across all TUT
+            campuses.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+          Get in Touch
+        </h2>
+        <p class="text-xl text-gray-600 mb-12">
+          Have questions or suggestions? We'd love to hear from you.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-8 mb-12">
+          <div class="card p-6 text-center">
+            <div class="w-16 h-16 bg-tut-blue rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-envelope text-white text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg mb-2">Email Us</h3>
+            <p class="text-gray-600">events@tut.ac.za</p>
+          </div>
+          <div class="card p-6 text-center">
+            <div class="w-16 h-16 bg-tut-red rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-phone text-white text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg mb-2">Call Us</h3>
+            <p class="text-gray-600">+27 12 382 0000</p>
+          </div>
+          <div class="card p-6 text-center">
+            <div class="w-16 h-16 bg-tut-yellow rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-map-marker-alt text-white text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-lg mb-2">Visit Us</h3>
+            <p class="text-gray-600">Staatsartillerie Rd, Pretoria West</p>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-tut-blue to-tut-red p-8 rounded-2xl text-white">
+          <h3 class="text-2xl font-bold mb-4">Ready to Join MyTUT Events?</h3>
+          <p class="text-lg opacity-90 mb-6">
+            Start discovering amazing events happening across all TUT
+            campuses.
+          </p>
+          <button @click="showSignupModal = true"
+            class="bg-white text-tut-blue font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition-all duration-300 inline-flex items-center gap-2">
+            <i class="fas fa-rocket"></i>
+            Get Started Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-tut-blue text-white py-10">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">MyTUT Events</h3>
+          <p class="text-gray-300 mb-4">
+            The official event management platform for Tshwane University of
+            Technology.
+          </p>
+          <div class="flex space-x-4">
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-twitter"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-instagram"></i></a>
+            <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li><a href="index.html" class="hover:text-white">Home</a></li>
+            <li>
+              <a href="upcoming.html" class="hover:text-white">Upcoming Events</a>
+            </li>
+            <li>
+              <a href="past.html" class="hover:text-white">Past Events</a>
+            </li>
+            <li>
+              <a href="gallery.html" class="hover:text-white">Gallery</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Contact</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+              <span>Staatsartillerie Rd, Pretoria West, Pretoria, 0183</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone mr-3"></i>
+              <span>+27 12 382 0000</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope mr-3"></i>
+              <span>events@tut.ac.za</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-blue-800 mt-8 pt-8 text-center text-gray-300">
+        <p>&copy; 2025 MyTUT Events. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Login Modal -->
+  <div x-show="showLoginModal" x-cloak
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Login Required</h3>
+      <p class="mb-6">Please log in to access your account.</p>
+      <div class="flex gap-4">
+        <button @click="showLoginModal = false" class="btn btn-secondary flex-1">
+          Close
+        </button>
+        <button class="btn btn-primary flex-1">Login</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div x-show="showSignupModal" x-cloak
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
+      <h3 class="text-xl font-bold mb-4">Join MyTUT Events</h3>
+      <p class="mb-6">
+        Create your account to start discovering amazing events.
+      </p>
+      <div class="flex gap-4">
+        <button @click="showSignupModal = false" class="btn btn-secondary flex-1">
+          Close
+        </button>
+        <button class="btn btn-primary flex-1">Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    [x-cloak] {
+      display: none !important;
+    }
+  </style>
+</body>
+
+</html>
