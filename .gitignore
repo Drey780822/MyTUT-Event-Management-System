@@ -1,0 +1,21 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Node (if you use npm/yarn later)
+node_modules/
+
+# Databases
+*.sqlite3
+
+# Environment variables
+.env
+
+# IDE/OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
