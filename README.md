@@ -3,7 +3,6 @@
 A comprehensive event management platform tailored for **Tshwane University of Technology (TUT)**, developed by **TriTech Solutions**.  
 This system empowers event organizers to efficiently create and manage events while enabling students to explore, register, and attend events using digital QR-code tickets.  
 
----
 
 ## 🚀 Features  
 
@@ -39,7 +38,6 @@ This system empowers event organizers to efficiently create and manage events wh
 - **User Profiles**: Personalized profiles for students and organizers.  
 - **Admin Security**: Restricted event posting to authorized TUT organizers only.  
 
----
 
 ## 🛠️ Tech Stack  
 - **Frontend**: HTML, CSS, JavaScript (responsive & animated UI)  
@@ -49,14 +47,12 @@ This system empowers event organizers to efficiently create and manage events wh
 - **QR Code Generation**: Python libraries (`qrcode`, `pyqrcode`)  
 - **Version Control**: Git + GitHu
 
----
 
 ## 👥 Developers - Tritech Solutions  
 - **Thabang Dikotope** – Team Leader & Backend Developer  
 - **Pholosho Mashabela** – UI Developer  
 - **Bongani Mathe** – Database Developer  
 
----
 
 # 🤝 Contributing
 
