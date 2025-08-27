@@ -367,13 +367,14 @@
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <button
             class="btn btn-primary text-lg px-8 py-4 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
-            @click="currentTab = 'upcoming'">
+            onclick="window.location.href='upcoming_events.html'">
             <i class="fas fa-search"></i>
             Browse Events
           </button>
 
           <button @click="showSignupModal = true"
-            class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-tut-blue transition-all duration-300 flex items-center gap-3 backdrop-blur-sm">
+            class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-tut-blue transition-all duration-300 flex items-center gap-3 backdrop-blur-sm"
+            onclick="window.location.href='student_signup.html'">
             <i class="fas fa-rocket"></i>
             Join MyTUT Events
           </button>
@@ -390,8 +391,8 @@
             <div class="text-sm opacity-90">Students Connected</div>
           </div>
           <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
-            <div class="text-3xl font-bold text-tut-yellow mb-2">6</div>
-            <div class="text-sm opacity-90">TUT Campuses</div>
+            <div class="text-3xl font-bold text-tut-yellow mb-2">4.8/5</div>
+            <div class="text-sm opacity-90">Student Rating</div>
           </div>
         </div>
       </div>
