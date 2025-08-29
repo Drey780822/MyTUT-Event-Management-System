@@ -301,11 +301,11 @@
           <a href="about.html" class="flex items-center px-4 py-3 text-tut-blue font-semibold bg-blue-50">
             <i class="fas fa-info-circle mr-3 w-5"></i>About
           </a>
-          <a href="upcoming.html"
+          <a href="upcoming_events.html"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-calendar-alt mr-3 w-5"></i>Upcoming Events
           </a>
-          <a href="past.html"
+          <a href="past_events.html"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-history mr-3 w-5"></i>Past Events
           </a>
@@ -314,11 +314,11 @@
             <i class="fas fa-images mr-3 w-5"></i>Gallery
           </a>
           <hr class="my-2" />
-          <button @click="showLoginModal = true"
+          <button onclick="window.location.href='student_login.html'"
             class="w-full flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-sign-in-alt mr-3 w-5"></i>Login
           </button>
-          <button @click="showSignupModal = true"
+          <button onclick="window.location.href='student_signup.html'"
             class="mx-4 my-2 w-auto bg-gradient-to-r from-tut-yellow to-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2">
             <i class="fas fa-rocket"></i>Join Now
           </button>
@@ -538,8 +538,8 @@
           <div class="text-gray-600 font-medium">Events Hosted</div>
         </div>
         <div class="stat-item">
-          <div class="text-4xl font-bold text-tut-yellow mb-2">6</div>
-          <div class="text-gray-600 font-medium">TUT Campuses</div>
+          <div class="text-4xl font-bold text-tut-yellow mb-2">4.8/5</div>
+          <div class="text-gray-600 font-medium">Student Rating</div>
         </div>
         <div class="stat-item">
           <div class="text-4xl font-bold text-tut-blue mb-2">98%</div>
@@ -563,7 +563,7 @@
           <div>
             <div class="timeline-item">
               <h3 class="font-bold text-lg text-tut-blue mb-2">
-                2023 - The Idea
+                January 2025 - The Idea
               </h3>
               <p class="text-gray-600">
                 Born from student frustration with fragmented event
@@ -572,7 +572,7 @@
             </div>
             <div class="timeline-item">
               <h3 class="font-bold text-lg text-tut-red mb-2">
-                2024 - Development
+                August 2025 - Development
               </h3>
               <p class="text-gray-600">
                 A dedicated team of TUT students and faculty collaborated to
@@ -581,7 +581,7 @@
             </div>
             <div class="timeline-item">
               <h3 class="font-bold text-lg text-tut-yellow mb-2">
-                2025 - Launch
+                November 2025 - Launch
               </h3>
               <p class="text-gray-600">
                 MyTUT Events officially launches, connecting students across
@@ -627,7 +627,7 @@
             class="w-20 h-20 bg-gradient-to-r from-tut-blue to-tut-red rounded-full mx-auto mb-4 flex items-center justify-center">
             <i class="fas fa-user text-white text-2xl"></i>
           </div>
-          <h3 class="font-bold text-lg mb-2">Sarah Johnson</h3>
+          <h3 class="font-bold text-lg mb-2">Mpheti Tebatso</h3>
           <p class="text-tut-blue font-medium mb-2">Project Manager</p>
           <p class="text-gray-600 text-sm">
             Coordinating platform development and student engagement
@@ -639,7 +639,7 @@
             class="w-20 h-20 bg-gradient-to-r from-tut-red to-tut-yellow rounded-full mx-auto mb-4 flex items-center justify-center">
             <i class="fas fa-user text-white text-2xl"></i>
           </div>
-          <h3 class="font-bold text-lg mb-2">Michael Chen</h3>
+          <h3 class="font-bold text-lg mb-2">Thabang Dikotope</h3>
           <p class="text-tut-red font-medium mb-2">Lead Developer</p>
           <p class="text-gray-600 text-sm">
             Building the technical foundation for seamless event management.
@@ -650,7 +650,7 @@
             class="w-20 h-20 bg-gradient-to-r from-tut-yellow to-tut-blue rounded-full mx-auto mb-4 flex items-center justify-center">
             <i class="fas fa-user text-white text-2xl"></i>
           </div>
-          <h3 class="font-bold text-lg mb-2">Priya Patel</h3>
+          <h3 class="font-bold text-lg mb-2">Mashabela Pholosho</h3>
           <p class="text-tut-yellow font-medium mb-2">UX Designer</p>
           <p class="text-gray-600 text-sm">
             Creating intuitive and beautiful user experiences for all
@@ -662,11 +662,11 @@
             class="w-20 h-20 bg-gradient-to-r from-tut-blue to-tut-yellow rounded-full mx-auto mb-4 flex items-center justify-center">
             <i class="fas fa-user text-white text-2xl"></i>
           </div>
-          <h3 class="font-bold text-lg mb-2">David Mokoena</h3>
-          <p class="text-tut-blue font-medium mb-2">Campus Liaison</p>
+          <h3 class="font-bold text-lg mb-2">Bongani Mathe</h3>
+          <p class="text-tut-blue font-medium mb-2">Database Developer</p>
           <p class="text-gray-600 text-sm">
-            Connecting with student organizations and faculty across all TUT
-            campuses.
+            Developing robust data systems to manage event information
+            efficiently.
           </p>
         </div>
       </div>
@@ -690,7 +690,7 @@
               <i class="fas fa-envelope text-white text-2xl"></i>
             </div>
             <h3 class="font-bold text-lg mb-2">Email Us</h3>
-            <p class="text-gray-600">events@tut.ac.za</p>
+            <p class="text-gray-600">MyTUTevents@tut.ac.za</p>
           </div>
           <div class="card p-6 text-center">
             <div class="w-16 h-16 bg-tut-red rounded-full flex items-center justify-center mx-auto mb-4">
@@ -704,7 +704,7 @@
               <i class="fas fa-map-marker-alt text-white text-2xl"></i>
             </div>
             <h3 class="font-bold text-lg mb-2">Visit Us</h3>
-            <p class="text-gray-600">Staatsartillerie Rd, Pretoria West</p>
+            <p class="text-gray-600">Mandela st, eMalahleni, Witbank 1034</p>
           </div>
         </div>
 
@@ -714,7 +714,7 @@
             Start discovering amazing events happening across all TUT
             campuses.
           </p>
-          <button @click="showSignupModal = true"
+          <button onclick="window.location.href='student_signup.html'"
             class="bg-white text-tut-blue font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition-all duration-300 inline-flex items-center gap-2">
             <i class="fas fa-rocket"></i>
             Get Started Now
@@ -746,10 +746,10 @@
           <ul class="space-y-2 text-gray-300">
             <li><a href="index.html" class="hover:text-white">Home</a></li>
             <li>
-              <a href="upcoming.html" class="hover:text-white">Upcoming Events</a>
+              <a href="upcoming_events.html" class="hover:text-white">Upcoming Events</a>
             </li>
             <li>
-              <a href="past.html" class="hover:text-white">Past Events</a>
+              <a href="past_events.html" class="hover:text-white">Past Events</a>
             </li>
             <li>
               <a href="gallery.html" class="hover:text-white">Gallery</a>
@@ -761,7 +761,7 @@
           <ul class="space-y-2 text-gray-300">
             <li class="flex items-start">
               <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
-              <span>Staatsartillerie Rd, Pretoria West, Pretoria, 0183</span>
+              <span>Mandela Rd, eMalahleni, Witbank, 1035</span>
             </li>
             <li class="flex items-center">
               <i class="fas fa-phone mr-3"></i>
@@ -769,7 +769,7 @@
             </li>
             <li class="flex items-center">
               <i class="fas fa-envelope mr-3"></i>
-              <span>events@tut.ac.za</span>
+              <span>MyTUTevents@tut.ac.za</span>
             </li>
           </ul>
         </div>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Signup - myTUT Events</title>
+    <link href="Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tut-blue": "#0A2463",
+                        "tut-red": "#990000",
+                        "tut-yellow": "#E6A817",
+                        "dark-bg": "#121212",
+                        "dark-card": "#1E1E1E",
+                    },
+                    fontFamily: {
+                        sans: ["Poppins", "sans-serif"],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                },
+            },
+        };
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 20px rgba(230, 168, 23, 0.5);
+            }
+
+            to {
+                box-shadow: 0 0 30px rgba(230, 168, 23, 0.8);
+            }
+        }
+
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(230, 168, 23, 0.3);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #0A2463, #E6A817);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(153, 0, 0, 0.6);
+            border-radius: 50%;
+            animation: float 8s infinite linear;
+        }
+
+        body {
+            background-image: url('Images/EMACAMPUSv2.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+
+<body class="font-sans min-h-screen relative overflow-x-hidden" x-data="signupApp()">
+
+    <!-- Background Overlay -->
+    <div class="absolute inset-0 bg-tut-blue/40 mix-blend-multiply z-0" aria-hidden="true"></div>
+
+    <!-- Animated Background Particles -->
+    <div class="particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s; animation-duration: 8s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 1s; animation-duration: 12s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 2s; animation-duration: 6s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 3s; animation-duration: 10s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 4s; animation-duration: 7s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 0.5s; animation-duration: 9s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 1.5s; animation-duration: 11s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 2.5s; animation-duration: 8s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 3.5s; animation-duration: 13s;"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-50 backdrop-blur-md bg-white/10 border-b border-tut-yellow/30">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center">
+                    <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3" />
+                    <span class="text-white text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:block">
+                    <ul class="flex items-center space-x-8">
+                        <li><a href="index.html"
+                                class="text-white/90 hover:text-tut-red font-medium transition-colors duration-200">Home</a>
+                        </li>
+                        <li><a href="about.html"
+                                class="text-white/90 hover:text-tut-red font-medium transition-colors duration-200">About</a>
+                        </li>
+                        <li><a href="upcoming_events.html"
+                                class="text-white/90 hover:text-tut-red font-medium transition-colors duration-200">Events</a>
+                        </li>
+                        <li><a href="gallery.html"
+                                class="text-white/90 hover:text-tut-red font-medium transition-colors duration-200">Gallery</a>
+                        </li>
+                        <li>
+                            <a href="student_login.html"
+                                class="bg-gradient-to-r from-tut-blue to-blue-800 hover:from-blue-900 hover:to-blue-950 text-white font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Login
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen"
+                    class="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors">
+                    <i class="fas fa-bars text-xl text-white"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Toast Notification -->
+    <div x-show="toast.show" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 transform translate-x-full"
+        x-transition:enter-end="opacity-100 transform translate-x-0"
+        x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100 transform translate-x-0"
+        x-transition:leave-end="opacity-0 transform translate-x-full"
+        class="fixed top-6 right-6 z-50 p-4 rounded-2xl shadow-2xl max-w-sm glassmorphism border"
+        :class="toast.type === 'success' ? 'border-green-400 text-green-800' : 'border-red-400 text-red-800'">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <i :class="toast.type === 'success' ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-triangle text-red-500'"
+                    class="text-xl mr-3"></i>
+            </div>
+            <div>
+                <p class="font-semibold" x-text="toast.message"></p>
+            </div>
+            <button @click="toast.show = false" class="ml-4 text-gray-400 hover:text-gray-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div class="w-full max-w-md">
+
+            <!-- Signup Card -->
+            <div
+                class="glassmorphism rounded-3xl shadow-2xl p-8 transform hover:scale-[1.02] transition-all duration-500 animate-glow">
+
+                <!-- Smart Header with Animation -->
+                <div class="text-center mb-8">
+                    <div class="relative">
+                        <div
+                            class="bg-gradient-to-r from-tut-blue to-tut-red rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4 shadow-2xl animate-float">
+                            <i class="fas fa-user-plus text-white text-2xl"></i>
+                        </div>
+                        <div
+                            class="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full animate-pulse border-2 border-white">
+                        </div>
+                    </div>
+                    <h1 class="text-3xl font-bold gradient-text mb-2">Join MyTUT Events!</h1>
+                    <p class="text-white/80 text-sm">Create your account and dive into the TUT experience!</p>
+                </div>
+
+                <!-- Smart Tab System -->
+                <div class="flex glassmorphism rounded-2xl p-1 mb-6">
+                    <a href="student_login.html"
+                        class="flex-1 py-3 px-4 text-white/70 hover:text-white hover:bg-white/10 rounded-xl font-medium text-center transition-all duration-300">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    </a>
+                    <button
+                        class="flex-1 py-3 px-4 bg-gradient-to-r from-tut-yellow to-yellow-600 text-gray-900 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        <i class="fas fa-user-plus mr-2"></i>Create Account
+                    </button>
+                </div>
+
+                <!-- Enhanced Signup Form -->
+                <form @submit.prevent="handleSignup()" class="space-y-6">
+
+                    <!-- Name Field -->
+                    <div class="relative">
+                        <label class="block text-sm font-semibold text-white/90 mb-2 flex items-center gap-2">
+                            <i class="fas fa-user text-tut-red"></i>
+                            Full Name
+                        </label>
+                        <div class="relative group">
+                            <input type="text" x-model="form.name"
+                                class="w-full px-6 py-4 glassmorphism text-white placeholder-white/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-tut-red/30 transition-all duration-300 group-hover:bg-white/5"
+                                placeholder="Enter your full name" autocomplete="name" required>
+                        </div>
+                        <div x-show="errors.name" class="text-red-400 text-sm mt-2 animate-pulse" x-text="errors.name">
+                        </div>
+                    </div>
+
+                    <!-- Student Number Field -->
+                    <div class="relative">
+                        <label class="block text-sm font-semibold text-white/90 mb-2 flex items-center gap-2">
+                            <i class="fas fa-id-card text-tut-red"></i>
+                            Student Number
+                            <span x-show="form.studentNumber && isValidStudentNumber()" class="text-green-400 text-xs">
+                                <i class="fas fa-check-circle"></i>
+                            </span>
+                        </label>
+                        <div class="relative group">
+                            <input type="text" x-model="form.studentNumber" @input="validateStudentNumberFormat()"
+                                class="w-full px-6 py-4 glassmorphism text-white placeholder-white/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-tut-red/30 transition-all duration-300 group-hover:bg-white/5"
+                                :class="{'ring-2 ring-green-400': isValidStudentNumber(), 'ring-2 ring-red-400': form.studentNumber && !isValidStudentNumber()}"
+                                placeholder="Enter your student number" autocomplete="username" required>
+                            <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
+                                <i x-show="isValidStudentNumber()"
+                                    class="fas fa-check text-green-400 animate-pulse"></i>
+                                <i x-show="form.studentNumber && !isValidStudentNumber()"
+                                    class="fas fa-exclamation-triangle text-red-400"></i>
+                            </div>
+                        </div>
+                        <div x-show="studentNumberSuggestion" class="mt-2 text-xs text-tut-red"
+                            x-text="studentNumberSuggestion">
+                        </div>
+                        <div x-show="errors.studentNumber" class="text-red-400 text-sm mt-2 animate-pulse"
+                            x-text="errors.studentNumber"></div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="relative">
+                        <label class="block text-sm font-semibold text-white/90 mb-2 flex items-center gap-2">
+                            <i class="fas fa-envelope text-tut-red"></i>
+                            Email
+                        </label>
+                        <div class="relative group">
+                            <input type="email" x-model="form.email"
+                                class="w-full px-6 py-4 glassmorphism text-white placeholder-white/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-tut-red/30 transition-all duration-300 group-hover:bg-white/5"
+                                placeholder="Enter your email" autocomplete="email" required>
+                        </div>
+                        <div x-show="errors.email" class="text-red-400 text-sm mt-2 animate-pulse"
+                            x-text="errors.email"></div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="relative">
+                        <label class="block text-sm font-semibold text-white/90 mb-2 flex items-center gap-2">
+                            <i class="fas fa-lock text-tut-red"></i>
+                            Password
+                            <div x-show="form.password" class="flex gap-1 ml-2">
+                                <div class="w-2 h-2 rounded-full" :class="passwordStrengthColor"></div>
+                            </div>
+                        </label>
+                        <div class="relative group">
+                            <input :type="showPassword ? 'text' : 'password'" x-model="form.password"
+                                @input="checkPasswordStrength()"
+                                class="w-full px-6 py-4 glassmorphism text-white placeholder-white/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-tut-red/30 transition-all duration-300 group-hover:bg-white/5"
+                                placeholder="Create a password" autocomplete="new-password" required>
+                            <button type="button" @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-white/60 hover:text-tut-red transition-colors">
+                                <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                            </button>
+                        </div>
+                        <div x-show="errors.password" class="text-red-400 text-sm mt-2 animate-pulse"
+                            x-text="errors.password">
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="relative">
+                        <label class="block text-sm font-semibold text-white/90 mb-2 flex items-center gap-2">
+                            <i class="fas fa-lock text-tut-red"></i>
+                            Confirm Password
+                        </label>
+                        <div class="relative group">
+                            <input :type="showPassword ? 'text' : 'password'" x-model="form.confirmPassword"
+                                class="w-full px-6 py-4 glassmorphism text-white placeholder-white/50 rounded-2xl focus:outline-none focus:ring-4 focus:ring-tut-red/30 transition-all duration-300 group-hover:bg-white/5"
+                                placeholder="Confirm your password" autocomplete="new-password" required>
+                        </div>
+                        <div x-show="errors.confirmPassword" class="text-red-400 text-sm mt-2 animate-pulse"
+                            x-text="errors.confirmPassword"></div>
+                    </div>
+
+                    <!-- Terms Checkbox -->
+                    <div class="flex items-center">
+                        <label class="flex items-center text-white/80 cursor-pointer group">
+                            <input type="checkbox" x-model="form.acceptTerms"
+                                class="rounded border-white/30 bg-transparent text-tut-red focus:ring-tut-red/30 mr-2"
+                                required>
+                            <span class="text-sm group-hover:text-tut-red transition-colors">I agree to the <a href="#"
+                                    class="text-tut-red hover:text-red-400 hover:underline">Terms of Service</a></span>
+                        </label>
+                    </div>
+
+                    <!-- Signup Button -->
+                    <button type="submit" :disabled="isLoading || !canSubmit()"
+                        class="w-full bg-gradient-to-r from-tut-yellow to-yellow-600 hover:from-yellow-700 hover:to-yellow-800 text-gray-900 py-4 px-6 rounded-2xl font-bold text-lg transform hover:scale-[1.02] hover:shadow-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center relative overflow-hidden group"
+                        :class="{'animate-pulse': isLoading}">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700">
+                        </div>
+                        <div x-show="!isLoading" class="flex items-center relative z-10">
+                            <i class="fas fa-rocket mr-3 animate-bounce-slow"></i>
+                            Join the Community
+                        </div>
+                        <div x-show="isLoading" class="flex items-center relative z-10">
+                            <svg class="animate-spin h-6 w-6 text-gray-900 mr-3" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                            <span x-text="signupProgress"></span>
+                        </div>
+                    </button>
+
+                    <!-- Biometric Signup Option (Future Feature) -->
+                    <div class="text-center">
+                        <div class="relative flex items-center justify-center mb-4">
+                            <div class="border-t border-white/20 flex-grow"></div>
+                            <span class="px-4 text-white/60 text-sm">or continue with</span>
+                            <div class="border-t border-white/20 flex-grow"></div>
+                        </div>
+                        <button type="button"
+                            class="glassmorphism px-6 py-3 rounded-full text-white/80 hover:text-tut-red transition-all duration-300 hover:scale-105 flex items-center gap-2 mx-auto">
+                            <i class="fas fa-fingerprint text-lg"></i>
+                            <span class="text-sm">Biometric Signup</span>
+                            <span class="text-xs bg-tut-red text-white px-2 py-1 rounded-full font-semibold">SOON</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Call to Action -->
+                <div class="mt-8 text-center space-y-4">
+                    <p class="text-white/80">
+                        Already have an account?
+                        <a href="student_login.html"
+                            class="text-tut-red hover:text-red-400 font-semibold hover:underline transition-all duration-200">
+                            Sign in now
+                        </a>
+                    </p>
+
+                    <!-- Quick Stats -->
+                    <div class="flex justify-center gap-6 text-xs text-white/60">
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-clock text-tut-red"></i>
+                            <span>30s signup</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-shield-check text-green-400"></i>
+                            <span>Secure</span>
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-mobile-alt text-blue-400"></i>
+                            <span>Mobile ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Features Preview -->
+            <div class="mt-8 text-center">
+                <div class="glassmorphism rounded-2xl p-4">
+                    <p class="text-white/80 text-sm mb-3 font-medium">🎯 What's waiting for you:</p>
+                    <div class="grid grid-cols-3 gap-3 text-xs text-white/70">
+                        <div class="text-center">
+                            <i class="fas fa-calendar-check text-tut-red text-lg mb-1 block"></i>
+                            <span>Event Booking</span>
+                        </div>
+                        <div class="text-center">
+                            <i class="fas fa-bell text-tut-red text-lg mb-1 block"></i>
+                            <span>Smart Alerts</span>
+                        </div>
+                        <div class="text-center">
+                            <i class="fas fa-users text-tut-red text-lg mb-1 block"></i>
+                            <span>Connect</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 bg-tut-blue text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <img src="Images/favicon.ico" alt="Logo" class="h-8 w-8 mr-2" />
+                        <span class="text-xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
+                    </div>
+                    <p class="text-gray-300 text-sm">Connecting TUT students through amazing events and experiences.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#" class="hover:text-tut-red transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-tut-red transition-colors">Events</a></li>
+                        <li><a href="#" class="hover:text-tut-red transition-colors">Gallery</a></li>
+                        <li><a href="#" class="hover:text-tut-red transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4">Support</h3>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#" class="hover:text-tut-red transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-tut-red transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-tut-red transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-4">Connect</h3>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-300 hover:text-tut-red transition-colors">
+                            <i class="fab fa-facebook-f text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-tut-red transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-tut-red transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-600 mt-8 pt-8 text-center">
+                <p class="text-gray-400 text-sm">&copy; 2024 MyTUT Events. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function signupApp() {
+            return {
+                form: {
+                    name: '',
+                    studentNumber: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: '',
+                    acceptTerms: false
+                },
+                errors: {},
+                isLoading: false,
+                showPassword: false,
+                studentNumberSuggestion: '',
+                passwordStrengthColor: 'bg-gray-400',
+                signupProgress: 'Creating account...',
+                toast: {
+                    show: false,
+                    message: '',
+                    type: 'success'
+                },
+
+                init() {
+                    // Initialize any necessary functionality
+                },
+
+                validateStudentNumberFormat() {
+                    const num = this.form.studentNumber;
+                    if (num.length > 0 && num.length < 8) {
+                        this.studentNumberSuggestion = '💡 TUT student numbers are typically 9-11 digits';
+                    } else {
+                        this.studentNumberSuggestion = '';
+                    }
+                },
+
+                isValidStudentNumber() {
+                    return this.form.studentNumber.length >= 8 && /^\d+$/.test(this.form.studentNumber);
+                },
+
+                isValidEmail() {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return emailRegex.test(this.form.email);
+                },
+
+                checkPasswordStrength() {
+                    const password = this.form.password;
+                    let strength = 0;
+
+                    if (password.length >= 8) strength++;
+                    if (/[A-Z]/.test(password)) strength++;
+                    if (/[0-9]/.test(password)) strength++;
+                    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+                    if (strength <= 1) this.passwordStrengthColor = 'bg-red-400';
+                    else if (strength <= 2) this.passwordStrengthColor = 'bg-yellow-400';
+                    else if (strength <= 3) this.passwordStrengthColor = 'bg-blue-400';
+                    else this.passwordStrengthColor = 'bg-green-400';
+                },
+
+                canSubmit() {
+                    return this.form.name.length >= 2 &&
+                        this.isValidStudentNumber() &&
+                        this.isValidEmail() &&
+                        this.form.password.length >= 6 &&
+                        this.form.password === this.form.confirmPassword &&
+                        this.form.acceptTerms;
+                },
+
+                showToast(message, type = 'success') {
+                    this.toast = { show: true, message, type };
+                    setTimeout(() => this.toast.show = false, 5000);
+                },
+
+                async handleSignup() {
+                    this.errors = {};
+                    this.isLoading = true;
+
+                    // Validate form
+                    if (this.form.name.length < 2) {
+                        this.errors.name = 'Please enter a valid name';
+                        this.isLoading = false;
+                        return;
+                    }
+
+                    if (!this.isValidStudentNumber()) {
+                        this.errors.studentNumber = 'Please enter a valid student number';
+                        this.isLoading = false;
+                        return;
+                    }
+
+                    if (!this.isValidEmail()) {
+                        this.errors.email = 'Please enter a valid email address';
+                        this.isLoading = false;
+                        return;
+                    }
+
+                    if (this.form.password.length < 6) {
+                        this.errors.password = 'Password must be at least 6 characters';
+                        this.isLoading = false;
+                        return;
+                    }
+
+                    if (this.form.password !== this.form.confirmPassword) {
+                        this.errors.confirmPassword = 'Passwords do not match';
+                        this.isLoading = false;
+                        return;
+                    }
+
+                    if (!this.form.acceptTerms) {
+                        this.errors.acceptTerms = 'You must accept the terms of service';
+                        this.isLoading = false;
+                        return;
+                    }
+
+                    // Simulate signup progress
+                    const steps = [
+                        'Verifying details...',
+                        'Creating your profile...',
+                        'Setting up your account...',
+                        'Almost ready...'
+                    ];
+
+                    for (let i = 0; i < steps.length; i++) {
+                        this.signupProgress = steps[i];
+                        await new Promise(resolve => setTimeout(resolve, 800));
+                    }
+
+                    // Simulate signup result
+                    this.showToast('🎉 Account created! Redirecting to login...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'student_login.html';
+                    }, 2000);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
