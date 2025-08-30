@@ -63,6 +63,7 @@
 
       to {
         box-shadow: 0 0 25px rgba(230, 168, 23, 0.7);
+        
       }
     }
 
@@ -283,7 +284,7 @@
 
           <!-- Login Button -->
           <button type="submit" :disabled="isLoading || !canSubmit()"
-            class="w-full bg-tut-blue hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center"
+            class="w-full bg-tut-blue hover:bg-blue-700 text-white py-3 rounded-lg font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center"
             :class="{'animate-pulse': isLoading}">
             <span x-show="!isLoading"><i class="fas fa-sign-in-alt mr-2"></i> Sign In</span>
             <span x-show="isLoading" class="flex items-center"><i class="fas fa-spinner animate-spin mr-2"></i> <span
