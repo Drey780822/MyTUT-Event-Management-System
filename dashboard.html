@@ -1,50 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TUT Emalahleni Events - Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>TUT Emalahleni Events</h1>
-      <p id="user-info">Welcome, Guest (student)</p>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="create-event.html" id="create-event-link" style="display: none;">Create Event</a>
-        <a href="login.html">Login</a>
-      </nav>
-    </div>
+  <title>Dashboard - myTUT Events</title>
+  <link href="Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
 
-    <div>
-      <h2>Your Registered Events</h2>
-      <div id="registered-events" class="event-grid"></div>
-      <h2>Your Event Calendar</h2>
-      <div id="calendar" style="background: white; padding: 20px; border-radius: 8px;">
-        <p>Calendar View (Placeholder)</p>
+  <!-- Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tut-blue": "#0A2463",
+            "tut-red": "#990000",
+            "tut-yellow": "#E6A817",
+            "dark-bg": "#121212",
+            "dark-card": "#1E1E1E",
+          },
+          fontFamily: {
+            sans: ["Poppins", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    .sidebar {
+      background: linear-gradient(180deg, #0A2463 0%, #1a365d 100%);
+    }
+
+    .event-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .event-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body class="font-sans min-h-screen bg-gray-50" x-data="dashboardApp()" x-init="init()">
+
+  <!-- Header -->
+  <header class="bg-white shadow-lg border-b border-gray-200">
+    <div class="px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-6">
+        <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10" />
+        <h1 class="text-xl font-bold text-tut-blue">MyTUT<span class="text-tut-yellow">Events</span></h1>
+      </div>
+      <div class="flex items-center space-x-4">
+        <input type="text" x-model="searchQuery" placeholder="Search events..."
+          class="pl-4 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow transition-all w-48 md:w-64">
+        <button @click="toggleDarkMode" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+          <i :class="darkMode ? 'fas fa-sun text-yellow-500' : 'fas fa-moon text-gray-600'"></i>
+        </button>
       </div>
     </div>
-  </div>
-  <script src="scripts.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      updateUserInfo();
-      const registeredEvents = events.filter(e => e.attendees.includes(user.id));
-      const eventGrid = document.getElementById('registered-events');
-      eventGrid.innerHTML = registeredEvents.length
-        ? registeredEvents.map(event => `
-            <div class="event-card">
-              <h3>${event.title}</h3>
-              <p>Date: ${event.date}</p>
-              <p>Category: ${event.category}</p>
-              <a href="event-details.html?id=${event.id}">View Details</a>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="sidebar w-64 min-h-screen text-white">
+      <nav class="mt-6 px-4">
+        <ul class="space-y-4">
+          <li>
+            <a href="#" @click="currentSection = 'overview'"
+              class="block px-4 py-3 rounded-lg hover:bg-white/10 transition-all"
+              :class="{'bg-white/20': currentSection === 'overview'}">
+              <i class="fas fa-home mr-3"></i> Overview
+            </a>
+          </li>
+          <li>
+            <a href="#" @click="currentSection = 'events'"
+              class="block px-4 py-3 rounded-lg hover:bg-white/10 transition-all"
+              :class="{'bg-white/20': currentSection === 'events'}">
+              <i class="fas fa-calendar-alt mr-3"></i> Events
+            </a>
+          </li>
+          <li>
+            <a href="#" @click="currentSection = 'calendar'"
+              class="block px-4 py-3 rounded-lg hover:bg-white/10 transition-all"
+              :class="{'bg-white/20': currentSection === 'calendar'}">
+              <i class="fas fa-calendar-week mr-3"></i> Calendar
+            </a>
+          </li>
+          <li>
+            <a href="#" @click="currentSection = 'profile'"
+              class="block px-4 py-3 rounded-lg hover:bg-white/10 transition-all"
+              :class="{'bg-white/20': currentSection === 'profile'}">
+              <i class="fas fa-user mr-3"></i> Profile
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Section -->
+    <main class="flex-1 p-6">
+      <!-- Overview Section -->
+      <section x-show="currentSection === 'overview'" x-transition>
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Welcome, <span x-text="user.firstName"></span>!</h1>
+        <p class="text-gray-600">Here’s what’s happening today:</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-bold text-gray-800">Upcoming Events</h2>
+            <p class="text-gray-600 mt-2" x-text="stats.upcomingEvents + ' events'"></p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-bold text-gray-800">Points Earned</h2>
+            <p class="text-gray-600 mt-2" x-text="stats.pointsEarned + ' points'"></p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-lg font-bold text-gray-800">Community Rank</h2>
+            <p class="text-gray-600 mt-2" x-text="stats.communityRank"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Events Section -->
+      <section x-show="currentSection === 'events'" x-transition>
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Events</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <template x-for="event in events" :key="event.id">
+            <div class="event-card bg-white p-6 rounded-lg shadow-md">
+              <h2 class="text-lg font-bold text-gray-800" x-text="event.title"></h2>
+              <p class="text-gray-600 mt-2" x-text="event.description"></p>
+              <p class="text-gray-500 mt-2 text-sm" x-text="event.date + ' | ' + event.time"></p>
             </div>
-          `).join('')
-        : '<p>No registered events.</p>';
-    });
+          </template>
+        </div>
+      </section>
+
+      <!-- Calendar Section -->
+      <section x-show="currentSection === 'calendar'" x-transition>
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Calendar</h1>
+        <div class="grid grid-cols-7 gap-2">
+          <template x-for="day in calendarDays" :key="day.date">
+            <div class="p-4 bg-gray-100 rounded-lg text-center" x-text="day.date"></div>
+          </template>
+        </div>
+      </section>
+
+      <!-- Profile Section -->
+      <section x-show="currentSection === 'profile'" x-transition>
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Profile</h1>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-lg font-bold text-gray-800">Personal Information</h2>
+          <p class="text-gray-600 mt-2">Name: <span x-text="user.firstName + ' ' + user.lastName"></span></p>
+          <p class="text-gray-600 mt-2">Email: <span x-text="user.email"></span></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    function dashboardApp() {
+      return {
+        currentSection: 'overview',
+        darkMode: false,
+        user: {
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@student.tut.ac.za',
+        },
+        stats: {
+          upcomingEvents: 5,
+          pointsEarned: 1200,
+          communityRank: '#15',
+        },
+        events: [
+          { id: 1, title: 'Tech Workshop', description: 'Learn AI basics', date: 'Sep 5', time: '10:00 AM' },
+          { id: 2, title: 'Music Night', description: 'Enjoy live music', date: 'Sep 10', time: '7:00 PM' },
+        ],
+        calendarDays: Array.from({ length: 30 }, (_, i) => ({ date: i + 1 })),
+        toggleDarkMode() {
+          this.darkMode = !this.darkMode;
+          document.documentElement.classList.toggle('dark', this.darkMode);
+        },
+        init() {
+          console.log('Dashboard initialized');
+        },
+      };
+    }
   </script>
 </body>
+
 </html>
