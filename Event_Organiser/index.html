@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+    <title>MyTUT Events - Tshwane University of Technology Event Platform</title>
+
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tut-blue": "#0A2463",
+                        "tut-red": "#990000",
+                        "tut-yellow": "#E6A817",
+                        "dark-bg": "#121212",
+                        "dark-card": "#1E1E1E",
+                    },
+                    fontFamily: {
+                        sans: ["Poppins", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        /* Consolidated Styles */
+        :root {
+            --blue-primary: #4322b9;
+            --red-primary: #b92222;
+            --yellow-primary: #dbca05;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            color: #333;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .btn {
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--yellow-primary);
+            color: #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #c4b504;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: var(--blue-primary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #3a1ea0;
+        }
+
+        .btn-accent {
+            background-color: var(--yellow-primary);
+            color: #333;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+        }
+
+        .btn-accent:hover {
+            background-color: #c4b504;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--red-primary);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #a31e1e;
+        }
+
+        .header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .footer {
+            background-color: var(--blue-primary);
+            color: white;
+        }
+
+        .card,
+        .event-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .card:hover,
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-active {
+            color: var(--blue-primary) !important;
+            border-bottom: 3px solid var(--blue-primary);
+            font-weight: 600;
+        }
+
+        .landing-banner {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6),
+                    rgba(0, 0, 0, 0.6)),
+                url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            z-index: 1001;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+            max-width: 300px;
+        }
+
+        .toast.success {
+            background-color: #2ecc71;
+        }
+
+        .toast.error {
+            background-color: var(--red-primary);
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        /* Landing Page Specific Styles */
+        .hero-section {
+            background: linear-gradient(135deg, #0A2463 0%, #1a365d 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #E6A817 0%, #d4b300 100%);
+            color: #333;
+        }
+
+        .event-category {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .event-category:hover {
+            border-color: #E6A817;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body x-data="{
+  currentTab: 'upcoming',
+  isLoggedIn: false,
+  userRole: 'student',
+  showLoginModal: false,
+  showSignupModal: false,
+  mobileMenuOpen: false,
+  activeTestimonial: 0,
+  stats: {
+    events: 256,
+    attendees: 12459,
+    organizers: 347
+  }
+}">
+    <!-- Header -->
+    <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center">
+                    <img src="/Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3" />
+                    <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:block">
+                    <ul class="flex items-center space-x-8">
+                        <li><a href="index.html"
+                                class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Home</a>
+                        </li>
+                        <li>
+                            <a href="about.html"
+                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                                About
+                                <span
+                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="upcoming_events.html"
+                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                                Upcoming Events
+                                <span
+                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="past_events.html"
+                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                                Past Events
+                                <span
+                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="gallery.html"
+                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                                Gallery
+                                <span
+                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center space-x-3">
+                                <button onclick="window.location.href='login.html'"
+                                    class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 flex items-center gap-2">
+                                    <i class="fas fa-sign-in-alt"></i> Login
+                                </button>
+                                <button onclick="window.location.href='signup.html'"
+                                    class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                                    <i class="fas fa-rocket"></i>
+                                    Join Now
+                                </button>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <i class="fas fa-bars text-gray-600 text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform -translate-y-4"
+            x-transition:enter-end="opacity-100 transform translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 transform translate-y-0"
+            x-transition:leave-end="opacity-0 transform -translate-y-4"
+            class="mobile-menu md:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div class="container mx-auto px-4 py-4">
+                <ul class="space-y-3">
+                    <li><a href="index.html" class="block py-2 text-tut-blue font-semibold">Home</a></li>
+                    <li><a href="about.html" class="block py-2 text-gray-700 hover:text-tut-blue">About</a></li>
+                    <li><a href="upcoming_events.html" class="block py-2 text-gray-700 hover:text-tut-blue">Upcoming
+                            Events</a></li>
+                    <li><a href="past_events.html" class="block py-2 text-gray-700 hover:text-tut-blue">Past Events</a>
+                    </li>
+                    <li><a href="gallery.html" class="block py-2 text-gray-700 hover:text-tut-blue">Gallery</a></li>
+                    <li class="pt-2 border-t border-gray-200">
+                        <div class="flex flex-col space-y-3">
+                            <button onclick="window.location.href='login.html'"
+                                class="w-full text-left py-2 text-gray-700 hover:text-tut-blue flex items-center gap-2">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                            <button onclick="window.location.href='signup.html'"
+                                class="w-full bg-tut-yellow text-gray-900 font-semibold py-2.5 px-4 rounded-full flex items-center justify-center gap-2">
+                                <i class="fas fa-rocket"></i>
+                                Join Now
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section py-20">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6 animate-fade-in">Discover & Manage <span
+                            class="text-tut-yellow">TUT Events</span> in One Place</h1>
+                    <p class="text-xl text-blue-100 mb-8 animate-fade-in">The official event management platform for
+                        Tshwane University of Technology. Find, attend, and organize events with ease.</p>
+                    <div class="flex flex-col sm:flex-row gap-4 animate-fade-in">
+                        <button onclick="window.location.href='signup.html'"
+                            class="bg-tut-yellow hover:bg-yellow-600 text-gray-900 font-semibold py-3 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2">
+                            <i class="fas fa-calendar-plus"></i>
+                            Get Started
+                        </button>
+                        <button onclick="window.location.href='upcoming_events.html'"
+                            class="bg-transparent border-2 border-white hover:bg-white/10 text-white font-semibold py-3 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2">
+                            <i class="fas fa-search"></i>
+                            Browse Events
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            alt="Event illustration" class="rounded-2xl shadow-2xl w-full max-w-md floating-element">
+                        <div class="absolute -top-5 -right-5 bg-tut-yellow rounded-xl p-4 shadow-lg">
+                            <div class="text-center">
+                                <p class="text-2xl font-bold">120+</p>
+                                <p class="text-sm">Events This Month</p>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-5 -left-5 bg-tut-red text-white rounded-xl p-4 shadow-lg">
+                            <div class="text-center">
+                                <p class="text-2xl font-bold">98%</p>
+                                <p class="text-sm">Satisfaction Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-0 left-0 w-full h-16 bg-white/10 backdrop-blur-sm"></div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="stat-card bg-white rounded-2xl p-6 text-center shadow-lg">
+                    <div class="text-tut-blue text-5xl font-bold mb-2" x-text="stats.events"></div>
+                    <h3 class="text-xl font-semibold text-gray-800">Events Created</h3>
+                    <p class="text-gray-600">Discover academic, social, and sports events</p>
+                </div>
+                <div class="stat-card bg-white rounded-2xl p-6 text-center shadow-lg">
+                    <div class="text-tut-blue text-5xl font-bold mb-2" x-text="stats.attendees.toLocaleString()"></div>
+                    <h3 class="text-xl font-semibold text-gray-800">Active Students</h3>
+                    <p class="text-gray-600">Joined our vibrant community</p>
+                </div>
+                <div class="stat-card bg-white rounded-2xl p-6 text-center shadow-lg">
+                    <div class="text-tut-blue text-5xl font-bold mb-2" x-text="stats.organizers"></div>
+                    <h3 class="text-xl font-semibold text-gray-800">Event Organizers</h3>
+                    <p class="text-gray-600">Creating amazing experiences</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Why Choose MyTUT Events?</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Our platform offers everything you need to discover,
+                    attend, and manage university events</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card text-center p-6">
+                    <div class="feature-icon bg-blue-100 text-tut-blue mx-auto">
+                        <i class="fas fa-calendar-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Easy Event Discovery</h3>
+                    <p class="text-gray-600">Browse through hundreds of events filtered by category, date, and location.
+                    </p>
+                </div>
+
+                <div class="feature-card text-center p-6">
+                    <div class="feature-icon bg-yellow-100 text-tut-yellow mx-auto">
+                        <i class="fas fa-ticket-alt text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Quick Registration</h3>
+                    <p class="text-gray-600">Register for events with a single click and receive digital tickets
+                        instantly.</p>
+                </div>
+
+                <div class="feature-card text-center p-6">
+                    <div class="feature-icon bg-red-100 text-tut-red mx-auto">
+                        <i class="fas fa-chart-pie text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Event Analytics</h3>
+                    <p class="text-gray-600">Track attendance and engagement metrics for your organized events.</p>
+                </div>
+
+                <div class="feature-card text-center p-6">
+                    <div class="feature-icon bg-blue-100 text-tut-blue mx-auto">
+                        <i class="fas fa-qrcode text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">QR Check-in</h3>
+                    <p class="text-gray-600">Fast and secure event check-in using QR code technology.</p>
+                </div>
+
+                <div class="feature-card text-center p-6">
+                    <div class="feature-icon bg-yellow-100 text-tut-yellow mx-auto">
+                        <i class="fas fa-bell text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Smart Reminders</h3>
+                    <p class="text-gray-600">Get timely notifications about upcoming events and registration deadlines.
+                    </p>
+                </div>
+
+                <div class="feature-card text-center p-6">
+                    <div class="feature-icon bg-red-100 text-tut-red mx-auto">
+                        <i class="fas fa-users text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Community Building</h3>
+                    <p class="text-gray-600">Connect with other students and build your university network.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Categories -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Explore Event Categories</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Find events that match your interests and passions
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="event-category bg-white rounded-2xl p-6 text-center shadow-md cursor-pointer">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-graduation-cap text-tut-blue text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Academic</h3>
+                    <p class="text-sm text-gray-600 mt-1">Workshops, Seminars</p>
+                </div>
+
+                <div class="event-category bg-white rounded-2xl p-6 text-center shadow-md cursor-pointer">
+                    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-music text-tut-red text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Social</h3>
+                    <p class="text-sm text-gray-600 mt-1">Parties, Gatherings</p>
+                </div>
+
+                <div class="event-category bg-white rounded-2xl p-6 text-center shadow-md cursor-pointer">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-futbol text-tut-yellow text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Sports</h3>
+                    <p class="text-sm text-gray-600 mt-1">Games, Tournaments</p>
+                </div>
+
+                <div class="event-category bg-white rounded-2xl p-6 text-center shadow-md cursor-pointer">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-theater-masks text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold text-gray-800">Cultural</h3>
+                    <p class="text-sm text-gray-600 mt-1">Arts, Performances</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">What Our Users Say</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Hear from students and organizers who use our
+                    platform</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="testimonial-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 bg-tut-blue rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            SJ</div>
+                        <div>
+                            <h4 class="font-semibold">Sarah Johnson</h4>
+                            <p class="text-sm text-gray-600">Final Year Student</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"MyTUT Events has made it so easy to find relevant academic workshops. I've
+                        attended three this semester alone!"</p>
+                    <div class="flex text-tut-yellow mt-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div class="testimonial-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 bg-tut-red rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            MK</div>
+                        <div>
+                            <h4 class="font-semibold">Mike Khoza</h4>
+                            <p class="text-sm text-gray-600">Event Organizer</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"The analytics tools have helped me understand attendance patterns and
+                        improve my events. The QR check-in system is flawless."</p>
+                    <div class="flex text-tut-yellow mt-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+
+                <div class="testimonial-card p-6">
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-12 h-12 bg-tut-yellow rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            LN</div>
+                        <div>
+                            <h4 class="font-semibold">Lisa Ndlovu</h4>
+                            <p class="text-sm text-gray-600">Second Year Student</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">"I've met so many amazing people through events I found on this platform.
+                        It's completely transformed my university experience!"</p>
+                    <div class="flex text-tut-yellow mt-4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Explore TUT Events?</h2>
+            <p class="text-xl mb-10 max-w-3xl mx-auto">Join thousands of students and organizers already using our
+                platform to discover and create amazing events.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="window.location.href='signup.html'"
+                    class="bg-tut-blue hover:bg-blue-900 text-white font-semibold py-3 px-8 rounded-full transition-all duration-200 flex items-center justify-center gap-2">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+                <button onclick="window.location.href='upcoming_events.html'"
+                    class="bg-white hover:bg-gray-100 text-gray-900 font-semibold py-3 px-8 rounded-full transition-all duration-200 flex items-center justify-center gap-2">
+                    <i class="fas fa-calendar"></i>
+                    Browse Events
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-tut-blue text-white py-10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">MyTUT Events</h3>
+                    <p class="text-gray-300 mb-4">
+                        The official event management platform for Tshwane University of
+                        Technology.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i
+                                class="fab fa-twitter"></i></a>
+                        <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i
+                                class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="index.html" class="hover:text-white">Home</a></li>
+                        <li>
+                            <a href="upcoming_events.html" class="hover:text-white">Upcoming Events</a>
+                        </li>
+                        <li>
+                            <a href="past_events.html" class="hover:text-white">Past Events</a>
+                        </li>
+                        <li>
+                            <a href="contact_us.html" class="hover:text-white">Contact Us</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Contact</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
+                            <span>Mandela St, eMalahleni, Witbank, 1034</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-3"></i>
+                            <span>013 653 3107</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-3"></i>
+                            <span>myTutevents@tut.ac.za</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-blue-800 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2025 MyTUT Events. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple counter animation for stats
+        document.addEventListener('DOMContentLoaded', function () {
+            const counters = document.querySelectorAll('.stat-card .text-5xl');
+            const speed = 200;
+
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target') || counter.innerText);
+                let count = 0;
+
+                // Reset for animation
+                counter.innerText = '0';
+
+                const updateCount = () => {
+                    const increment = target / speed;
+                    if (count < target) {
+                        count += increment;
+                        counter.innerText = Math.ceil(count).toLocaleString();
+                        setTimeout(updateCount, 1);
+                    } else {
+                        counter.innerText = target.toLocaleString();
+                    }
+                };
+
+                // Start animation when element is in viewport
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            updateCount();
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                });
+
+                observer.observe(counter);
+            });
+        });
+    </script>
+</body>
+
+</html>
