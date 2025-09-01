@@ -29,6 +29,15 @@
           fontFamily: {
             sans: ["Poppins", "sans-serif"],
           },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+            'bounce-slow': 'bounce 3s infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'slide-up': 'slideUp 0.5s ease-out',
+            'fade-in': 'fadeIn 0.5s ease-out',
+            'scale-in': 'scaleIn 0.3s ease-out',
+          }
         },
       },
     };
@@ -38,6 +47,100 @@
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <style>
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 15px rgba(230, 168, 23, 0.4);
+      }
+
+      to {
+        box-shadow: 0 0 25px rgba(230, 168, 23, 0.7);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .glassmorphism-dark {
+      background: rgba(10, 36, 99, 0.15);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(10, 36, 99, 0.3);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #E6A817, #990000);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(230, 168, 23, 0.3);
+      border-radius: 50%;
+      animation: float 8s infinite linear;
+    }
+
     body {
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
     }
@@ -54,152 +157,1519 @@
       transform: translateY(-8px) scale(1.02);
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
+
+    .stats-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stats-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        left: -100%;
+      }
+
+      100% {
+        left: 100%;
+      }
+    }
+
+    .notification-badge {
+      animation: pulse 2s infinite;
+    }
+
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring__circle {
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 0.5s ease-in-out;
+    }
   </style>
 </head>
 
-<body class="font-sans min-h-screen bg-gray-50" x-data="dashboardApp()" x-init="init()">
+<body class="font-sans min-h-screen bg-gray-50 relative" x-data="dashboardApp()">
+
+  <!-- Mobile Navigation Overlay -->
+  <div x-show="showMobileMenu" x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0" class="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden"
+    @click="showMobileMenu = false">
+  </div>
+
+  <!-- Mobile Sidebar -->
+  <div x-show="showMobileMenu" x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="transform -translate-x-full" x-transition:enter-end="transform translate-x-0"
+    x-transition:leave="transition ease-in duration-200" x-transition:leave-start="transform translate-x-0"
+    x-transition:leave-end="transform -translate-x-full"
+    class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-tut-blue to-blue-800 z-50 lg:hidden">
+    <div class="flex items-center justify-between p-6 border-b border-white/20">
+      <div class="flex items-center">
+        <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-8 w-8 mr-3" />
+        <span class="text-white text-lg font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
+      </div>
+      <button @click="showMobileMenu = false" class="text-white hover:text-tut-yellow transition-colors">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+
+    <nav class="mt-6 px-4">
+      <ul class="space-y-2">
+        <li>
+          <a href="#" @click="currentSection = 'overview'; showMobileMenu = false"
+            class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+            :class="{'bg-white/20 shadow-lg': currentSection === 'overview'}">
+            <i class="fas fa-home mr-3 w-5"></i>
+            <span class="font-medium">Overview</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" @click="currentSection = 'events'; showMobileMenu = false"
+            class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+            :class="{'bg-white/20 shadow-lg': currentSection === 'events'}">
+            <i class="fas fa-calendar-alt mr-3 w-5"></i>
+            <span class="font-medium">Events</span>
+            <span class="ml-auto bg-tut-yellow text-tut-blue text-xs font-bold px-2 py-1 rounded-full">12</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" @click="currentSection = 'my-events'; showMobileMenu = false"
+            class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+            :class="{'bg-white/20 shadow-lg': currentSection === 'my-events'}">
+            <i class="fas fa-bookmark mr-3 w-5"></i>
+            <span class="font-medium">My Events</span>
+            <span class="ml-auto bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full"
+              x-text="myEvents.length"></span>
+          </a>
+        </li>
+        <li>
+          <a href="#" @click="currentSection = 'calendar'; showMobileMenu = false"
+            class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+            :class="{'bg-white/20 shadow-lg': currentSection === 'calendar'}">
+            <i class="fas fa-calendar-week mr-3 w-5"></i>
+            <span class="font-medium">Calendar</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" @click="currentSection = 'community'; showMobileMenu = false"
+            class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+            :class="{'bg-white/20 shadow-lg': currentSection === 'community'}">
+            <i class="fas fa-users mr-3 w-5"></i>
+            <span class="font-medium">Community</span>
+          </a>
+        </li>
+        <li>
+          <a href="#" @click="currentSection = 'achievements'; showMobileMenu = false"
+            class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+            :class="{'bg-white/20 shadow-lg': currentSection === 'achievements'}">
+            <i class="fas fa-trophy mr-3 w-5"></i>
+            <span class="font-medium">Achievements</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Background Particles -->
+  <div class="particles">
+    <div class="particle" style="left: 10%; top: 20%; animation-delay: 0s; animation-duration: 12s;"></div>
+    <div class="particle" style="left: 80%; top: 10%; animation-delay: 2s; animation-duration: 15s;"></div>
+    <div class="particle" style="left: 60%; top: 70%; animation-delay: 4s; animation-duration: 10s;"></div>
+    <div class="particle" style="left: 20%; top: 80%; animation-delay: 1s; animation-duration: 14s;"></div>
+    <div class="particle" style="left: 90%; top: 50%; animation-delay: 3s; animation-duration: 11s;"></div>
+  </div>
 
   <!-- Header -->
-  <header class="bg-white shadow-lg border-b border-gray-200">
-    <div class="px-6 py-4 flex items-center justify-between">
-      <div class="flex items-center space-x-6">
-        <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10" />
-        <h1 class="text-xl font-bold text-tut-blue">MyTUT<span class="text-tut-yellow">Events</span></h1>
-      </div>
-      <div class="flex items-center space-x-4">
-        <input type="text" x-model="searchQuery" placeholder="Search events..."
-          class="pl-4 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow transition-all w-48 md:w-64">
-        <button @click="toggleDarkMode" class="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
-          <i :class="darkMode ? 'fas fa-sun text-yellow-500' : 'fas fa-moon text-gray-600'"></i>
-        </button>
+  <header class="relative z-50 bg-white shadow-lg border-b border-gray-200">
+    <div class="px-6">
+      <div class="flex items-center justify-between py-4">
+        <!-- Logo and Welcome -->
+        <div class="flex items-center space-x-6">
+          <!-- Mobile Menu Button -->
+          <button @click="showMobileMenu = true" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <i class="fas fa-bars text-gray-600 text-xl"></i>
+          </button>
+
+          <div class="flex items-center">
+            <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3" />
+            <span class="text-tut-blue text-xl font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
+          </div>
+          <div class="hidden lg:block">
+            <h1 class="text-xl font-semibold text-gray-800">
+              <span x-text="getGreeting()"></span>, <span class="text-tut-blue" x-text="user.firstName"></span>! 👋
+            </h1>
+            <p class="text-sm text-gray-600">Ready to discover amazing events?</p>
+          </div>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="flex items-center space-x-4">
+          <!-- Enhanced Search -->
+          <div class="relative">
+            <input type="text" x-model="searchQuery" @input="search()" placeholder="Search events..."
+              class="pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow transition-all w-48 md:w-64">
+            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+
+            <!-- Search Results Dropdown -->
+            <div x-show="searchQuery && searchResults.length > 0" x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 transform scale-95"
+              x-transition:enter-end="opacity-100 transform scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="opacity-100 transform scale-100"
+              x-transition:leave-end="opacity-0 transform scale-95" @click.away="searchQuery = ''"
+              class="absolute top-full left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 max-h-64 overflow-y-auto">
+              <template x-for="result in searchResults" :key="result.id">
+                <div class="p-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                  @click="selectSearchResult(result)">
+                  <div class="flex items-center space-x-3">
+                    <div
+                      class="w-8 h-8 bg-gradient-to-br from-tut-blue to-blue-700 rounded-lg flex items-center justify-center">
+                      <i :class="result.icon" class="text-white text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-medium text-gray-800 text-sm" x-text="result.title"></p>
+                      <p class="text-xs text-gray-500" x-text="result.date"></p>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Notifications -->
+          <div class="relative">
+            <button @click="showNotifications = !showNotifications"
+              class="p-3 rounded-full hover:bg-gray-100 transition-colors relative">
+              <i class="fas fa-bell text-gray-600 text-lg"></i>
+              <span x-show="notifications.filter(n => !n.read).length > 0"
+                class="absolute -top-1 -right-1 bg-tut-red text-white text-xs rounded-full h-5 w-5 flex items-center justify-center notification-badge"
+                x-text="notifications.filter(n => !n.read).length"></span>
+            </button>
+
+            <!-- Notifications Dropdown -->
+            <div x-show="showNotifications" x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 transform scale-95"
+              x-transition:enter-end="opacity-100 transform scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="opacity-100 transform scale-100"
+              x-transition:leave-end="opacity-0 transform scale-95" @click.away="showNotifications = false"
+              class="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
+              <div class="p-4 border-b border-gray-200">
+                <h3 class="font-semibold text-gray-800">Notifications</h3>
+              </div>
+              <div class="divide-y divide-gray-100">
+                <template x-for="notification in notifications" :key="notification.id">
+                  <div class="p-4 hover:bg-gray-50 cursor-pointer" :class="{'bg-blue-50': !notification.read}">
+                    <div class="flex items-start space-x-3">
+                      <div class="flex-shrink-0">
+                        <i :class="notification.icon" class="text-tut-blue"></i>
+                      </div>
+                      <div class="flex-1">
+                        <p class="font-medium text-gray-800" x-text="notification.title"></p>
+                        <p class="text-sm text-gray-600 mt-1" x-text="notification.message"></p>
+                        <p class="text-xs text-gray-500 mt-2" x-text="notification.time"></p>
+                      </div>
+                      <button @click="markAsRead(notification.id)" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Menu -->
+          <div class="relative">
+            <button @click="showProfileMenu = !showProfileMenu"
+              class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+              <div
+                class="w-8 h-8 bg-gradient-to-br from-tut-blue to-blue-700 rounded-full flex items-center justify-center text-white font-bold">
+                <span x-text="user.firstName.charAt(0) + user.lastName.charAt(0)"></span>
+              </div>
+              <span class="hidden md:block text-sm font-medium text-gray-700" x-text="user.firstName"></span>
+              <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+            </button>
+
+            <!-- Profile Dropdown -->
+            <div x-show="showProfileMenu" x-transition:enter="transition ease-out duration-200"
+              x-transition:enter-start="opacity-0 transform scale-95"
+              x-transition:enter-end="opacity-100 transform scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="opacity-100 transform scale-100"
+              x-transition:leave-end="opacity-0 transform scale-95" @click.away="showProfileMenu = false"
+              class="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50">
+              <div class="p-4 border-b border-gray-200">
+                <p class="font-medium text-gray-800" x-text="user.firstName + ' ' + user.lastName"></p>
+                <p class="text-sm text-gray-600" x-text="user.email"></p>
+              </div>
+              <div class="p-2">
+                <a href="#" @click="currentSection = 'profile'; showProfileMenu = false"
+                  class="flex items-center px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                  <i class="fas fa-user mr-3 w-5"></i>
+                  <span>Profile</span>
+                </a>
+                <a href="#" @click="currentSection = 'analytics'; showProfileMenu = false"
+                  class="flex items-center px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                  <i class="fas fa-chart-line mr-3 w-5"></i>
+                  <span>Analytics</span>
+                </a>
+                <a href="#" @click="showProfileMenu = false"
+                  class="flex items-center px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                  <i class="fas fa-cog mr-3 w-5"></i>
+                  <span>Settings</span>
+                </a>
+              </div>
+              <div class="p-2 border-t border-gray-200">
+                <button @click="handleLogout()"
+                  class="w-full flex items-center px-3 py-2 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+                  <i class="fas fa-sign-out-alt mr-3 w-5"></i>
+                  <span>Logout</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
   <div class="flex">
-    <!-- Sidebar -->
-    <aside class="sidebar w-64 min-h-screen text-white">
+    <!-- Desktop Sidebar -->
+    <aside class="hidden lg:block w-64 bg-gradient-to-b from-tut-blue to-blue-800 min-h-screen z-40">
+      <div class="p-6 border-b border-white/20">
+        <div class="flex items-center">
+          <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-8 w-8 mr-3" />
+          <span class="text-white text-lg font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
+        </div>
+      </div>
+
       <nav class="mt-6 px-4">
-        <ul class="space-y-4">
+        <ul class="space-y-2">
           <li>
             <a href="#" @click="currentSection = 'overview'"
-              class="block px-4 py-3 rounded-lg hover:bg-white/10 transition-all"
-              :class="{'bg-white/20': currentSection === 'overview'}">
-              <i class="fas fa-home mr-3"></i> Overview
+              class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+              :class="{'bg-white/20 shadow-lg': currentSection === 'overview'}">
+              <i class="fas fa-home mr-3 w-5"></i>
+              <span class="font-medium">Overview</span>
             </a>
           </li>
           <li>
             <a href="#" @click="currentSection = 'events'"
-              class="block px-4 py-3 rounded-lg hover:bg-white/10 transition-all"
-              :class="{'bg-white/20': currentSection === 'events'}">
-              <i class="fas fa-calendar-alt mr-3"></i> Events
+              class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+              :class="{'bg-white/20 shadow-lg': currentSection === 'events'}">
+              <i class="fas fa-calendar-alt mr-3 w-5"></i>
+              <span class="font-medium">Events</span>
+              <span class="ml-auto bg-tut-yellow text-tut-blue text-xs font-bold px-2 py-1 rounded-full">12</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" @click="currentSection = 'my-events'"
+              class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+              :class="{'bg-white/20 shadow-lg': currentSection === 'my-events'}">
+              <i class="fas fa-bookmark mr-3 w-5"></i>
+              <span class="font-medium">My Events</span>
+              <span class="ml-auto bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full"
+                x-text="myEvents.length"></span>
             </a>
           </li>
           <li>
             <a href="#" @click="currentSection = 'calendar'"
-              class="block px-4 py-3 rounded-lg hover:bg-white/10 transition-all"
-              :class="{'bg-white/20': currentSection === 'calendar'}">
-              <i class="fas fa-calendar-week mr-3"></i> Calendar
+              class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+              :class="{'bg-white/20 shadow-lg': currentSection === 'calendar'}">
+              <i class="fas fa-calendar-week mr-3 w-5"></i>
+              <span class="font-medium">Calendar</span>
             </a>
           </li>
           <li>
-            <a href="#" @click="currentSection = 'profile'"
-              class="block px-4 py-3 rounded-lg hover:bg-white/10 transition-all"
-              :class="{'bg-white/20': currentSection === 'profile'}">
-              <i class="fas fa-user mr-3"></i> Profile
+            <a href="#" @click="currentSection = 'community'"
+              class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+              :class="{'bg-white/20 shadow-lg': currentSection === 'community'}">
+              <i class="fas fa-users mr-3 w-5"></i>
+              <span class="font-medium">Community</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" @click="currentSection = 'achievements'"
+              class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+              :class="{'bg-white/20 shadow-lg': currentSection === 'achievements'}">
+              <i class="fas fa-trophy mr-3 w-5"></i>
+              <span class="font-medium">Achievements</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" @click="currentSection = 'analytics'"
+              class="flex items-center px-4 py-3 text-white rounded-xl transition-all duration-200 hover:bg-white/10"
+              :class="{'bg-white/20 shadow-lg': currentSection === 'analytics'}">
+              <i class="fas fa-chart-line mr-3 w-5"></i>
+              <span class="font-medium">Analytics</span>
             </a>
           </li>
         </ul>
       </nav>
     </aside>
 
-    <!-- Main Section -->
-    <main class="flex-1 p-6">
+    <!-- Main Content -->
+    <main class="flex-1 p-6 relative z-10">
       <!-- Overview Section -->
-      <section x-show="currentSection === 'overview'" x-transition>
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Welcome, <span x-text="user.firstName"></span>!</h1>
-        <p class="text-gray-600">Here’s what’s happening today:</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-lg font-bold text-gray-800">Upcoming Events</h2>
-            <p class="text-gray-600 mt-2" x-text="stats.upcomingEvents + ' events'"></p>
-          </div>
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-lg font-bold text-gray-800">Points Earned</h2>
-            <p class="text-gray-600 mt-2" x-text="stats.pointsEarned + ' points'"></p>
-          </div>
-          <div class="bg-white p-6 rounded-lg shadow-md">
-            <h2 class="text-lg font-bold text-gray-800">Community Rank</h2>
-            <p class="text-gray-600 mt-2" x-text="stats.communityRank"></p>
+      <div x-show="currentSection === 'overview'" x-transition:enter="animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
+          <div class="flex items-center space-x-4">
+            <div class="bg-white shadow-md px-4 py-2 rounded-xl">
+              <span class="text-sm text-gray-600">Live: </span>
+              <span class="font-medium text-tut-blue" x-text="liveActivity.online"></span>
+            </div>
+            <div class="bg-white shadow-md px-4 py-2 rounded-xl">
+              <span class="text-sm text-gray-600">Active: </span>
+              <span class="font-medium text-tut-blue" x-text="liveActivity.events"></span>
+            </div>
           </div>
         </div>
-      </section>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="stats-card bg-white rounded-2xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Events Attended</p>
+                <h3 class="text-2xl font-bold text-gray-800" x-text="stats.eventsAttended"></h3>
+                <p class="text-sm text-green-600" x-text="stats.attendedGrowth"></p>
+              </div>
+              <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-calendar-check text-blue-600 text-xl"></i>
+              </div>
+            </div>
+          </div>
+          <div class="stats-card bg-white rounded-2xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Upcoming Events</p>
+                <h3 class="text-2xl font-bold text-gray-800" x-text="stats.upcomingEvents"></h3>
+                <p class="text-sm text-blue-600" x-text="'Next in ' + stats.nextEventTime"></p>
+              </div>
+              <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-clock text-green-600 text-xl"></i>
+              </div>
+            </div>
+          </div>
+          <div class="stats-card bg-white rounded-2xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Community Rank</p>
+                <h3 class="text-2xl font-bold text-gray-800" x-text="stats.communityRank"></h3>
+                <p class="text-sm text-yellow-600" x-text="'Top ' + stats.rankPercentile + '%'"></p>
+              </div>
+              <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-trophy text-yellow-600 text-xl"></i>
+              </div>
+            </div>
+          </div>
+          <div class="stats-card bg-white rounded-2xl shadow-lg p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Points Earned</p>
+                <h3 class="text-2xl font-bold text-gray-800" x-text="stats.pointsEarned"></h3>
+                <p class="text-sm text-purple-600" x-text="stats.pointsToNextLevel + ' to next level'"></p>
+              </div>
+              <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                <i class="fas fa-star text-purple-600 text-xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monthly Progress -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold text-gray-800">Monthly Progress</h2>
+            <div class="text-right">
+              <p class="text-sm text-gray-600">Goal: <span x-text="monthlyGoal.current"></span>/<span
+                  x-text="monthlyGoal.target"></span> events</p>
+              <p class="text-sm font-semibold text-tut-blue"
+                x-text="Math.round((monthlyGoal.current / monthlyGoal.target) * 100) + '% completed'"></p>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="bg-gradient-to-r from-tut-blue to-blue-600 h-3 rounded-full transition-all duration-500"
+              :style="'width: ' + (monthlyGoal.current / monthlyGoal.target) * 100 + '%'"></div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Recent Activity</h2>
+            <div class="space-y-4">
+              <template x-for="activity in recentActivity" :key="activity.id">
+                <div class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors">
+                  <div
+                    class="w-12 h-12 bg-gradient-to-br from-tut-blue to-blue-700 rounded-xl flex items-center justify-center">
+                    <i :class="activity.icon" class="text-white"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="font-semibold text-gray-800" x-text="activity.title"></h4>
+                    <p class="text-sm text-gray-600" x-text="activity.description"></p>
+                    <p class="text-xs text-gray-500 mt-1" x-text="activity.time"></p>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Upcoming Events</h2>
+            <div class="space-y-4">
+              <template x-for="event in upcomingEvents" :key="event.id">
+                <div class="flex items-center space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors">
+                  <div
+                    class="w-12 h-12 bg-gradient-to-br from-tut-yellow to-yellow-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-calendar text-white"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h4 class="font-semibold text-gray-800" x-text="event.title"></h4>
+                    <p class="text-sm text-gray-600" x-text="event.description"></p>
+                    <div class="flex items-center space-x-4 text-xs text-gray-500 mt-1">
+                      <span x-text="event.date"></span>
+                      <span x-text="event.time"></span>
+                      <span class="px-2 py-1 bg-gray-100 rounded-full" x-text="event.category"></span>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Events Section -->
-      <section x-show="currentSection === 'events'" x-transition>
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Events</h1>
+      <div x-show="currentSection === 'events'" x-transition:enter="animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">All Events</h1>
+          <div class="flex items-center space-x-4">
+            <!-- Filter Buttons -->
+            <div class="flex bg-white rounded-xl shadow-md p-1">
+              <button @click="eventFilter = 'all'"
+                :class="{'bg-tut-blue text-white shadow-md': eventFilter === 'all', 'text-gray-600 hover:text-tut-blue': eventFilter !== 'all'}"
+                class="px-4 py-2 rounded-lg font-medium transition-all duration-200">All</button>
+              <button @click="eventFilter = 'academic'"
+                :class="{'bg-tut-blue text-white shadow-md': eventFilter === 'academic', 'text-gray-600 hover:text-tut-blue': eventFilter !== 'academic'}"
+                class="px-4 py-2 rounded-lg font-medium transition-all duration-200">Academic</button>
+              <button @click="eventFilter = 'social'"
+                :class="{'bg-tut-blue text-white shadow-md': eventFilter === 'social', 'text-gray-600 hover:text-tut-blue': eventFilter !== 'social'}"
+                class="px-4 py-2 rounded-lg font-medium transition-all duration-200">Social</button>
+              <button @click="eventFilter = 'sports'"
+                :class="{'bg-tut-blue text-white shadow-md': eventFilter === 'sports', 'text-gray-600 hover:text-tut-blue': eventFilter !== 'sports'}"
+                class="px-4 py-2 rounded-lg font-medium transition-all duration-200">Sports</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Events Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <template x-for="event in events" :key="event.id">
-            <div class="event-card bg-white p-6 rounded-lg shadow-md">
-              <h2 class="text-lg font-bold text-gray-800" x-text="event.title"></h2>
-              <p class="text-gray-600 mt-2" x-text="event.description"></p>
-              <p class="text-gray-500 mt-2 text-sm" x-text="event.date + ' | ' + event.time"></p>
+          <template x-for="event in filteredEvents" :key="event.id">
+            <div class="event-card bg-white rounded-2xl shadow-lg overflow-hidden animate-scale-in">
+              <!-- Event Image -->
+              <div class="relative h-48 bg-gradient-to-br from-tut-blue to-blue-700 flex items-center justify-center">
+                <i :class="event.icon" class="text-4xl text-white"></i>
+                <div class="absolute top-4 left-4">
+                  <span class="bg-white/90 backdrop-blur-sm text-tut-blue text-xs font-bold px-3 py-1 rounded-full"
+                    x-text="event.category"></span>
+                </div>
+                <div class="absolute top-4 right-4">
+                  <button @click="toggleBookmark(event.id)"
+                    :class="event.bookmarked ? 'text-tut-yellow' : 'text-white/60 hover:text-white'"
+                    class="transition-colors">
+                    <i :class="event.bookmarked ? 'fas fa-bookmark' : 'far fa-bookmark'" class="text-lg"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Event Details -->
+              <div class="p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-2" x-text="event.title"></h3>
+                <p class="text-sm text-gray-600 mb-4" x-text="event.description"></p>
+
+                <div class="space-y-2 mb-4">
+                  <div class="flex items-center text-sm text-gray-500">
+                    <i class="fas fa-calendar mr-3 w-4"></i>
+                    <span x-text="event.date"></span>
+                  </div>
+                  <div class="flex items-center text-sm text-gray-500">
+                    <i class="fas fa-clock mr-3 w-4"></i>
+                    <span x-text="event.time"></span>
+                  </div>
+                  <div class="flex items-center text-sm text-gray-500">
+                    <i class="fas fa-map-marker-alt mr-3 w-4"></i>
+                    <span x-text="event.location"></span>
+                  </div>
+                  <div class="flex items-center text-sm text-gray-500">
+                    <i class="fas fa-users mr-3 w-4"></i>
+                    <span x-text="event.attendees + ' attending'"></span>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-3">
+                  <button @click="registerForEvent(event.id)" :disabled="event.registered"
+                    :class="event.registered ? 'bg-green-100 text-green-600 cursor-not-allowed' : 'bg-tut-blue hover:bg-blue-700 text-white hover:shadow-lg transform hover:scale-105'"
+                    class="flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 text-sm">
+                    <i :class="event.registered ? 'fas fa-check' : 'fas fa-calendar-plus'" class="mr-2"></i>
+                    <span x-text="event.registered ? 'Registered' : 'Register'"></span>
+                  </button>
+                  <button
+                    class="bg-gray-100 hover:bg-gray-200 text-gray-600 py-3 px-4 rounded-xl transition-all duration-200">
+                    <i class="fas fa-info-circle"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </template>
         </div>
-      </section>
+      </div>
 
-      <!-- Calendar Section -->
-      <section x-show="currentSection === 'calendar'" x-transition>
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Calendar</h1>
-        <div class="grid grid-cols-7 gap-2">
-          <template x-for="day in calendarDays" :key="day.date">
-            <div class="p-4 bg-gray-100 rounded-lg text-center" x-text="day.date"></div>
+      <!-- My Events Section -->
+      <div x-show="currentSection === 'my-events'" x-transition:enter="animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">My Events</h1>
+          <div class="flex bg-white rounded-xl shadow-md p-1">
+            <button @click="myEventsFilter = 'upcoming'"
+              :class="{'bg-tut-blue text-white shadow-md': myEventsFilter === 'upcoming', 'text-gray-600 hover:text-tut-blue': myEventsFilter !== 'upcoming'}"
+              class="px-4 py-2 rounded-lg font-medium transition-all duration-200">Upcoming</button>
+            <button @click="myEventsFilter = 'attended'"
+              :class="{'bg-tut-blue text-white shadow-md': myEventsFilter === 'attended', 'text-gray-600 hover:text-tut-blue': myEventsFilter !== 'attended'}"
+              class="px-4 py-2 rounded-lg font-medium transition-all duration-200">Attended</button>
+          </div>
+        </div>
+
+        <!-- My Events List -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <template x-for="event in filteredMyEvents" :key="event.id">
+            <div
+              class="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300 animate-slide-up">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center space-x-4">
+                  <div
+                    class="w-12 h-12 bg-gradient-to-br from-tut-yellow to-yellow-600 rounded-xl flex items-center justify-center">
+                    <i :class="event.icon" class="text-white text-xl"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-bold text-gray-800" x-text="event.title"></h3>
+                    <p class="text-sm text-gray-600" x-text="event.category"></p>
+                  </div>
+                </div>
+                <span :class="event.status === 'upcoming' ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'"
+                  class="px-3 py-1 rounded-full text-xs font-medium capitalize" x-text="event.status"></span>
+              </div>
+
+              <p class="text-sm text-gray-600 mb-4" x-text="event.description"></p>
+
+              <div class="grid grid-cols-2 gap-4 text-sm text-gray-500 mb-4">
+                <div class="flex items-center">
+                  <i class="fas fa-calendar mr-2 text-tut-yellow"></i>
+                  <span x-text="event.date"></span>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-clock mr-2 text-tut-yellow"></i>
+                  <span x-text="event.time"></span>
+                </div>
+                <div class="flex items-center">
+                  <i class="fas fa-map-marker-alt mr-2 text-tut-yellow"></i>
+                  <span x-text="event.location"></span>
+                </div>
+                <div class="flex items-center" x-show="event.status === 'attended'">
+                  <i class="fas fa-star mr-2 text-tut-yellow"></i>
+                  <span x-text="event.rating + '/5 rating'"></span>
+                </div>
+              </div>
+
+              <div class="flex space-x-3">
+                <button x-show="event.status === 'upcoming'"
+                  class="flex-1 bg-tut-blue hover:bg-blue-700 text-white py-2 px-4 rounded-xl font-medium transition-all duration-200">
+                  <i class="fas fa-eye mr-2"></i>View Details
+                </button>
+                <button x-show="event.status === 'attended'"
+                  class="flex-1 bg-tut-yellow hover:bg-yellow-600 text-tut-blue py-2 px-4 rounded-xl font-medium transition-all duration-200">
+                  <i class="fas fa-star mr-2"></i>Rate Event
+                </button>
+                <button
+                  class="bg-gray-100 hover:bg-gray-200 text-gray-600 py-2 px-4 rounded-xl transition-all duration-200">
+                  <i class="fas fa-share-alt"></i>
+                </button>
+              </div>
+            </div>
           </template>
         </div>
-      </section>
 
-      <!-- Profile Section -->
-      <section x-show="currentSection === 'profile'" x-transition>
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Profile</h1>
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <h2 class="text-lg font-bold text-gray-800">Personal Information</h2>
-          <p class="text-gray-600 mt-2">Name: <span x-text="user.firstName + ' ' + user.lastName"></span></p>
-          <p class="text-gray-600 mt-2">Email: <span x-text="user.email"></span></p>
+        <!-- Empty State -->
+        <div x-show="filteredMyEvents.length === 0" class="text-center py-12">
+          <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="fas fa-calendar-times text-3xl text-gray-400"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-600 mb-2">No events found</h3>
+          <p class="text-gray-500 mb-6">You haven't registered for any events yet.</p>
+          <button @click="currentSection = 'events'"
+            class="bg-tut-blue hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-200">
+            <i class="fas fa-search mr-2"></i>Discover Events
+          </button>
         </div>
-      </section>
+      </div>
+
+      <!-- Calendar Section -->
+      <div x-show="currentSection === 'calendar'" x-transition:enter="animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">Event Calendar</h1>
+          <div class="flex items-center space-x-4">
+            <button
+              class="flex items-center space-x-2 bg-white shadow-md px-4 py-2 rounded-xl hover:shadow-lg transition-all duration-200">
+              <i class="fas fa-calendar-alt text-tut-blue"></i>
+              <span class="font-medium text-gray-700" x-text="currentMonth + ' ' + currentYear"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <div class="grid grid-cols-7 bg-gray-50 border-b">
+            <template x-for="day in ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']">
+              <div class="p-4 text-center font-semibold text-gray-600 border-r border-gray-200 last:border-r-0"
+                x-text="day"></div>
+            </template>
+          </div>
+          <div class="grid grid-cols-7">
+            <template x-for="day in calendarDays" :key="day.date">
+              <div class="min-h-[120px] p-2 border-r border-b border-gray-200 last:border-r-0"
+                :class="{'bg-gray-50': !day.currentMonth, 'bg-blue-50': day.hasEvent}">
+                <div class="font-medium text-sm mb-2"
+                  :class="{'text-gray-400': !day.currentMonth, 'text-tut-blue': day.hasEvent}" x-text="day.date"></div>
+                <template x-for="event in day.events" :key="event.id">
+                  <div
+                    class="bg-tut-yellow/20 text-tut-yellow text-xs p-1 rounded mb-1 cursor-pointer hover:bg-tut-yellow/30 transition-colors"
+                    x-text="event.title.substring(0, 15) + (event.title.length > 15 ? '...' : '')"></div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Community Section -->
+      <div x-show="currentSection === 'community'" x-transition:enter="animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">Community</h1>
+          <button
+            class="bg-tut-blue hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-200">
+            <i class="fas fa-users mr-2"></i>Join Discussion
+          </button>
+        </div>
+
+        <!-- Community Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-users text-2xl text-blue-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">12,459</h3>
+            <p class="text-gray-600">Active Students</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-comments text-2xl text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">1,234</h3>
+            <p class="text-gray-600">Discussions Today</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-trophy text-2xl text-yellow-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Top 5%</h3>
+            <p class="text-gray-600">Your Ranking</p>
+          </div>
+        </div>
+
+        <!-- Recent Discussions -->
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+          <h2 class="text-xl font-bold text-gray-800 mb-6">Recent Discussions</h2>
+          <div class="space-y-4">
+            <template x-for="discussion in communityDiscussions" :key="discussion.id">
+              <div class="flex items-start space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer">
+                <div
+                  class="w-10 h-10 bg-gradient-to-br from-tut-blue to-blue-700 rounded-full flex items-center justify-center text-white font-bold">
+                  <span x-text="discussion.author.charAt(0)"></span>
+                </div>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-gray-800" x-text="discussion.title"></h4>
+                  <p class="text-sm text-gray-600 mt-1" x-text="discussion.preview"></p>
+                  <div class="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                    <span x-text="discussion.author"></span>
+                    <span x-text="discussion.time"></span>
+                    <span class="flex items-center">
+                      <i class="fas fa-comments mr-1"></i>
+                      <span x-text="discussion.replies"></span>
+                    </span>
+                    <span class="flex items-center">
+                      <i class="fas fa-heart mr-1"></i>
+                      <span x-text="discussion.likes"></span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Achievements Section -->
+      <div x-show="currentSection === 'achievements'" x-transition:enter="animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">Achievements</h1>
+          <div class="bg-white rounded-xl shadow-md px-4 py-2">
+            <span class="text-sm text-gray-600">Total Points: </span>
+            <span class="text-lg font-bold text-tut-blue" x-text="stats.pointsEarned"></span>
+          </div>
+        </div>
+
+        <!-- Achievement Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <template x-for="achievement in achievements" :key="achievement.id">
+            <div
+              class="bg-white rounded-2xl shadow-lg p-6 text-center transform hover:scale-105 transition-all duration-300"
+              :class="{'opacity-50': !achievement.unlocked}">
+              <div class="w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center"
+                :class="achievement.unlocked ? 'bg-gradient-to-br from-tut-yellow to-yellow-600 text-white' : 'bg-gray-200 text-gray-400'">
+                <i :class="achievement.icon" class="text-2xl"></i>
+              </div>
+              <h3 class="text-lg font-bold text-gray-800 mb-2" x-text="achievement.title"></h3>
+              <p class="text-sm text-gray-600 mb-4" x-text="achievement.description"></p>
+              <div class="flex items-center justify-center space-x-2 text-sm">
+                <span :class="achievement.unlocked ? 'text-green-600' : 'text-gray-500'"
+                  x-text="achievement.unlocked ? 'Unlocked!' : 'Locked'"></span>
+                <span x-show="achievement.unlocked" class="text-tut-yellow font-semibold"
+                  x-text="'+' + achievement.points + ' pts'"></span>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- Analytics Section -->
+      <div x-show="currentSection === 'analytics'" x-transition:enter="animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">Analytics</h1>
+          <div class="flex items-center space-x-4">
+            <select x-model="analyticsPeriod" @change="updateAnalytics()"
+              class="bg-white border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-tut-yellow/50">
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+              <option value="year">This Year</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Analytics Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Event Attendance Chart -->
+          <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">Event Attendance Trend</h3>
+            <div class="h-64 flex items-end justify-between space-x-2">
+              <template x-for="(value, index) in analyticsData.attendance" :key="index">
+                <div class="flex-1 flex flex-col items-center">
+                  <div class="w-full bg-gray-200 rounded-t-lg relative"
+                    :style="`height: ${(value / Math.max(...analyticsData.attendance)) * 200}px`">
+                    <div class="absolute inset-0 bg-gradient-to-t from-tut-blue to-blue-600 rounded-t-lg"></div>
+                  </div>
+                  <span class="text-xs text-gray-500 mt-2" x-text="analyticsData.labels[index]"></span>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Category Distribution -->
+          <div class="bg-white rounded-2xl shadow-lg p-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-6">Event Categories</h3>
+            <div class="space-y-4">
+              <template x-for="category in analyticsData.categories" :key="category.name">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <div class="w-4 h-4 rounded-full" :style="`background-color: ${category.color}`"></div>
+                    <span class="font-medium text-gray-800" x-text="category.name"></span>
+                  </div>
+                  <div class="flex items-center space-x-2">
+                    <div class="w-24 bg-gray-200 rounded-full h-2">
+                      <div class="bg-gradient-to-r from-tut-yellow to-yellow-600 h-2 rounded-full"
+                        :style="`width: ${category.percentage}%`"></div>
+                    </div>
+                    <span class="text-sm text-gray-600" x-text="category.percentage + '%'"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-chart-line text-2xl text-blue-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2" x-text="analyticsData.avgAttendance"></h3>
+            <p class="text-gray-600">Average Attendance</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-star text-2xl text-green-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2" x-text="analyticsData.avgRating"></h3>
+            <p class="text-gray-600">Average Rating</p>
+          </div>
+          <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <i class="fas fa-users text-2xl text-purple-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2" x-text="analyticsData.totalEvents"></h3>
+            <p class="text-gray-600">Total Events</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Settings Section -->
+      <div x-show="currentSection === 'profile'" x-transition:enter="animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+          <h1 class="text-3xl font-bold text-gray-800">Profile Settings</h1>
+          <button @click="saveProfile()"
+            class="bg-tut-blue hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-200">
+            <i class="fas fa-save mr-2"></i>Save Changes
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Profile Information -->
+          <div class="lg:col-span-2 space-y-6">
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-6">Personal Information</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                  <input type="text" x-model="user.firstName"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                  <input type="text" x-model="user.lastName"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <input type="email" x-model="user.email"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Student Number</label>
+                  <input type="text" x-model="user.studentNumber"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow">
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-xl font-bold text-gray-800 mb-6">Preferences</h3>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="font-medium text-gray-800">Email Notifications</h4>
+                    <p class="text-sm text-gray-600">Receive notifications about new events</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" x-model="userPreferences.emailNotifications" class="sr-only peer">
+                    <div
+                      class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-tut-yellow/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tut-yellow">
+                    </div>
+                  </label>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="font-medium text-gray-800">Push Notifications</h4>
+                    <p class="text-sm text-gray-600">Receive push notifications on your device</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" x-model="userPreferences.pushNotifications" class="sr-only peer">
+                    <div
+                      class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-tut-yellow/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tut-yellow">
+                    </div>
+                  </label>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h4 class="font-medium text-gray-800">Event Recommendations</h4>
+                    <p class="text-sm text-gray-600">Get personalized event suggestions</p>
+                  </div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" x-model="userPreferences.eventRecommendations" class="sr-only peer">
+                    <div
+                      class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-tut-yellow/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tut-yellow">
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Summary -->
+          <div class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-lg p-6 text-center">
+              <div
+                class="w-24 h-24 bg-gradient-to-br from-tut-yellow to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-white text-2xl font-bold"
+                  x-text="user.firstName.charAt(0) + user.lastName.charAt(0)"></span>
+              </div>
+              <h3 class="text-xl font-bold text-gray-800 mb-2" x-text="user.firstName + ' ' + user.lastName"></h3>
+              <p class="text-gray-600 mb-4" x-text="user.email"></p>
+              <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p class="font-semibold text-gray-800" x-text="stats.eventsAttended"></p>
+                  <p class="text-gray-600">Events Attended</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-800" x-text="stats.pointsEarned"></p>
+                  <p class="text-gray-600">Points Earned</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+              <h3 class="text-lg font-bold text-gray-800 mb-4">Quick Actions</h3>
+              <div class="space-y-3">
+                <button
+                  class="w-full bg-tut-blue hover:bg-blue-700 text-white py-2 px-4 rounded-xl font-medium transition-all duration-200">
+                  <i class="fas fa-download mr-2"></i>Export Data
+                </button>
+                <button
+                  class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-xl font-medium transition-all duration-200">
+                  <i class="fas fa-share mr-2"></i>Share Profile
+                </button>
+                <button
+                  class="w-full bg-red-100 hover:bg-red-200 text-red-700 py-2 px-4 rounded-xl font-medium transition-all duration-200">
+                  <i class="fas fa-trash mr-2"></i>Delete Account
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div x-show="toast.show" x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 transform translate-x-full"
+    x-transition:enter-end="opacity-100 transform translate-x-0" x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100 transform translate-x-0"
+    x-transition:leave-end="opacity-0 transform translate-x-full"
+    class="fixed bottom-6 right-6 z-50 p-4 rounded-2xl shadow-2xl max-w-sm glassmorphism-dark border border-tut-yellow/30">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <i :class="toast.type === 'success' ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-triangle text-red-500'"
+          class="text-xl mr-3"></i>
+      </div>
+      <div>
+        <p class="font-semibold text-white" x-text="toast.message"></p>
+      </div>
+      <button @click="toast.show = false" class="ml-4 text-white/60 hover:text-white transition-colors">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
   </div>
 
   <script>
     function dashboardApp() {
       return {
         currentSection: 'overview',
-        darkMode: false,
+        showNotifications: false,
+        showProfileMenu: false,
+        eventFilter: 'all',
+        myEventsFilter: 'upcoming',
+        showMobileMenu: false,
+        searchQuery: '',
+        searchResults: [],
+        analyticsPeriod: 'month',
+        userPreferences: {
+          emailNotifications: true,
+          pushNotifications: true,
+          eventRecommendations: true
+        },
+
         user: {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john.doe@student.tut.ac.za',
+          studentNumber: '123456789'
         },
+
         stats: {
-          upcomingEvents: 5,
-          pointsEarned: 1200,
-          communityRank: '#15',
+          eventsAttended: 24,
+          attendedGrowth: '+12%',
+          upcomingEvents: 6,
+          nextEventTime: '2 hours',
+          communityRank: '#127',
+          rankPercentile: 15,
+          pointsEarned: 1250,
+          pointsToNextLevel: 250
         },
-        events: [
-          { id: 1, title: 'Tech Workshop', description: 'Learn AI basics', date: 'Sep 5', time: '10:00 AM' },
-          { id: 2, title: 'Music Night', description: 'Enjoy live music', date: 'Sep 10', time: '7:00 PM' },
+
+        monthlyProgress: 75,
+        monthlyGoal: {
+          current: 3,
+          target: 4
+        },
+
+        currentMonth: 'December',
+        currentYear: 2024,
+
+        liveActivity: {
+          online: '1,247 students online',
+          events: '5 events happening now'
+        },
+
+        toast: {
+          show: false,
+          message: '',
+          type: 'success'
+        },
+
+        notifications: [
+          {
+            id: 1,
+            title: 'New Event Available',
+            message: 'Tech Talk: AI in Education is now open for registration',
+            time: '5 minutes ago',
+            type: 'event',
+            icon: 'fas fa-calendar-plus',
+            read: false
+          },
+          {
+            id: 2,
+            title: 'Event Reminder',
+            message: 'Career Fair starts in 30 minutes',
+            time: '30 minutes ago',
+            type: 'reminder',
+            icon: 'fas fa-bell',
+            read: false
+          },
+          {
+            id: 3,
+            title: 'Achievement Unlocked',
+            message: 'You earned the "Event Enthusiast" badge!',
+            time: '2 hours ago',
+            type: 'achievement',
+            icon: 'fas fa-trophy',
+            read: true
+          }
         ],
-        calendarDays: Array.from({ length: 30 }, (_, i) => ({ date: i + 1 })),
-        toggleDarkMode() {
-          this.darkMode = !this.darkMode;
-          document.documentElement.classList.toggle('dark', this.darkMode);
+
+        recentActivity: [
+          {
+            id: 1,
+            title: 'Attended Career Fair 2024',
+            description: 'Networking event with 50+ companies',
+            time: '2 hours ago',
+            type: 'attended',
+            icon: 'fas fa-briefcase'
+          },
+          {
+            id: 2,
+            title: 'Registered for Tech Workshop',
+            description: 'Python Programming Bootcamp',
+            time: '1 day ago',
+            type: 'registered',
+            icon: 'fas fa-calendar-check'
+          },
+          {
+            id: 3,
+            title: 'Earned Achievement',
+            description: 'Event Enthusiast badge unlocked',
+            time: '2 days ago',
+            type: 'achievement',
+            icon: 'fas fa-trophy'
+          }
+        ],
+
+        upcomingEvents: [
+          {
+            id: 1,
+            title: 'Study Group Session',
+            description: 'Mathematics study session',
+            date: 'Dec 15',
+            time: '14:00',
+            category: 'Academic'
+          },
+          {
+            id: 2,
+            title: 'Movie Night',
+            description: 'Student entertainment',
+            date: 'Dec 16',
+            time: '19:00',
+            category: 'Social'
+          },
+          {
+            id: 3,
+            title: 'Basketball Match',
+            description: 'Inter-faculty tournament',
+            date: 'Dec 17',
+            time: '16:00',
+            category: 'Sports'
+          }
+        ],
+
+        events: [
+          {
+            id: 1,
+            title: 'AI & Machine Learning Workshop',
+            description: 'Learn the fundamentals of AI and machine learning with hands-on exercises.',
+            date: 'December 20, 2024',
+            time: '10:00 AM - 4:00 PM',
+            location: 'Tech Lab A',
+            category: 'academic',
+            attendees: 45,
+            registered: false,
+            bookmarked: false,
+            icon: 'fas fa-robot'
+          },
+          {
+            id: 2,
+            title: 'Christmas Social Evening',
+            description: 'Join us for a festive evening with music, food, and great company.',
+            date: 'December 18, 2024',
+            time: '6:00 PM - 10:00 PM',
+            location: 'Main Hall',
+            category: 'social',
+            attendees: 120,
+            registered: true,
+            bookmarked: true,
+            icon: 'fas fa-music'
+          },
+          {
+            id: 3,
+            title: 'Inter-Faculty Soccer Tournament',
+            description: 'Compete with other faculties in this exciting soccer tournament.',
+            date: 'December 22, 2024',
+            time: '2:00 PM - 6:00 PM',
+            location: 'Sports Complex',
+            category: 'sports',
+            attendees: 80,
+            registered: false,
+            bookmarked: false,
+            icon: 'fas fa-futbol'
+          }
+        ],
+
+        myEvents: [
+          {
+            id: 2,
+            title: 'Christmas Social Evening',
+            description: 'Join us for a festive evening with music, food, and great company.',
+            date: 'December 18, 2024',
+            time: '6:00 PM - 10:00 PM',
+            location: 'Main Hall',
+            category: 'Social',
+            status: 'upcoming',
+            icon: 'fas fa-music'
+          },
+          {
+            id: 4,
+            title: 'Career Development Workshop',
+            description: 'Learn essential career skills and networking strategies.',
+            date: 'November 15, 2024',
+            time: '9:00 AM - 12:00 PM',
+            location: 'Conference Room B',
+            category: 'Academic',
+            status: 'attended',
+            rating: 4.5,
+            icon: 'fas fa-briefcase'
+          }
+        ],
+
+        calendarDays: [],
+
+        communityDiscussions: [
+          {
+            id: 1,
+            title: 'Best study strategies for final exams?',
+            preview: 'Looking for effective study techniques that worked for you...',
+            author: 'Sarah M.',
+            time: '2 hours ago',
+            replies: 15,
+            likes: 23
+          },
+          {
+            id: 2,
+            title: 'Anyone going to the AI workshop next week?',
+            preview: 'Would love to form a study group for the workshop...',
+            author: 'Mike K.',
+            time: '4 hours ago',
+            replies: 8,
+            likes: 12
+          }
+        ],
+
+        achievements: [
+          {
+            id: 1,
+            title: 'First Steps',
+            description: 'Attend your first event',
+            icon: 'fas fa-baby',
+            points: 50,
+            unlocked: true
+          },
+          {
+            id: 2,
+            title: 'Event Enthusiast',
+            description: 'Attend 10 events',
+            icon: 'fas fa-star',
+            points: 200,
+            unlocked: true
+          },
+          {
+            id: 3,
+            title: 'Social Butterfly',
+            description: 'Attend 5 social events',
+            icon: 'fas fa-users',
+            points: 150,
+            unlocked: false
+          }
+        ],
+
+        analyticsData: {
+          attendance: [45, 67, 89, 34, 56, 78, 92],
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          categories: [
+            { name: 'Academic', percentage: 35, color: '#0A2463' },
+            { name: 'Social', percentage: 28, color: '#E6A817' },
+            { name: 'Sports', percentage: 22, color: '#990000' },
+            { name: 'Cultural', percentage: 15, color: '#8B5CF6' }
+          ],
+          avgAttendance: '67',
+          avgRating: '4.2',
+          totalEvents: '25'
         },
+
         init() {
-          console.log('Dashboard initialized');
+          this.generateCalendar();
+          this.updateLiveActivity();
+          setInterval(() => this.updateLiveActivity(), 30000);
         },
-      };
+
+        getGreeting() {
+          const hour = new Date().getHours();
+          if (hour < 12) return "Good morning";
+          if (hour < 17) return "Good afternoon";
+          return "Good evening";
+        },
+
+        updateLiveActivity() {
+          const online = Math.floor(1200 + Math.random() * 100);
+          const events = Math.floor(3 + Math.random() * 5);
+          this.liveActivity = {
+            online: `${online.toLocaleString()} students online`,
+            events: `${events} events happening now`
+          };
+        },
+
+        generateCalendar() {
+          // Simple calendar generation for demo
+          const days = [];
+          for (let i = 1; i <= 31; i++) {
+            days.push({
+              date: i,
+              currentMonth: true,
+              hasEvent: Math.random() > 0.7,
+              events: Math.random() > 0.7 ? [
+                {
+                  id: i,
+                  title: 'Sample Event',
+                  time: '2:00 PM'
+                }
+              ] : []
+            });
+          }
+          this.calendarDays = days;
+        },
+
+        get filteredEvents() {
+          if (this.eventFilter === 'all') return this.events;
+          return this.events.filter(event => event.category === this.eventFilter);
+        },
+
+        get filteredMyEvents() {
+          return this.myEvents.filter(event => event.status === this.myEventsFilter);
+        },
+
+        toggleBookmark(eventId) {
+          const event = this.events.find(e => e.id === eventId);
+          if (event) {
+            event.bookmarked = !event.bookmarked;
+            this.showToast(event.bookmarked ? 'Event bookmarked!' : 'Event removed from bookmarks', 'success');
+          }
+        },
+
+        registerForEvent(eventId) {
+          const event = this.events.find(e => e.id === eventId);
+          if (event && !event.registered) {
+            event.registered = true;
+            event.attendees++;
+            this.showToast('Successfully registered for event!', 'success');
+          }
+        },
+
+        markAsRead(notificationId) {
+          const notification = this.notifications.find(n => n.id === notificationId);
+          if (notification) {
+            notification.read = true;
+          }
+        },
+
+        handleLogout() {
+          // Add logout logic here
+          this.showToast('Logging out...', 'success');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1000);
+        },
+
+        showToast(message, type = 'success') {
+          this.toast = {
+            show: true,
+            message: message,
+            type: type
+          };
+          setTimeout(() => {
+            this.toast.show = false;
+          }, 3000);
+        },
+
+        // Search functionality
+        search() {
+          this.searchResults = [];
+          if (this.searchQuery.length < 3) return;
+
+          const query = this.searchQuery.toLowerCase();
+          const results = [];
+
+          // Search in events
+          this.events.forEach(event => {
+            if (
+              event.title.toLowerCase().includes(query) ||
+              event.description.toLowerCase().includes(query) ||
+              event.location.toLowerCase().includes(query)
+            ) {
+              results.push({
+                id: event.id,
+                title: event.title,
+                date: event.date,
+                icon: event.icon,
+                type: 'event'
+              });
+            }
+          });
+
+          // Search in myEvents
+          this.myEvents.forEach(event => {
+            if (
+              event.title.toLowerCase().includes(query) ||
+              event.description.toLowerCase().includes(query) ||
+              event.location.toLowerCase().includes(query)
+            ) {
+              results.push({
+                id: event.id,
+                title: event.title,
+                date: event.date,
+                icon: event.icon,
+                type: 'my-event'
+              });
+            }
+          });
+
+          // Search in community discussions
+          this.communityDiscussions.forEach(discussion => {
+            if (
+              discussion.title.toLowerCase().includes(query) ||
+              discussion.preview.toLowerCase().includes(query) ||
+              discussion.author.toLowerCase().includes(query)
+            ) {
+              results.push({
+                id: discussion.id,
+                title: discussion.title,
+                date: discussion.time,
+                icon: 'fas fa-comments',
+                type: 'discussion'
+              });
+            }
+          });
+
+          this.searchResults = results;
+        },
+
+        selectSearchResult(result) {
+          this.searchQuery = '';
+          this.searchResults = [];
+
+          if (result.type === 'event') {
+            const event = this.events.find(e => e.id === result.id);
+            if (event) {
+              this.currentSection = 'events';
+              this.eventFilter = 'all'; // Reset filter to show all events
+              this.showToast(`Navigating to event: ${event.title}`, 'info');
+            }
+          } else if (result.type === 'my-event') {
+            const event = this.myEvents.find(e => e.id === result.id);
+            if (event) {
+              this.currentSection = 'my-events';
+              this.myEventsFilter = 'upcoming'; // Reset filter to show upcoming events
+              this.showToast(`Navigating to my event: ${event.title}`, 'info');
+            }
+          } else if (result.type === 'discussion') {
+            const discussion = this.communityDiscussions.find(d => d.id === result.id);
+            if (discussion) {
+              this.currentSection = 'community';
+              this.showToast(`Navigating to discussion: ${discussion.title}`, 'info');
+            }
+          }
+        },
+
+        saveProfile() {
+          // Simulate saving profile data
+          this.showToast('Profile saved successfully!', 'success');
+          // In a real app, you would send this data to the server
+        },
+
+        updateAnalytics() {
+          // Update analytics based on selected period
+          const periods = {
+            week: { attendance: [45, 67, 89, 34, 56, 78, 92], labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+            month: { attendance: [120, 145, 167, 189, 134, 156, 178, 192, 145, 167, 189, 134, 156, 178, 192, 145, 167, 189, 134, 156, 178, 192, 145, 167, 189, 134, 156, 178, 192, 145], labels: Array.from({ length: 30 }, (_, i) => i + 1) },
+            year: { attendance: [1200, 1450, 1670, 1890, 1340, 1560, 1780, 1920, 1450, 1670, 1890, 1340], labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] }
+          };
+
+          const data = periods[this.analyticsPeriod];
+          this.analyticsData.attendance = data.attendance;
+          this.analyticsData.labels = data.labels;
+        }
+      }
     }
   </script>
 </body>
