@@ -224,16 +224,18 @@
         <!-- Tab System -->
         <div class="flex glassmorphism rounded-xl p-1 mb-6">
           <button
-            class="flex-1 py-2 px-4 bg-tut-blue text-white rounded-lg font-semibold transition-all duration-200 hover:bg-blue-700">Student
-            Login</button>
+            class="flex-1 py-2 px-4 bg-tut-blue text-white rounded-lg font-semibold transition-all duration-200 hover:bg-blue-700">
+            USING ITS
+            PIN</button>
           <a href="student_signup.html"
-            class="flex-1 py-2 px-4 text-white/80 hover:text-white hover:bg-white/20 rounded-lg text-center transition-all duration-200">Create
-            Account</a>
+            class="flex-1 py-2 px-4 text-white/80 hover:text-white hover:bg-white/20 rounded-lg text-center transition-all duration-200">Student
+            Email Login
+          </a>
         </div>
 
         <!-- Login Form -->
         <form @submit.prevent="handleLogin()" class="space-y-5">
-          <!-- Student Number Field -->
+          <!-- iTS Field -->
           <div class="relative">
             <label class="block text-sm font-medium text-white/90 mb-1 flex items-center gap-2">
               <i class="fas fa-id-card text-tut-yellow"></i> Student Number
@@ -259,7 +261,7 @@
           <!-- Password Field -->
           <div class="relative">
             <label class="block text-sm font-medium text-white/90 mb-1 flex items-center gap-2">
-              <i class="fas fa-lock text-tut-yellow"></i> Password
+              <i class="fas fa-lock text-tut-yellow"></i>PIN
             </label>
             <div class="relative">
               <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="checkPasswordStrength()"
