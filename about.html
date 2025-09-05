@@ -216,7 +216,6 @@
   showSignupModal: false,
   activeTab: 'mission'
 }">
-  <!-- Header -->
   <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between py-4">
@@ -225,10 +224,11 @@
           <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3" />
           <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
         </a>
-
+ 
         <!-- Desktop Navigation -->
         <nav class="hidden md:block">
           <ul class="flex items-center space-x-8">
+           
             <li>
               <a href="index.html"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
@@ -237,8 +237,7 @@
                   class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
               </a>
             </li>
-            <li>
-              <a href="about.html"
+             <li><a href="about.html"
                 class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">About</a>
             </li>
             <li>
@@ -267,11 +266,8 @@
             </li>
             <li>
               <div class="flex items-center space-x-3">
-                <button @click="showLoginModal = true"
-                  class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 flex items-center gap-2">
-                  <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                <button @click="showSignupModal = true"
+ 
+                <button onclick="window.location.href='login_itspin.html'"
                   class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
                   <i class="fas fa-rocket"></i>
                   Join Now
