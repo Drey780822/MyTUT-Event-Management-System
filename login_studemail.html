@@ -220,29 +220,30 @@
 
                 <!-- Login Form -->
                 <form @submit.prevent="handleLogin()" class="space-y-5">
-                    <!-- iTS Field -->
+                    <!-- Student Email Field -->
                     <div class="relative">
                         <label class="block text-sm font-medium text-white/90 mb-1 flex items-center gap-2">
-                            <i class="fas fa-id-card text-tut-yellow"></i> Student Email
+                            <i class="fas fa-envelope text-tut-yellow"></i> Student Email
                         </label>
                         <div class="relative">
-                            <input type="text" minlength="9" maxlength="9" inputmode="numeric" pattern="\d{9}"
-                                oninput="this.value.replace(/[^0-9]/g,'')" x-model="form.studentNumber"
-                                @input="validateStudentNumberFormat()"
+                            <input type="email" x-model="form.email"
+                                @input="validateEmail()"
                                 class="w-full px-4 py-3 glassmorphism text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 transition-all"
-                                :class="{'ring-2 ring-green-400': isValidStudentNumber(), 'ring-2 ring-tut-red': form.studentNumber && !isValidStudentNumber()}"
-                                placeholder="Enter your student number" autocomplete="username" required>
+                                :class="{'ring-2 ring-green-400': isValidEmail(), 'ring-2 ring-tut-red': form.email && !isValidEmail()}"
+                                placeholder="Enter your student email (e.g., student@tut.ac.za)" 
+                                autocomplete="email" 
+                                required>
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                                <i x-show="isValidStudentNumber()" class="fas fa-check text-green-400"></i>
-                                <i x-show="form.studentNumber && !isValidStudentNumber()"
+                                <i x-show="isValidEmail()" class="fas fa-check text-green-400"></i>
+                                <i x-show="form.email && !isValidEmail()"
                                     class="fas fa-exclamation-triangle text-tut-red"></i>
                             </div>
                         </div>
-                        <div x-show="studentNumberSuggestion" class="mt-1 text-xs text-tut-yellow"
-                            x-text="studentNumberSuggestion">
+                        <div x-show="emailSuggestion" class="mt-1 text-xs text-tut-yellow"
+                            x-text="emailSuggestion">
                         </div>
-                        <div x-show="errors.studentNumber" class="text-tut-red text-xs mt-1"
-                            x-text="errors.studentNumber"></div>
+                        <div x-show="errors.email" class="text-tut-red text-xs mt-1"
+                            x-text="errors.email"></div>
                     </div>
 
                     <!-- Password Field -->
@@ -276,7 +277,7 @@
 
                     <!-- Login Button -->
                     <button type="submit" :disabled="isLoading || !canSubmit()"
-                        class="w-full bg-tut-blue hover:bg-blue-700 text-white py-3 rounded-lg font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center"
+                        class="w-full bg-tut-blue hover:bg-blue-700 text-white py-3 rounded-lg font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                         :class="{'animate-pulse': isLoading}">
                         <span x-show="!isLoading"><i class="fas fa-sign-in-alt mr-2"></i> Sign In</span>
                         <span x-show="isLoading" class="flex items-center"><i
@@ -329,14 +330,14 @@
         function loginApp() {
             return {
                 form: {
-                    studentNumber: '',
+                    email: '',
                     password: '',
                     rememberMe: false
                 },
                 errors: {},
                 isLoading: false,
                 showPassword: false,
-                studentNumberSuggestion: '',
+                emailSuggestion: '',
                 passwordStrengthColor: 'bg-gray-400',
                 loginProgress: 'Signing in...',
                 liveStats: {
@@ -370,17 +371,35 @@
                     return "Good evening!";
                 },
 
-                validateStudentNumberFormat() {
-                    const num = this.form.studentNumber;
-                    if (num.length > 0 && num.length < 8) {
-                        this.studentNumberSuggestion = '💡 TUT student numbers are typically 9-11 digits';
-                    } else {
-                        this.studentNumberSuggestion = '';
+                validateEmail() {
+                    const email = this.form.email.toLowerCase();
+                    
+                    // Clear previous suggestions
+                    this.emailSuggestion = '';
+                    
+                    // Basic email format validation
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    
+                    if (email.length > 0 && !emailRegex.test(email)) {
+                        if (!email.includes('@')) {
+                            this.emailSuggestion = '💡 Don\'t forget the @ symbol';
+                        } else if (!email.includes('.')) {
+                            this.emailSuggestion = '💡 Email should include a domain like .ac.za or .com';
+                        }
+                        return;
+                    }
+                    
+                    // Check if it's a TUT email format
+                    if (email.length > 0 && emailRegex.test(email)) {
+                        if (!email.includes('tut.ac.za') && !email.includes('@student.tut.ac.za')) {
+                            this.emailSuggestion = '💡 Use your TUT email (e.g., student@tut.ac.za)';
+                        }
                     }
                 },
 
-                isValidStudentNumber() {
-                    return this.form.studentNumber.length >= 8 && /^\d+$/.test(this.form.studentNumber);
+                isValidEmail() {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    return emailRegex.test(this.form.email);
                 },
 
                 checkPasswordStrength() {
@@ -399,7 +418,7 @@
                 },
 
                 canSubmit() {
-                    return this.form.studentNumber.length >= 8 && this.form.password.length >= 6;
+                    return this.isValidEmail() && this.form.password.length >= 6;
                 },
 
                 showToast(message, type = 'success') {
@@ -411,12 +430,14 @@
                     this.errors = {};
                     this.isLoading = true;
 
-                    if (!this.isValidStudentNumber()) {
-                        this.errors.studentNumber = 'Please enter a valid student number';
+                    // Validate email
+                    if (!this.isValidEmail()) {
+                        this.errors.email = 'Please enter a valid email address';
                         this.isLoading = false;
                         return;
                     }
 
+                    // Validate password
                     if (this.form.password.length < 6) {
                         this.errors.password = 'Password must be at least 6 characters';
                         this.isLoading = false;
@@ -435,13 +456,14 @@
                         await new Promise(resolve => setTimeout(resolve, 800));
                     }
 
-                    if (this.form.studentNumber === '123456789' && this.form.password === 'password') {
+                    // Demo credentials for testing
+                    if (this.form.email === 'student@tut.ac.za' && this.form.password === 'password123') {
                         this.showToast('🎉 Welcome back! Redirecting to your dashboard...', 'success');
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';
                         }, 2000);
                     } else {
-                        this.showToast('❌ Invalid credentials. Try student number: 123456789, password: password', 'error');
+                        this.showToast('❌ Invalid credentials. Try email: student@tut.ac.za, password: password123', 'error');
                         this.isLoading = false;
                     }
                 }
