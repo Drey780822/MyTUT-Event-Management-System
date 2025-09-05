@@ -191,26 +191,6 @@
     <!-- Main Content -->
     <main class="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div class="w-full max-w-lg">
-            <!-- Live Statistics Banner -->
-            <div class="text-center mb-8">
-                <div class="glassmorphism rounded-xl px-6 py-3 inline-flex items-center space-x-4 text-white">
-                    <div class="flex items-center space-x-2 animate-pulse">
-                        <i class="fas fa-users text-tut-yellow"></i>
-                        <span class="text-sm font-medium" x-text="liveStats.users"></span>
-                    </div>
-                    <div class="h-4 w-px bg-white/30"></div>
-                    <div class="flex items-center space-x-2">
-                        <i class="fas fa-calendar text-tut-yellow"></i>
-                        <span class="text-sm font-medium" x-text="liveStats.events"></span>
-                    </div>
-                    <div class="h-4 w-px bg-white/30"></div>
-                    <div class="flex items-center space-x-2">
-                        <i class="fas fa-bolt text-tut-yellow animate-pulse"></i>
-                        <span class="text-xs text-tut-yellow font-semibold">LIVE</span>
-                    </div>
-                </div>
-            </div>
-
             <!-- Login Card -->
             <div
                 class="glassmorphism rounded-2xl shadow-xl p-8 transform hover:scale-[1.01] transition-all duration-300 animate-glow">
@@ -228,7 +208,7 @@
 
                 <!-- Tab System -->
                 <div class="flex glassmorphism rounded-xl p-1 mb-6">
-                    <a href="login.html"
+                    <a href="login_itspin.html"
                         class="flex-1 py-2 px-4 text-white/80 hover:text-white hover:bg-white/20 rounded-lg text-center transition-all duration-200">ITS
                         Login
                         Account</a>
@@ -243,7 +223,7 @@
                     <!-- iTS Field -->
                     <div class="relative">
                         <label class="block text-sm font-medium text-white/90 mb-1 flex items-center gap-2">
-                            <i class="fas fa-id-card text-tut-yellow"></i> Student Number
+                            <i class="fas fa-id-card text-tut-yellow"></i> Student Email
                         </label>
                         <div class="relative">
                             <input type="text" minlength="9" maxlength="9" inputmode="numeric" pattern="\d{9}"
@@ -268,7 +248,7 @@
                     <!-- Password Field -->
                     <div class="relative">
                         <label class="block text-sm font-medium text-white/90 mb-1 flex items-center gap-2">
-                            <i class="fas fa-lock text-tut-yellow"></i>PIN
+                            <i class="fas fa-lock text-tut-yellow"></i>Password
                         </label>
                         <div class="relative">
                             <input :type="showPassword ? 'text' : 'password'" x-model="form.password"
