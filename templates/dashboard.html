@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - myTUT Events</title>
-  <link href="Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
-
+  <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon"
+    type="image/vnd.microsoft.icon" />
   <!-- Fonts and Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet" />
@@ -218,7 +218,8 @@
     class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-tut-blue to-blue-800 z-50 lg:hidden">
     <div class="flex items-center justify-between p-6 border-b border-white/20">
       <div class="flex items-center">
-        <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-8 w-8 mr-3" />
+        <img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="myTUT Events Logo"
+          class="h-8 w-8 mr-3" />
         <span class="text-white text-lg font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
       </div>
       <button @click="showMobileMenu = false" class="text-white hover:text-tut-yellow transition-colors">
@@ -304,14 +305,16 @@
           </button>
 
           <div class="flex items-center">
-            <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3" />
+            <img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="myTUT Events Logo"
+              class="h-10 w-10 mr-3" />
             <span class="text-tut-blue text-xl font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
           </div>
           <div class="hidden lg:block">
             <h1 class="text-xl font-semibold text-gray-800">
-              <span x-text="getGreeting()"></span>, <span class="text-tut-blue" x-text="user.firstName"></span>! 👋
+              <span x-text="getGreeting()"></span>,
+              <span class="text-tut-blue">{{ student['first_name'] }}</span>! 👋
             </h1>
-            <p class="text-sm text-gray-600">Ready to discover amazing events?</p>
+            <p class="text-sm text-gray-600">Welcome back, {{ student['email'] }}</p>
           </div>
         </div>
 
@@ -452,7 +455,8 @@
     <aside class="hidden lg:block w-64 bg-gradient-to-b from-tut-blue to-blue-800 min-h-screen z-40">
       <div class="p-6 border-b border-white/20">
         <div class="flex items-center">
-          <img src="Images/favicon.ico" alt="myTUT Events Logo" class="h-8 w-8 mr-3" />
+          <img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="myTUT Events Logo"
+            class="h-8 w-8 mr-3" />
           <span class="text-white text-lg font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
         </div>
       </div>
@@ -1195,7 +1199,6 @@
     </div>
   </div>
   </div>
-
   <script>
     function dashboardApp() {
       return {
@@ -1215,35 +1218,35 @@
         },
 
         user: {
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@student.tut.ac.za',
-          studentNumber: '123456789'
+          firstName: '{{ student.first_name }}',
+          lastName: '{{ student.last_name }}',
+          email: '{{ student.email }}',
+          studentNumber: '{{ student.student_number }}'
         },
 
         stats: {
-          eventsAttended: 24,
-          attendedGrowth: '+12%',
-          upcomingEvents: 6,
-          nextEventTime: '2 hours',
-          communityRank: '#127',
-          rankPercentile: 15,
-          pointsEarned: 1250,
-          pointsToNextLevel: 250
+          eventsAttended: 0,
+          attendedGrowth: '+0%',
+          upcomingEvents: 0,
+          nextEventTime: 'No events',
+          communityRank: '#0',
+          rankPercentile: 0,
+          pointsEarned: 0,
+          pointsToNextLevel: 0
         },
 
-        monthlyProgress: 75,
+        monthlyProgress: 0,
         monthlyGoal: {
-          current: 3,
+          current: 0,
           target: 4
         },
 
-        currentMonth: 'December',
-        currentYear: 2024,
+        currentMonth: new Date().toLocaleString('default', { month: 'long' }),
+        currentYear: new Date().getFullYear(),
 
         liveActivity: {
-          online: '1,247 students online',
-          events: '5 events happening now'
+          online: 'Loading...',
+          events: 'Loading...'
         },
 
         toast: {
@@ -1252,226 +1255,93 @@
           type: 'success'
         },
 
-        notifications: [
-          {
-            id: 1,
-            title: 'New Event Available',
-            message: 'Tech Talk: AI in Education is now open for registration',
-            time: '5 minutes ago',
-            type: 'event',
-            icon: 'fas fa-calendar-plus',
-            read: false
-          },
-          {
-            id: 2,
-            title: 'Event Reminder',
-            message: 'Career Fair starts in 30 minutes',
-            time: '30 minutes ago',
-            type: 'reminder',
-            icon: 'fas fa-bell',
-            read: false
-          },
-          {
-            id: 3,
-            title: 'Achievement Unlocked',
-            message: 'You earned the "Event Enthusiast" badge!',
-            time: '2 hours ago',
-            type: 'achievement',
-            icon: 'fas fa-trophy',
-            read: true
-          }
-        ],
-
-        recentActivity: [
-          {
-            id: 1,
-            title: 'Attended Career Fair 2024',
-            description: 'Networking event with 50+ companies',
-            time: '2 hours ago',
-            type: 'attended',
-            icon: 'fas fa-briefcase'
-          },
-          {
-            id: 2,
-            title: 'Registered for Tech Workshop',
-            description: 'Python Programming Bootcamp',
-            time: '1 day ago',
-            type: 'registered',
-            icon: 'fas fa-calendar-check'
-          },
-          {
-            id: 3,
-            title: 'Earned Achievement',
-            description: 'Event Enthusiast badge unlocked',
-            time: '2 days ago',
-            type: 'achievement',
-            icon: 'fas fa-trophy'
-          }
-        ],
-
-        upcomingEvents: [
-          {
-            id: 1,
-            title: 'Study Group Session',
-            description: 'Mathematics study session',
-            date: 'Dec 15',
-            time: '14:00',
-            category: 'Academic'
-          },
-          {
-            id: 2,
-            title: 'Movie Night',
-            description: 'Student entertainment',
-            date: 'Dec 16',
-            time: '19:00',
-            category: 'Social'
-          },
-          {
-            id: 3,
-            title: 'Basketball Match',
-            description: 'Inter-faculty tournament',
-            date: 'Dec 17',
-            time: '16:00',
-            category: 'Sports'
-          }
-        ],
-
-        events: [
-          {
-            id: 1,
-            title: 'AI & Machine Learning Workshop',
-            description: 'Learn the fundamentals of AI and machine learning with hands-on exercises.',
-            date: 'December 20, 2024',
-            time: '10:00 AM - 4:00 PM',
-            location: 'Tech Lab A',
-            category: 'academic',
-            attendees: 45,
-            registered: false,
-            bookmarked: false,
-            icon: 'fas fa-robot'
-          },
-          {
-            id: 2,
-            title: 'Christmas Social Evening',
-            description: 'Join us for a festive evening with music, food, and great company.',
-            date: 'December 18, 2024',
-            time: '6:00 PM - 10:00 PM',
-            location: 'Main Hall',
-            category: 'social',
-            attendees: 120,
-            registered: true,
-            bookmarked: true,
-            icon: 'fas fa-music'
-          },
-          {
-            id: 3,
-            title: 'Inter-Faculty Soccer Tournament',
-            description: 'Compete with other faculties in this exciting soccer tournament.',
-            date: 'December 22, 2024',
-            time: '2:00 PM - 6:00 PM',
-            location: 'Sports Complex',
-            category: 'sports',
-            attendees: 80,
-            registered: false,
-            bookmarked: false,
-            icon: 'fas fa-futbol'
-          }
-        ],
-
-        myEvents: [
-          {
-            id: 2,
-            title: 'Christmas Social Evening',
-            description: 'Join us for a festive evening with music, food, and great company.',
-            date: 'December 18, 2024',
-            time: '6:00 PM - 10:00 PM',
-            location: 'Main Hall',
-            category: 'Social',
-            status: 'upcoming',
-            icon: 'fas fa-music'
-          },
-          {
-            id: 4,
-            title: 'Career Development Workshop',
-            description: 'Learn essential career skills and networking strategies.',
-            date: 'November 15, 2024',
-            time: '9:00 AM - 12:00 PM',
-            location: 'Conference Room B',
-            category: 'Academic',
-            status: 'attended',
-            rating: 4.5,
-            icon: 'fas fa-briefcase'
-          }
-        ],
-
+        notifications: [],
+        recentActivity: [],
+        upcomingEvents: [],
+        events: [],
+        myEvents: [],
         calendarDays: [],
+        communityDiscussions: [],
+        achievements: [],
+        analyticsData: {},
 
-        communityDiscussions: [
-          {
-            id: 1,
-            title: 'Best study strategies for final exams?',
-            preview: 'Looking for effective study techniques that worked for you...',
-            author: 'Sarah M.',
-            time: '2 hours ago',
-            replies: 15,
-            likes: 23
-          },
-          {
-            id: 2,
-            title: 'Anyone going to the AI workshop next week?',
-            preview: 'Would love to form a study group for the workshop...',
-            author: 'Mike K.',
-            time: '4 hours ago',
-            replies: 8,
-            likes: 12
-          }
-        ],
-
-        achievements: [
-          {
-            id: 1,
-            title: 'First Steps',
-            description: 'Attend your first event',
-            icon: 'fas fa-baby',
-            points: 50,
-            unlocked: true
-          },
-          {
-            id: 2,
-            title: 'Event Enthusiast',
-            description: 'Attend 10 events',
-            icon: 'fas fa-star',
-            points: 200,
-            unlocked: true
-          },
-          {
-            id: 3,
-            title: 'Social Butterfly',
-            description: 'Attend 5 social events',
-            icon: 'fas fa-users',
-            points: 150,
-            unlocked: false
-          }
-        ],
-
-        analyticsData: {
-          attendance: [45, 67, 89, 34, 56, 78, 92],
-          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          categories: [
-            { name: 'Academic', percentage: 35, color: '#0A2463' },
-            { name: 'Social', percentage: 28, color: '#E6A817' },
-            { name: 'Sports', percentage: 22, color: '#990000' },
-            { name: 'Cultural', percentage: 15, color: '#8B5CF6' }
-          ],
-          avgAttendance: '67',
-          avgRating: '4.2',
-          totalEvents: '25'
-        },
-
-        init() {
+        async init() {
+          await this.loadDashboardData();
           this.generateCalendar();
           this.updateLiveActivity();
           setInterval(() => this.updateLiveActivity(), 30000);
+        },
+
+        async loadDashboardData() {
+          try {
+            // Load stats
+            const statsResponse = await fetch('/api/dashboard/stats');
+            if (statsResponse.ok) {
+              const data = await statsResponse.json();
+              this.stats = data.stats;
+              this.monthlyGoal = data.monthlyGoal;
+            }
+
+            // Load events
+            await this.loadEvents();
+
+            // Load my events
+            await this.loadMyEvents();
+
+            // Load notifications
+            await this.loadNotifications();
+
+            // Load analytics
+            await this.loadAnalytics();
+
+          } catch (error) {
+            console.error('Error loading dashboard data:', error);
+            this.showToast('Error loading dashboard data', 'error');
+          }
+        },
+
+        async loadEvents() {
+          try {
+            const response = await fetch(`/api/events?category=${this.eventFilter}`);
+            if (response.ok) {
+              this.events = await response.json();
+            }
+          } catch (error) {
+            console.error('Error loading events:', error);
+          }
+        },
+
+        async loadMyEvents() {
+          try {
+            const response = await fetch(`/api/my-events?status=${this.myEventsFilter}`);
+            if (response.ok) {
+              this.myEvents = await response.json();
+            }
+          } catch (error) {
+            console.error('Error loading my events:', error);
+          }
+        },
+
+        async loadNotifications() {
+          try {
+            const response = await fetch('/api/notifications');
+            if (response.ok) {
+              this.notifications = await response.json();
+            }
+          } catch (error) {
+            console.error('Error loading notifications:', error);
+          }
+        },
+
+        async loadAnalytics() {
+          try {
+            const response = await fetch(`/api/analytics?period=${this.analyticsPeriod}`);
+            if (response.ok) {
+              this.analyticsData = await response.json();
+            }
+          } catch (error) {
+            console.error('Error loading analytics:', error);
+          }
         },
 
         getGreeting() {
@@ -1491,22 +1361,42 @@
         },
 
         generateCalendar() {
-          // Simple calendar generation for demo
           const days = [];
-          for (let i = 1; i <= 31; i++) {
+          const today = new Date();
+          const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+          const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+          // Add days from previous month
+          for (let i = firstDay.getDay() - 1; i >= 0; i--) {
+            const prevDate = new Date(firstDay);
+            prevDate.setDate(prevDate.getDate() - i - 1);
+            days.push({
+              date: prevDate.getDate(),
+              currentMonth: false,
+              hasEvent: false,
+              events: []
+            });
+          }
+
+          // Add current month days
+          for (let i = 1; i <= lastDay.getDate(); i++) {
+            const hasEvent = this.events.some(event => {
+              const eventDate = new Date(event.date);
+              return eventDate.getDate() === i && eventDate.getMonth() === today.getMonth();
+            });
+
             days.push({
               date: i,
               currentMonth: true,
-              hasEvent: Math.random() > 0.7,
-              events: Math.random() > 0.7 ? [
-                {
-                  id: i,
-                  title: 'Sample Event',
-                  time: '2:00 PM'
-                }
-              ] : []
+              hasEvent: hasEvent,
+              events: hasEvent ? [{
+                id: i,
+                title: 'Event',
+                time: '2:00 PM'
+              }] : []
             });
           }
+
           this.calendarDays = days;
         },
 
@@ -1516,23 +1406,52 @@
         },
 
         get filteredMyEvents() {
+          if (this.myEventsFilter === 'all') return this.myEvents;
           return this.myEvents.filter(event => event.status === this.myEventsFilter);
         },
 
-        toggleBookmark(eventId) {
-          const event = this.events.find(e => e.id === eventId);
-          if (event) {
-            event.bookmarked = !event.bookmarked;
-            this.showToast(event.bookmarked ? 'Event bookmarked!' : 'Event removed from bookmarks', 'success');
+        async toggleBookmark(eventId) {
+          try {
+            const response = await fetch(`/api/events/${eventId}/bookmark`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              await this.loadEvents(); // Reload events to update UI
+              this.showToast(result.action === 'added' ? 'Event bookmarked!' : 'Bookmark removed!', 'success');
+            }
+          } catch (error) {
+            console.error('Error toggling bookmark:', error);
+            this.showToast('Error updating bookmark', 'error');
           }
         },
 
-        registerForEvent(eventId) {
-          const event = this.events.find(e => e.id === eventId);
-          if (event && !event.registered) {
-            event.registered = true;
-            event.attendees++;
-            this.showToast('Successfully registered for event!', 'success');
+        async registerForEvent(eventId) {
+          try {
+            const response = await fetch(`/api/events/${eventId}/register`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              if (result.success) {
+                await this.loadEvents(); // Reload events to update UI
+                await this.loadDashboardData(); // Update stats
+                this.showToast(result.message, 'success');
+              } else {
+                this.showToast(result.message, 'error');
+              }
+            }
+          } catch (error) {
+            console.error('Error registering for event:', error);
+            this.showToast('Error registering for event', 'error');
           }
         },
 
@@ -1540,14 +1459,14 @@
           const notification = this.notifications.find(n => n.id === notificationId);
           if (notification) {
             notification.read = true;
+            // In a real app, you'd update this on the server too
           }
         },
 
         handleLogout() {
-          // Add logout logic here
           this.showToast('Logging out...', 'success');
           setTimeout(() => {
-            window.location.href = 'login.html';
+            window.location.href = '/logout';
           }, 1000);
         },
 
@@ -1562,8 +1481,7 @@
           }, 3000);
         },
 
-        // Search functionality
-        search() {
+        async search() {
           this.searchResults = [];
           if (this.searchQuery.length < 3) return;
 
@@ -1604,23 +1522,6 @@
             }
           });
 
-          // Search in community discussions
-          this.communityDiscussions.forEach(discussion => {
-            if (
-              discussion.title.toLowerCase().includes(query) ||
-              discussion.preview.toLowerCase().includes(query) ||
-              discussion.author.toLowerCase().includes(query)
-            ) {
-              results.push({
-                id: discussion.id,
-                title: discussion.title,
-                date: discussion.time,
-                icon: 'fas fa-comments',
-                type: 'discussion'
-              });
-            }
-          });
-
           this.searchResults = results;
         },
 
@@ -1632,42 +1533,27 @@
             const event = this.events.find(e => e.id === result.id);
             if (event) {
               this.currentSection = 'events';
-              this.eventFilter = 'all'; // Reset filter to show all events
+              this.eventFilter = 'all';
               this.showToast(`Navigating to event: ${event.title}`, 'info');
             }
           } else if (result.type === 'my-event') {
             const event = this.myEvents.find(e => e.id === result.id);
             if (event) {
               this.currentSection = 'my-events';
-              this.myEventsFilter = 'upcoming'; // Reset filter to show upcoming events
+              this.myEventsFilter = 'upcoming';
               this.showToast(`Navigating to my event: ${event.title}`, 'info');
-            }
-          } else if (result.type === 'discussion') {
-            const discussion = this.communityDiscussions.find(d => d.id === result.id);
-            if (discussion) {
-              this.currentSection = 'community';
-              this.showToast(`Navigating to discussion: ${discussion.title}`, 'info');
             }
           }
         },
 
-        saveProfile() {
+        async saveProfile() {
           // Simulate saving profile data
           this.showToast('Profile saved successfully!', 'success');
           // In a real app, you would send this data to the server
         },
 
-        updateAnalytics() {
-          // Update analytics based on selected period
-          const periods = {
-            week: { attendance: [45, 67, 89, 34, 56, 78, 92], labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
-            month: { attendance: [120, 145, 167, 189, 134, 156, 178, 192, 145, 167, 189, 134, 156, 178, 192, 145, 167, 189, 134, 156, 178, 192, 145, 167, 189, 134, 156, 178, 192, 145], labels: Array.from({ length: 30 }, (_, i) => i + 1) },
-            year: { attendance: [1200, 1450, 1670, 1890, 1340, 1560, 1780, 1920, 1450, 1670, 1890, 1340], labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'] }
-          };
-
-          const data = periods[this.analyticsPeriod];
-          this.analyticsData.attendance = data.attendance;
-          this.analyticsData.labels = data.labels;
+        async updateAnalytics() {
+          await this.loadAnalytics();
         }
       }
     }

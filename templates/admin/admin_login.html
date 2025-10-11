@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon"
+        type="image/vnd.microsoft.icon" />
+    <title>Admin Login - MyTUT Events</title>
+
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tut-blue": "#0A2463",
+                        "tut-red": "#990000",
+                        "tut-yellow": "#E6A817",
+                        "dark-bg": "#121212",
+                        "dark-card": "#1E1E1E",
+                    },
+                    fontFamily: {
+                        sans: ["Poppins", "sans-serif"],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        :root {
+            --blue-primary: #4322b9;
+            --red-primary: #b92222;
+            --yellow-primary: #dbca05;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            color: #333;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .btn {
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--yellow-primary);
+            color: #333;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #c4b504;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: var(--blue-primary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #3a1ea0;
+        }
+
+        .btn-accent {
+            background-color: var(--yellow-primary);
+            color: #333;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+        }
+
+        .btn-accent:hover {
+            background-color: #c4b504;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background-color: var(--red-primary);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #a31e1e;
+        }
+
+        .header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .footer {
+            background-color: var(--blue-primary);
+            color: white;
+        }
+
+        .card,
+        .event-card {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .card:hover,
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .tab-active {
+            color: var(--blue-primary) !important;
+            border-bottom: 3px solid var(--blue-primary);
+            font-weight: 600;
+        }
+
+        .landing-banner {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6),
+                rgba(0, 0, 0, 0.6)),
+            url("{{ url_for('static', filename='Images/EMACAMPUSV3.jpg') }}");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border-radius: 6px;
+            color: white;
+            font-weight: 500;
+            z-index: 1001;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+            max-width: 300px;
+        }
+
+        .toast.success {
+            background-color: #2ecc71;
+        }
+
+        .toast.error {
+            background-color: var(--red-primary);
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        .mobile-menu {
+            display: none;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .auth-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        .tut-badge {
+            background: linear-gradient(135deg, #0A2463 0%, #1a365d 100%);
+        }
+
+        .input-field {
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            box-shadow: 0 0 0 3px rgba(230, 168, 23, 0.3);
+        }
+
+        .toggle-forms {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-slider {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .form-page {
+            min-width: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(230, 168, 23, 0.5);
+            border-radius: 50%;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body x-data="{ mobileMenuOpen: false }" class="auth-container relative overflow-x-hidden">
+    <!-- Header -->
+    <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between py-4">
+                <a href="{{ url_for('index') }}" class="flex items-center">
+                    <img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="myTUT Events Logo"
+                        class="h-10 w-10 mr-3" />
+                    <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
+                </a>
+
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                    <i class="fas fa-bars text-gray-600 text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 transform -translate-y-4"
+            x-transition:enter-end="opacity-100 transform translate-y-0"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100 transform translate-y-0"
+            x-transition:leave-end="opacity-0 transform -translate-y-4"
+            class="mobile-menu md:hidden bg-white border-t border-gray-200 shadow-lg">
+            <div class="container mx-auto px-4 py-4">
+                <ul class="space-y-3">
+                    <li><a href="{{ url_for('index') }}" class="block py-2 text-tut-blue font-semibold">Home</a></li>
+                    <li><a href="{{ url_for('about') }}" class="block py-2 text-gray-700 hover:text-tut-blue">About</a>
+                    </li>
+                    <li><a href="{{ url_for('upcoming_events') }}"
+                            class="block py-2 text-gray-700 hover:text-tut-blue">Upcoming
+                            Events</a></li>
+                    <li><a href="{{ url_for('past_events') }}" class="block py-2 text-gray-700 hover:text-tut-blue">Past
+                            Events</a>
+                    </li>
+                    <li><a href="{{ url_for('gallery') }}"
+                            class="block py-2 text-gray-700 hover:text-tut-blue">Gallery</a></li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Background Particles -->
+    <div class="particles absolute inset-0 overflow-hidden">
+        <div class="particle floating" style="top: 20%; left: 10%; animation-delay: 0s; animation-duration: 15s;"></div>
+        <div class="particle floating" style="top: 60%; left: 80%; animation-delay: 2s; animation-duration: 12s;"></div>
+        <div class="particle floating" style="top: 70%; left: 25%; animation-delay: 4s; animation-duration: 18s;"></div>
+        <div class="particle floating" style="top: 10%; left: 50%; animation-delay: 1s; animation-duration: 14s;"></div>
+        <div class="particle floating" style="top: 50%; left: 90%; animation-delay: 3s; animation-duration: 16s;"></div>
+    </div>
+
+    <div class="container mx-auto px-4 py-12 flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-4xl flex flex-col md:flex-row rounded-2xl overflow-hidden shadow-2xl auth-card">
+            <!-- Left side - Branding -->
+            <div class="w-full md:w-2/5 tut-badge text-white p-10 flex flex-col justify-center">
+                <div class="text-center mb-8">
+                    <img src="{{ url_for('static', filename='images/TUT logo.png') }}" alt="TUT Logo"
+                        class="h-16 mx-auto mb-4 rounded-lg">
+                    <h1 class="text-3xl font-bold">MyTUT<span class="text-tut-yellow">Events</span></h1>
+                    <p class="mt-2 text-blue-200">Tshwane University of Technology</p>
+                </div>
+
+                <div class="mt-8 space-y-4">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-calendar-check text-tut-yellow"></i>
+                        </div>
+                        <p>Manage university events</p>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-users text-tut-yellow"></i>
+                        </div>
+                        <p>Track attendance & engagement</p>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-chart-line text-tut-yellow"></i>
+                        </div>
+                        <p>Analyze event performance</p>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center text-blue-200 text-sm">
+                    <p>© 2025 Tshwane University of Technology</p>
+                    <p class="mt-1">All rights reserved</p>
+                </div>
+            </div>
+
+            <!-- Right side - Login Form -->
+            <div class="w-full md:w-3/5 bg-white p-8 md:p-10">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Admin Login</h2>
+                <p class="text-gray-600 mb-8">Sign in to manage events and registrations</p>
+
+                <form id="loginForm" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Staff ID</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" required id="username" name="username"
+                                class="input-field w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow"
+                                placeholder="Enter your Staff ID">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="password" name="password" required
+                                class="input-field w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow"
+                                placeholder="Enter your password">
+                            <button type="button"
+                                class="absolute right-3 top-3 text-gray-400 hover:text-gray-600 toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="mt-2 flex justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="remember" name="rememberMe"
+                                    class="h-4 w-4 text-tut-blue focus:ring-tut-blue border-gray-300 rounded">
+                                <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                            </div>
+                            <a href="#" class="text-sm text-tut-blue hover:underline">Forgot password?</a>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="submit"
+                            class="w-full bg-tut-blue hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg">
+                            Sign In
+                        </button>
+                    </div>
+                    <div id="errorMessage"
+                        class="hidden bg-red-500/20 border border-red-500 text-red-700 px-4 py-3 rounded-lg text-sm">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Toggle password visibility
+            const togglePasswordButtons = document.querySelectorAll('.toggle-password');
+            togglePasswordButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const input = this.previousElementSibling;
+                    const icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        icon.classList.replace('fa-eye', 'fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        icon.classList.replace('fa-eye-slash', 'fa-eye');
+                    }
+                });
+            });
+
+            // Show toast notification
+            function showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                try {
+                    const response = await fetch('/admin/login', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const result = await response.json();
+
+
+                    const errorMessage = document.getElementById('errorMessage');
+                    if (result.success) {
+                        errorMessage.classList.add('hidden');
+                        showToast(result.message, 'success');
+                        setTimeout(() => {
+                            window.location.href = result.redirect;
+                        }, 1000);
+                    } else {
+                        errorMessage.textContent = result.message;
+                        errorMessage.classList.remove('hidden');
+                        showToast(result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error during login:', error);
+                    const errorMessage = document.getElementById('errorMessage');
+                    errorMessage.textContent = 'An error occurred. Please try again.';
+                    errorMessage.classList.remove('hidden');
+                    showToast('An error occurred. Please try again.', 'error');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

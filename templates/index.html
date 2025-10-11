@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="/Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+  <link href="{{ url_for('static', filename='Images/favicon.ico') }}" rel="shortcut icon"
+    type="image/vnd.microsoft.icon" />
   <title>myTUT Events</title>
 
   <!-- Fonts and Icons -->
@@ -139,8 +140,8 @@
 
     .landing-banner {
       background-image: linear-gradient(rgba(0, 0, 0, 0.6),
-          rgba(0, 0, 0, 0.6)),
-        url("/Images/EMACAMPUSV3.jpg");
+        rgba(0, 0, 0, 0.6)),
+      url("{{ url_for('static', filename='Images/EMACAMPUSV3.jpg') }}");
       background-size: cover;
       background-position: center;
     }
@@ -227,19 +228,20 @@
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between py-4">
         <!-- Logo -->
-        <a href="index.html" class="flex items-center">
-          <img src="/Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3" />
+        <a href="{{ url_for('index') }}" class="flex items-center">
+          <img src="{{ url_for('static', filename='Images/favicon.ico') }}" alt="myTUT Events Logo"
+            class="h-10 w-10 mr-3" />
           <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
         </a>
 
         <!-- Desktop Navigation -->
         <nav class="hidden md:block">
           <ul class="flex items-center space-x-8">
-            <li><a href="index.html"
+            <li><a href="{{ url_for('index') }}"
                 class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Home</a>
             </li>
             <li>
-              <a href="about.html"
+              <a href="{{ url_for('about') }}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 About
                 <span
@@ -247,7 +249,7 @@
               </a>
             </li>
             <li>
-              <a href="upcoming_events.html"
+              <a href="{{ url_for('upcoming_events') }}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 Upcoming Events
                 <span
@@ -255,7 +257,7 @@
               </a>
             </li>
             <li>
-              <a href="past_events.html"
+              <a href="{{ url_for('past_events') }}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 Past Events
                 <span
@@ -263,7 +265,7 @@
               </a>
             </li>
             <li>
-              <a href="gallery.html"
+              <a href="{{ url_for('gallery') }}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 Gallery
                 <span
@@ -272,8 +274,7 @@
             </li>
             <li>
               <div class="flex items-center space-x-3">
-
-                <button onclick="window.location.href='login_itspin.html'"
+                <button id="loginbtn"
                   class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
                   <i class="fas fa-rocket"></i>
                   Join Now
@@ -300,25 +301,25 @@
         x-transition:leave-end="opacity-0 transform -translate-y-4"
         class="md:hidden bg-white border-t border-gray-200 shadow-lg">
         <div class="py-4 space-y-1">
-          <a href="javascript:void(0)"
+          <a href="{{ url_for('about') }}"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-info-circle mr-3 w-5"></i>About
           </a>
-          <a href="javascript:void(0)"
+          <a href="{{ url_for('upcoming_events') }}"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-calendar-alt mr-3 w-5"></i>Upcoming Events
           </a>
-          <a href="javascript:void(0)"
+          <a href="{{ url_for('past_events') }}"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-history mr-3 w-5"></i>Past Events
           </a>
-          <a href="javascript:void(0)"
+          <a href="{{ url_for('gallery') }}"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-images mr-3 w-5"></i>Gallery
           </a>
           <hr class="my-2" />
 
-          <button onclick="window.location.href='login.html'"
+          <button id="loginbtn"
             class="mx-4 my-2 w-auto bg-gradient-to-r from-tut-yellow to-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2">
             <i class="fas fa-rocket"></i>Join Now
           </button>
@@ -361,14 +362,14 @@
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <button
             class="btn btn-primary text-lg px-8 py-4 shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
-            onclick="window.location.href='upcoming_events.html'">
+            id="upcoming_event">
             <i class="fas fa-search"></i>
             Browse Events
           </button>
 
-          <button @click="showSignupModal = true"
-            class="bg-transparent border-2 border-white text-white font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-tut-blue transition-all duration-300 flex items-center gap-3 backdrop-blur-sm"
-            onclick="window.location.href='login_itspin.html'">
+          <button
+            class="bg-white border-2 border-white text-tut-blue font-semibold px-8 py-4 rounded-lg hover:bg-white hover:text-tut-blue transition-all duration-300 flex items-center gap-3 backdrop-blur-sm"
+            id="loginbtn3">
             <i class="fas fa-rocket"></i>
             Join MyTUT Events
           </button>
@@ -458,126 +459,110 @@
         <!-- Upcoming Events Tab -->
         <div x-show="currentTab === 'upcoming'" class="animate-fade-in">
           <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Event Card 1 -->
+            {% if events %}
+            {% for event in events %}
+            <!-- Event Card -->
             <div class="event-card">
-              <div class="h-48 bg-cover bg-center" style="background-image: url('Images/apple-touch-icon.png')"></div>
+              <div class="h-48 bg-cover bg-center"
+                style="background-image: url('{{ url_for('static', filename=event.event_image) }}')">
+              </div>
               <div class="p-6">
                 <div class="flex justify-between items-start mb-4">
                   <div>
-                    <h3 class="font-bold text-xl mb-1">Annual Tech Summit</h3>
+                    <h3 class="font-bold text-xl mb-1">{{ event.title }}</h3>
                     <p class="text-gray-600 dark:text-gray-300 text-sm">
-                      ICT Faculty
+                      {{ event.faculty }}
                     </p>
                   </div>
-                  <span class="bg-tut-blue text-white text-xs px-2 py-1 rounded-full">60 seats left</span>
+                  <span class="bg-tut-blue text-white text-xs px-2 py-1 rounded-full">
+                    {{ event.seats_left }} seats left
+                  </span>
                 </div>
                 <div class="flex gap-2 mb-4">
                   <div class="flex items-center text-gray-600 dark:text-gray-300">
                     <i class="far fa-calendar-alt mr-2"></i>
-                    <span>May 15, 2025</span>
+                    <span>{{ event.event_date }}</span>
                   </div>
                   <div class="flex items-center text-gray-600 dark:text-gray-300">
                     <i class="far fa-clock mr-2"></i>
-                    <span>09:00 AM</span>
+                    <span>{{ event.event_time }}</span>
                   </div>
                 </div>
                 <div class="flex items-center text-gray-600 dark:text-gray-300 mb-6">
                   <i class="fas fa-map-marker-alt mr-2"></i>
-                  <span>Building 3 Auditorium, Pretoria Campus</span>
+                  <span>{{ event.location }}</span>
                 </div>
-                <button
-                  @click="isLoggedIn ? (userRole === 'student' ? true : showLoginModal = true) : showLoginModal = true"
-                  class="btn btn-primary w-full">
+                <a href="{{ url_for('register', event_id=event.event_id) }}" class="btn btn-primary w-full">
                   Register Now
-                </button>
+                </a>
               </div>
             </div>
+            {% endfor %}
 
-            <!-- Event Card 2 -->
-            <div class="event-card">
-              <div class="h-48 bg-cover bg-center" style="
-                    background-image: url('https://cdn.pixabay.com/photo/2019/01/31/20/52/web-3967926_1280.jpg');
-                  "></div>
-              <div class="p-6">
-                <div class="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 class="font-bold text-xl mb-1">Career Fair 2025</h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                      Student Affairs
-                    </p>
-                  </div>
-                  <span class="bg-tut-yellow text-white text-xs px-2 py-1 rounded-full">120 seats left</span>
-                </div>
-                <div class="flex gap-2 mb-4">
-                  <div class="flex items-center text-gray-600 dark:text-gray-300">
-                    <i class="far fa-calendar-alt mr-2"></i>
-                    <span>June 3, 2025</span>
-                  </div>
-                  <div class="flex items-center text-gray-600 dark:text-gray-300">
-                    <i class="far fa-clock mr-2"></i>
-                    <span>10:00 AM</span>
-                  </div>
-                </div>
-                <div class="flex items-center text-gray-600 dark:text-gray-300 mb-6">
-                  <i class="fas fa-map-marker-alt mr-2"></i>
-                  <span>Main Hall, Soshanguve Campus</span>
-                </div>
-                <button
-                  @click="isLoggedIn ? (userRole === 'student' ? true : showLoginModal = true) : showLoginModal = true"
-                  class="btn btn-primary w-full">
-                  Register Now
-                </button>
-              </div>
+            {% else %}
+            <!-- No Events State -->
+            <div class="text-center mt-10"></div>
+            <div class="text-center py-16 animate-fade-in">
+              <i class="fas fa-calendar-times text-6xl text-gray-400 mb-6"></i>
+              <h3 class="text-2xl font-semibold mb-4 text-gray-600">
+                No Nearby Events
+              </h3>
+              <p class="text-gray-500 mb-8">
+                There are no upcoming events at the moment.
+              </p>
+              <a href="{{ url_for('upcoming_events') }}" class="btn btn-secondary">
+                View All Events
+              </a>
             </div>
-
-            <!-- Event Card 3 -->
-            <div class="event-card">
-              <div class="h-48 bg-cover bg-center" style="
-                    background-image: url('https://cdn.pixabay.com/photo/2016/11/23/15/48/audience-1853662_1280.jpg');
-                  "></div>
-              <div class="p-6">
-                <div class="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 class="font-bold text-xl mb-1">
-                      Arts & Culture Festival
-                    </h3>
-                    <p class="text-gray-600 dark:text-gray-300 text-sm">
-                      Faculty of Arts
-                    </p>
-                  </div>
-                  <span class="bg-tut-red text-white text-xs px-2 py-1 rounded-full">25 seats left</span>
-                </div>
-                <div class="flex gap-2 mb-4">
-                  <div class="flex items-center text-gray-600 dark:text-gray-300">
-                    <i class="far fa-calendar-alt mr-2"></i>
-                    <span>May 28, 2025</span>
-                  </div>
-                  <div class="flex items-center text-gray-600 dark:text-gray-300">
-                    <i class="far fa-clock mr-2"></i>
-                    <span>2:00 PM</span>
-                  </div>
-                </div>
-                <div class="flex items-center text-gray-600 dark:text-gray-300 mb-6">
-                  <i class="fas fa-map-marker-alt mr-2"></i>
-                  <span>Arts Theatre, Arts Campus</span>
-                </div>
-                <button
-                  @click="isLoggedIn ? (userRole === 'student' ? true : showLoginModal = true) : showLoginModal = true"
-                  class="btn btn-primary w-full">
-                  Register Now
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="text-center mt-10">
-            <button onclick="window.location.href='upcoming_events.html'" class="btn btn-secondary">View All
-              Events</button>
+            {% endif %}
           </div>
         </div>
+      </div>
+      <!-- Past Events Tab -->
+      <div x-show="currentTab === 'past'" class="animate-fade-in">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% if past_events %}
+          {% for event in past_events %}
+          <!-- Event Card -->
+          <div class="event-card">
+            <div class="h-48 bg-cover bg-center"
+              style="background-image: url('{{ url_for('static', filename=event.event_image) }}')">
+            </div>
+            <div class="p-6">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h3 class="font-bold text-xl mb-1">{{ event.title }}</h3>
+                  <p class="text-gray-600 dark:text-gray-300 text-sm">
+                    {{ event.faculty }}
+                  </p>
+                </div>
+                <span class="bg-gray-500 text-white text-xs px-2 py-1 rounded-full">
+                  {{ event.total_attendees }} Attended
+                </span>
+              </div>
+              <div class="flex gap-2 mb-4">
+                <div class="flex items-center text-gray-600 dark:text-gray-300">
+                  <i class="far fa-calendar-alt mr-2"></i>
+                  <span>{{ event.event_date }}</span>
+                </div>
+                <div class="flex items-center text-gray-600 dark:text-gray-300">
+                  <i class="far fa-clock mr-2"></i>
+                  <span>{{ event.event_time }}</span>
+                </div>
+              </div>
+              <div class="flex items-center text-gray-600 dark:text-gray-300 mb-6">
+                <i class="fas fa-map-marker-alt mr-2"></i>
+                <span>{{ event.location }}</span>
+              </div>
+              <button disabled class="btn bg-gray-400 text-white w-full cursor-not-allowed opacity-60">
+                Event Ended
+              </button>
+            </div>
+          </div>
+          {% endfor %}
 
-        <!-- Past Events Tab -->
-        <div x-show="currentTab === 'past'" class="animate-fade-in">
-          <div class="text-center py-16">
+          {% else %}
+          <div class="text-center py-16 col-span-full">
             <i class="fas fa-calendar-times text-6xl text-gray-400 mb-6"></i>
             <h3 class="text-2xl font-semibold mb-4 text-gray-600">
               Past Events Archive
@@ -585,24 +570,25 @@
             <p class="text-gray-500 mb-8">
               View all the amazing events that have taken place at TUT.
             </p>
-            <button class="btn btn-secondary">Explore Past Events</button>
+            <button id="past_events" class="btn btn-secondary">Explore Past Events</button>
           </div>
+          {% endif %}
         </div>
-
-        <!-- Organizers Tab -->
-        <div x-show="currentTab === 'organizers'" class="animate-fade-in">
-          <div class="text-center py-16">
-            <i class="fas fa-users text-6xl text-gray-400 mb-6"></i>
-            <h3 class="text-2xl font-semibold mb-4 text-gray-600">
-              Event Organizers
-            </h3>
-            <p class="text-gray-500 mb-8">
-              Connect with event organizers and departments across TUT
-              campuses.
-            </p>
-            <button class="btn btn-secondary">View Organizers</button>
-          </div>
+      </div>
+      <!-- Organizers Tab -->
+      <div x-show="currentTab === 'organizers'" class="animate-fade-in">
+        <div class="text-center py-16">
+          <i class="fas fa-users text-6xl text-gray-400 mb-6"></i>
+          <h3 class="text-2xl font-semibold mb-4 text-gray-600">
+            Event Organizers
+          </h3>
+          <p class="text-gray-500 mb-8">
+            Connect with event organizers and departments across TUT
+            campuses.
+          </p>
+          <button class="btn btn-secondary">View Organizers</button>
         </div>
+      </div>
       </div>
     </section>
 
@@ -618,8 +604,8 @@
           Technology.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <button onclick="window.location.href='login_itspin.html'" class="btn btn-accent">
-            Sign In Now
+          <button id="loginbtn2" class="btn btn-accent">
+            Log In Now
           </button>
           <button onclick="document.getElementById('events').scrollIntoView({ behavior: 'smooth' })"
             class="bg-white text-tut-blue font-medium px-6 py-3 rounded-lg hover:bg-gray-100 transition-all duration-300">
@@ -650,15 +636,15 @@
         <div>
           <h3 class="text-xl font-bold mb-4">Quick Links</h3>
           <ul class="space-y-2 text-gray-300">
-            <li><a href="index.html" class="hover:text-white">Home</a></li>
+            <li><a href="{{ url_for('index') }}" class="hover:text-white">Home</a></li>
             <li>
-              <a href="upcoming_events.html" class="hover:text-white">Upcoming Events</a>
+              <a href="{{ url_for('upcoming_events') }}" class="hover:text-white">Upcoming Events</a>
             </li>
             <li>
-              <a href="past_events.html" class="hover:text-white">Past Events</a>
+              <a href="{{ url_for('past_events') }}" class="hover:text-white">Past Events</a>
             </li>
             <li>
-              <a href="contact_us.html" class="hover:text-white">Contact Us</a>
+              <a href="{{url_for('contact_us')}}" class="hover:text-white">Contact Us</a>
             </li>
           </ul>
         </div>
@@ -690,6 +676,29 @@
       display: none !important;
     }
   </style>
+  <script>
+    document.getElementById("loginbtn").addEventListener("click", function () {
+      window.location.href = "{{ url_for('login_itspin') }}";
+    });
+    document.getElementById("loginbtn2").addEventListener("click", function () {
+      window.location.href = "{{ url_for('login_itspin') }}";
+    });
+    document.getElementById("loginbtn3").addEventListener("click", function () {
+      window.location.href = "{{ url_for('login_itspin') }}";
+    });
+    document.getElementById("upcoming_event").addEventListener("click", function () {
+      window.location.href = "{{ url_for('upcoming_events') }}";
+    });
+    document.getElementById("upcoming_event2").addEventListener("click", function () {
+      window.location.href = "{{ url_for('upcoming_events') }}";
+    });
+    document.getElementById("imagebox").style.backgroundImage = "url('{{ url_for('static', filename='Images/apple-touch-icon.png') }}')";
+
+    document.getElementById("past_events").addEventListener("click", function () {
+      window.location.href = "{{ url_for('past_events') }}";
+    });
+
+  </script>
 </body>
 
 </html>

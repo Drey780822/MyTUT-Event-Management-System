@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Login - myTUT Events</title>
-  <link href="/Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+  <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon"
+    type="image/vnd.microsoft.icon" />
 
   <!-- Fonts and Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -100,7 +101,8 @@
     }
 
     body {
-      background-image: linear-gradient(rgba(10, 36, 99, 0.8), rgba(10, 36, 99, 0.8)), url('Images/tut-1.webp');
+      background-image: linear-gradient(rgba(10, 36, 99, 0.8), rgba(10, 36, 99, 0.8)),
+      url("{{ url_for('static', filename='images/tut-1.webp') }}");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -109,85 +111,42 @@
 </head>
 
 <body class="font-sans min-h-screen relative overflow-x-hidden" x-data="loginApp()">
-
-  <!-- Animated Background Particles -->
-  <div class="particles">
-    <div class="particle" style="left: 10%; animation-delay: 0s; animation-duration: 7s;"></div>
-    <div class="particle" style="left: 25%; animation-delay: 1s; animation-duration: 10s;"></div>
-    <div class="particle" style="left: 35%; animation-delay: 2s; animation-duration: 6s;"></div>
-    <div class="particle" style="left: 45%; animation-delay: 3s; animation-duration: 8s;"></div>
-    <div class="particle" style="left: 55%; animation-delay: 4s; animation-duration: 9s;"></div>
-    <div class="particle" style="left: 65%; animation-delay: 0.5s; animation-duration: 11s;"></div>
-    <div class="particle" style="left: 75%; animation-delay: 1.5s; animation-duration: 7s;"></div>
-    <div class="particle" style="left: 85%; animation-delay: 2.5s; animation-duration: 12s;"></div>
-    <div class="particle" style="left: 95%; animation-delay: 3.5s; animation-duration: 9s;"></div>
-  </div>
-
   <!-- Header -->
   <header class="relative z-50 glassmorphism">
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between py-4">
         <!-- Logo -->
-        <a href="index.html" class="flex items-center">
-          <img src="/Images/favicon.ico" alt="myTUT Events Logo" class="h-12 w-12 mr-3" />
+        <a href="{{ url_for('index') }}" class="flex items-center">
+          <img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="myTUT Events Logo"
+            class="h-12 w-12 mr-3" />
           <span class="text-white text-2xl font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
         </a>
 
         <!-- Desktop Navigation -->
         <nav class="hidden md:block">
           <ul class="flex items-center space-x-8">
-            <li><a href="index.html"
+            <li><a href="{{ url_for('index') }}"
                 class="text-white hover:text-tut-yellow font-medium transition-colors duration-200">Home</a></li>
-            <li><a href="about.html"
+            <li><a href="{{ url_for('about') }}"
                 class="text-white hover:text-tut-yellow font-medium transition-colors duration-200">About</a></li>
-            <li><a href="upcoming_events.html"
+            <li><a href="{{ url_for('upcoming_events') }}"
                 class="text-white hover:text-tut-yellow font-medium transition-colors duration-200">Events</a></li>
-            <li><a href="gallery.html"
+            <li><a href="{{ url_for('gallery') }}"
                 class="text-white hover:text-tut-yellow font-medium transition-colors duration-200">Gallery</a></li>
             <li>
-              <a href="login_studemail.html"
+              <a href="{{ url_for('login_studemail') }}"
                 class="bg-tut-yellow text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
                 <i class="fas fa-user-plus"></i>Email Login
               </a>
             </li>
           </ul>
         </nav>
-
-        <!-- Mobile Menu Button -->
-        <button @click="mobileMenuOpen = !mobileMenuOpen"
-          class="md:hidden p-2 rounded-lg hover:bg-white/20 transition-colors">
-          <i class="fas fa-bars text-xl text-white"></i>
-        </button>
       </div>
     </div>
   </header>
-
-  <!-- Toast Notification -->
-  <div x-show="toast.show" x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0 transform translate-x-full"
-    x-transition:enter-end="opacity-100 transform translate-x-0" x-transition:leave="transition ease-in duration-200"
-    x-transition:leave-start="opacity-100 transform translate-x-0"
-    x-transition:leave-end="opacity-0 transform translate-x-full"
-    class="fixed top-6 right-6 z-50 p-4 rounded-xl shadow-xl max-w-sm glassmorphism border border-tut-yellow/30">
-    <div class="flex items-center">
-      <div class="flex-shrink-0">
-        <i :class="toast.type === 'success' ? 'fas fa-check-circle text-green-500' : 'fas fa-exclamation-triangle text-tut-red'"
-          class="text-xl mr-3"></i>
-      </div>
-      <div>
-        <p class="font-semibold text-white" x-text="toast.message"></p>
-      </div>
-      <button @click="toast.show = false" class="ml-4 text-gray-300 hover:text-white">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  </div>
-
   <!-- Main Content -->
   <main class="relative z-10 min-h-screen flex items-center justify-center p-4">
     <div class="w-full max-w-lg">
-      <!-- Live Statistics Banner -->
-
       <!-- Login Card -->
       <div
         class="glassmorphism rounded-2xl shadow-xl p-8 transform hover:scale-[1.01] transition-all duration-300 animate-glow">
@@ -209,26 +168,27 @@
             class="flex-1 py-2 px-4 bg-tut-blue text-white rounded-lg font-semibold transition-all duration-200 hover:bg-blue-700">
             USING ITS
             PIN</button>
-          <a href="login_studemail.html"
+          <a href="{{ url_for('login_studemail') }}"
             class="flex-1 py-2 px-4 text-white/80 hover:text-white hover:bg-white/20 rounded-lg text-center transition-all duration-200">Student
             Email Login
           </a>
         </div>
 
         <!-- Login Form -->
-        <form @submit.prevent="handleLogin()" class="space-y-5">
-          <!-- iTS Field -->
+        <form @submit.prevent="handleLogin" class="space-y-5">
+          <!-- Student Number Field -->
           <div class="relative">
             <label class="block text-sm font-medium text-white/90 mb-1 flex items-center gap-2">
               <i class="fas fa-id-card text-tut-yellow"></i> Student Number
             </label>
             <div class="relative">
-              <input type="text" minlength="9" maxlength="9" inputmode="numeric" pattern="\d{9}"
-                oninput="this.value.replace(/[^0-9]/g,'')" x-model="form.studentNumber"
-                @input="validateStudentNumberFormat()"
-                class="w-full px-4 py-3 glassmorphism text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 transition-all"
-                :class="{'ring-2 ring-green-400': isValidStudentNumber(), 'ring-2 ring-tut-red': form.studentNumber && !isValidStudentNumber()}"
-                placeholder="Enter your student number" autocomplete="username" required>
+              <input type="text" minlength="9" maxlength="9" inputmode="numeric" pattern="[0-9]{9}"
+                x-model="form.studentNumber" @input="validateStudentNumber()"
+                class="w-full px-4 py-3 glassmorphism text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 transition-all placeholder-white/60"
+                :class="{
+                  'ring-2 ring-green-400': isValidStudentNumber(), 
+                  'ring-2 ring-tut-red': form.studentNumber && !isValidStudentNumber()
+                }" placeholder="Enter your 9-digit student number" autocomplete="username" required>
               <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                 <i x-show="isValidStudentNumber()" class="fas fa-check text-green-400"></i>
                 <i x-show="form.studentNumber && !isValidStudentNumber()"
@@ -246,9 +206,9 @@
               <i class="fas fa-lock text-tut-yellow"></i>PIN
             </label>
             <div class="relative">
-              <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="checkPasswordStrength()"
-                class="w-full px-4 py-3 glassmorphism text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 transition-all"
-                placeholder="Enter your password" autocomplete="current-password" required>
+              <input :type="showPassword ? 'text' : 'password'" x-model="form.password"
+                class="w-full px-4 py-3 glassmorphism text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 transition-all placeholder-white/60"
+                placeholder="Enter your PIN" autocomplete="current-password" required>
               <button type="button" @click="showPassword = !showPassword"
                 class="absolute inset-y-0 right-0 pr-3 flex items-center text-white/70 hover:text-tut-yellow">
                 <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
@@ -265,18 +225,31 @@
               Keep me signed in
             </label>
             <a href="#" @click="showForgotPasswordModal = true"
-              class="text-tut-yellow hover:text-yellow-400 hover:underline">Forgot password?</a>
+              class="text-tut-yellow hover:text-yellow-400 hover:underline">
+              Forgot password?
+            </a>
           </div>
 
           <!-- Login Button -->
           <button type="submit" :disabled="isLoading || !canSubmit()"
-            class="w-full bg-tut-blue hover:bg-blue-700 text-white py-3 rounded-lg font-semibold cursor-pointer transition-all duration-200 flex items-center justify-center"
+            class="w-full bg-tut-blue hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center"
             :class="{'animate-pulse': isLoading}">
-            <span x-show="!isLoading"><i class="fas fa-sign-in-alt mr-2"></i> Sign In</span>
-            <span x-show="isLoading" class="flex items-center"><i class="fas fa-spinner animate-spin mr-2"></i> <span
-                x-text="loginProgress"></span></span>
+            <span x-show="!isLoading">
+              <i class="fas fa-sign-in-alt mr-2"></i> Sign In
+            </span>
+            <span x-show="isLoading" class="flex items-center">
+              <i class="fas fa-spinner animate-spin mr-2"></i>
+              <span x-text="loginProgress"></span>
+            </span>
           </button>
         </form>
+
+        <!-- Register Link -->
+        <div class="mt-6 text-center text-white/80">
+          <p>Don't have an account?
+            <a href="/register" class="text-tut-yellow hover:underline font-semibold">Register here</a>
+          </p>
+        </div>
       </div>
     </div>
   </main>
@@ -287,7 +260,9 @@
       <div class="grid md:grid-cols-3 gap-6">
         <div>
           <div class="flex items-center mb-3">
-            <img src="/Images/favicon.ico" alt="Logo" class="h-8 w-8 mr-2" />
+            <div class="h-8 w-8 mr-2 bg-tut-yellow rounded flex items-center justify-center">
+              <i class="fas fa-graduation-cap text-tut-blue"></i>
+            </div>
             <span class="text-lg font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
           </div>
           <p class="text-gray-300 text-sm">Join the TUT community and never miss an event!</p>
@@ -295,9 +270,9 @@
         <div>
           <h3 class="font-semibold mb-3 text-tut-yellow">Quick Links</h3>
           <ul class="space-y-2 text-sm text-gray-300">
-            <li><a href="#" class="hover:text-tut-yellow">About Us</a></li>
-            <li><a href="#" class="hover:text-tut-yellow">Events</a></li>
-            <li><a href="#" class="hover:text-tut-yellow">Contact</a></li>
+            <li><a href="/about" class="hover:text-tut-yellow">About Us</a></li>
+            <li><a href="/events" class="hover:text-tut-yellow">Events</a></li>
+            <li><a href="/contact" class="hover:text-tut-yellow">Contact</a></li>
           </ul>
         </div>
         <div>
@@ -321,98 +296,77 @@
         form: {
           studentNumber: '',
           password: '',
-          rememberMe: false
+          rememberMe: false,
         },
         errors: {},
         isLoading: false,
-        showPassword: false,
-        studentNumberSuggestion: '',
-        passwordStrengthColor: 'bg-gray-400',
         loginProgress: 'Signing in...',
-        liveStats: {
-          users: '12,459 students online',
-          events: '23 events this week'
-        },
-        toast: {
-          show: false,
-          message: '',
-          type: 'success'
-        },
+        showPassword: false,
+        showForgotPasswordModal: false,
+        studentNumberSuggestion: '',
 
         init() {
-          this.updateLiveStats();
-          setInterval(() => this.updateLiveStats(), 10000);
-        },
-
-        updateLiveStats() {
-          const users = Math.floor(12000 + Math.random() * 1000);
-          const events = Math.floor(20 + Math.random() * 10);
-          this.liveStats = {
-            users: `${users.toLocaleString()} students online`,
-            events: `${events} events this week`
-          };
+          console.log('Login app initialized');
         },
 
         getGreeting() {
           const hour = new Date().getHours();
-          if (hour < 12) return "Good morning!";
-          if (hour < 17) return "Good afternoon!";
-          return "Good evening!";
+          if (hour < 12) return 'Good morning! Ready to explore events?';
+          if (hour < 18) return 'Good afternoon! Let\'s see what\'s happening today.';
+          return 'Good evening! Time to catch up on events.';
         },
 
-        validateStudentNumberFormat() {
-          const num = this.form.studentNumber;
-          if (num.length > 0 && num.length < 8) {
-            this.studentNumberSuggestion = '💡 TUT student numbers are typically 9-11 digits';
-          } else {
-            this.studentNumberSuggestion = '';
+        validateStudentNumber() {
+          // Remove any non-numeric characters
+          this.form.studentNumber = this.form.studentNumber.replace(/[^0-9]/g, '');
+
+          // Limit to 9 characters
+          if (this.form.studentNumber.length > 9) {
+            this.form.studentNumber = this.form.studentNumber.slice(0, 9);
+          }
+
+          // Clear previous error
+          if (this.errors.studentNumber) {
+            delete this.errors.studentNumber;
           }
         },
 
         isValidStudentNumber() {
-          return this.form.studentNumber.length >= 8 && /^\d+$/.test(this.form.studentNumber);
-        },
-
-        checkPasswordStrength() {
-          const password = this.form.password;
-          let strength = 0;
-
-          if (password.length >= 8) strength++;
-          if (/[A-Z]/.test(password)) strength++;
-          if (/[0-9]/.test(password)) strength++;
-          if (/[^A-Za-z0-9]/.test(password)) strength++;
-
-          if (strength <= 1) this.passwordStrengthColor = 'bg-red-400';
-          else if (strength <= 2) this.passwordStrengthColor = 'bg-yellow-400';
-          else if (strength <= 3) this.passwordStrengthColor = 'bg-blue-400';
-          else this.passwordStrengthColor = 'bg-green-400';
+          return /^[0-9]{9}$/.test(this.form.studentNumber);
         },
 
         canSubmit() {
-          return this.form.studentNumber.length >= 8 && this.form.password.length >= 6;
+          return this.isValidStudentNumber() && this.form.password.length >= 4;
         },
 
-        showToast(message, type = 'success') {
-          this.toast = { show: true, message, type };
-          setTimeout(() => this.toast.show = false, 5000);
+        showToast(message, type) {
+          // Simple alert for now - you can replace with a proper toast system
+          const icon = type === 'success' ? '✅' : '❌';
+          alert(`${icon} ${message}`);
         },
 
         async handleLogin() {
+          console.log('Login form submitted');
+
+          // Reset errors
           this.errors = {};
           this.isLoading = true;
 
+          // Validate student number
           if (!this.isValidStudentNumber()) {
-            this.errors.studentNumber = 'Please enter a valid student number';
+            this.errors.studentNumber = 'Please enter a valid 9-digit student number';
             this.isLoading = false;
             return;
           }
 
-          if (this.form.password.length < 6) {
-            this.errors.password = 'Password must be at least 6 characters';
+          // Validate password
+          if (this.form.password.length < 4) {
+            this.errors.password = 'PIN must be at least 4 characters';
             this.isLoading = false;
             return;
           }
 
+          // Simulate login process
           const steps = [
             'Verifying credentials...',
             'Checking student status...',
@@ -420,18 +374,39 @@
             'Almost ready...'
           ];
 
-          for (let i = 0; i < steps.length; i++) {
-            this.loginProgress = steps[i];
-            await new Promise(resolve => setTimeout(resolve, 800));
-          }
+          try {
+            for (let i = 0; i < steps.length; i++) {
+              this.loginProgress = steps[i];
+              await new Promise(resolve => setTimeout(resolve, 800));
+            }
 
-          if (this.form.studentNumber === '123456789' && this.form.password === 'password') {
-            this.showToast('🎉 Welcome back! Redirecting to your dashboard...', 'success');
-            setTimeout(() => {
-              window.location.href = 'dashboard.html';
-            }, 2000);
-          } else {
-            this.showToast('❌ Invalid credentials. Try student number: 123456789, password: password', 'error');
+            // Send form data to Flask backend
+            const formData = new FormData();
+            formData.append('studentNumber', this.form.studentNumber);
+            formData.append('password', this.form.password);
+            formData.append('rememberMe', this.form.rememberMe);
+
+            const response = await fetch('/login', {
+              method: 'POST',
+              body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+              this.showToast(data.message, 'success');
+
+              // Redirect on success
+              setTimeout(() => {
+                window.location.href = data.redirect;
+              }, 1500);
+            } else {
+              this.showToast(data.message, 'error');
+            }
+          } catch (error) {
+            console.error('Login error:', error);
+            this.showToast('Network error. Please try again.', 'error');
+          } finally {
             this.isLoading = false;
           }
         }
