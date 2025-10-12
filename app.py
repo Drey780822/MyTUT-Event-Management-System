@@ -1,11 +1,37 @@
-from flask import Flask, request, jsonify, render_template, session, redirect, url_for
+from flask import Flask, request, jsonify, render_template, session, redirect, url_for, flash
 import psycopg2
 from psycopg2 import Error
 from datetime import datetime
+import qrcode
+import io
+import base64
+from datetime import datetime
+from flask_mail import Mail, Message
+from twilio.rest import Client
+import os
 
 
 app = Flask(__name__)
 app.secret_key = "abcd1234"  # Change this to a secure random key in production
+
+# Email Configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # or your email provider
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')  # Set environment variables
+app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASS')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('EMAIL_USER')
+
+# Twilio Configuration (for WhatsApp)
+app.config['TWILIO_ACCOUNT_SID'] = os.environ.get('TWILIO_ACCOUNT_SID')
+app.config['TWILIO_AUTH_TOKEN'] = os.environ.get('TWILIO_AUTH_TOKEN')
+app.config['TWILIO_WHATSAPP_NUMBER'] = os.environ.get('TWILIO_WHATSAPP_NUMBER')
+
+# Initialize extensions
+mail = Mail(app)
+
+# Initialize Twilio client
+twilio_client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
 
 # Database configuration
 DB_HOST = "localhost"
@@ -74,7 +100,7 @@ def admin_dashboard():
         result = cursor.fetchone()
         total_events = result[0] if result else 0
         
-        cursor.execute("SELECT COUNT(DISTINCT student_id) FROM event_registrations")
+        cursor.execute("SELECT COUNT(DISTINCT id) FROM event_registrations")
         result = cursor.fetchone()
         total_attendees = result[0] if result else 0
         
@@ -104,7 +130,7 @@ def admin_dashboard():
         cursor.execute("""
             SELECT s.first_name, s.last_name, s.student_number, e.title, er.registration_date, er.status, er.registration_id
             FROM event_registrations er
-            JOIN students s ON er.student_id = s.student_number
+            JOIN students s ON er.id = s.student_number
             JOIN events e ON er.event_id = e.event_id
             ORDER BY er.registration_date DESC
             LIMIT 10
@@ -314,6 +340,7 @@ def index():
     conn = get_db_connection()
     events_data = []
     past_events = []
+    organizers_data = []
     if conn:
         try:
             cursor = conn.cursor()
@@ -407,15 +434,46 @@ def index():
                     'description': event[8],
                     'total_attendees': event[9]
                 })
+                # Fetch organizers # Fetch organizers
+            cursor.execute("""
+                SELECT 
+        organizer_id,
+        name,
+        email,
+        phone,
+        department,
+        events_organized,
+        status
+    FROM organizers
+    WHERE status = 'active'
+    ORDER BY events_organized DESC
+    LIMIT 3;
+            """)
+            organizers = cursor.fetchall()
+            
+            for org in organizers:
+                organizers_data.append({
+                    'organizer_id': org[0],
+                    'name': org[1],
+                    'email': org[2],
+                    'phone': org[3],
+                    'department': org[4],
+                    'events_organized': org[5],
+                    'status': org[6]
+                })
               
         except Exception as e:
-            print(f"Error fetching events for homepage: {e}")
+            print(f"Error fetching data for homepage: {e}")
         finally:
             if cursor:
                 cursor.close()
             if conn:
                 conn.close()
-    return render_template('index.html', events=events_data, past_events=past_events)
+                
+    return render_template('index.html', 
+                         events=events_data, 
+                         past_events=past_events,
+                         organizers=organizers_data)
 @app.route('/login_itspin')
 def login_itspin():
     return render_template('login_itspin.html')
@@ -466,14 +524,105 @@ def register(event_id):
         flash('Event not found', 'error')
         return redirect(url_for('upcoming_events'))
     
+    # Check if event has available seats
+    if event_data['seats_left'] <= 0:
+        flash('This event is fully booked. No seats available.', 'error')
+        return redirect(url_for('index'))
+    
     return render_template('register_event.html', event=event_data)
 
+def authenticate_student(student_number, email):
+    """Authenticate student credentials"""
+    conn = get_db_connection()
+    if not conn:
+        return False, "Database connection error"
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT student_number, email 
+            FROM students 
+            WHERE student_number = %s AND email = %s AND is_active = TRUE
+        """, (student_number, email))
+        
+        student = cursor.fetchone()
+        if student:
+            return True, {
+                'id': student[0],
+                'email': student[1]
+            }
+        else:
+            return False, "Invalid student credentials or student not found"
+            
+    except Exception as e:
+        return False, f"Authentication error: {str(e)}"
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+def check_existing_registration(event_id, student_number):
+    """Check if student is already registered for the event"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT event_id,student_number
+            FROM event_registrations 
+            WHERE event_id = %s AND student_number = %s
+        """, (event_id, student_number))
+        
+        return cursor.fetchone() is not None
+        
+    except Exception as e:
+        print(f"Error checking registration: {e}")
+        return True
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+def check_event_availability(event_id):
+    """Check if event has available seats"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT max_attendees, 
+                   (SELECT COUNT(*) FROM event_registrations WHERE event_id = %s) as registered_count
+            FROM events 
+            WHERE event_id = %s
+        """, (event_id, event_id))
+        
+        result = cursor.fetchone()
+        if result:
+            max_attendees = result[0]
+            registered_count = result[1]
+            return registered_count < max_attendees
+        return False
+        
+    except Exception as e:
+        print(f"Error checking event availability: {e}")
+        return False
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 @app.route('/submit_registration', methods=['POST'])
 def submit_registration():
     if request.method == 'POST':
         # Get form data
         event_id = request.form.get('event_id')
-        full_name = request.form.get('fullName')
+        first_name = request.form.get('fullName')
         student_number = request.form.get('studentNumber')
         email = request.form.get('email')
         phone = request.form.get('phone')
@@ -482,8 +631,24 @@ def submit_registration():
         special_requirements = request.form.get('specialRequirements')
         
         # Validate required fields
-        if not all([event_id, full_name, student_number, email]):
+        if not all([event_id, first_name, student_number, email]):
             flash('Please fill in all required fields', 'error')
+            return redirect(url_for('register', event_id=event_id))
+        
+        # Step 1: Authenticate student
+        auth_success, auth_result = authenticate_student(student_number, email)
+        if not auth_success:
+            flash(f'Student authentication failed: {auth_result}', 'error')
+            return redirect(url_for('register', event_id=event_id))
+        
+        # Step 2: Check if student is already registered
+        if check_existing_registration(event_id, student_number):
+            flash('You have already registered for this event', 'error')
+            return redirect(url_for('register', event_id=event_id))
+        
+        # Step 3: Check event availability
+        if not check_event_availability(event_id):
+            flash('This event is fully booked. No seats available.', 'error')
             return redirect(url_for('register', event_id=event_id))
         
         conn = get_db_connection()
@@ -494,56 +659,68 @@ def submit_registration():
         try:
             cursor = conn.cursor()
             
-            # Check if student already registered for this event
-            cursor.execute("""
-                SELECT registration_id FROM event_registrations 
-                WHERE event_id = %s AND student_id = %s
-            """, (event_id, student_number))
-            
-            if cursor.fetchone():
-                flash('You have already registered for this event', 'error')
-                return redirect(url_for('register', event_id=event_id))
-            
-            # Check if there are available seats
-            cursor.execute("""
-                SELECT max_attendees, 
-                       (SELECT COUNT(*) FROM event_registrations WHERE event_id = %s) as current_registrations
-                FROM events WHERE event_id = %s
-            """, (event_id, event_id))
-            
-            event_capacity = cursor.fetchone()
-            if event_capacity and event_capacity[1] >= event_capacity[0]:
-                flash('This event is fully booked', 'error')
-                return redirect(url_for('register', event_id=event_id))
+            # Generate QR code data
+            qr_data = f"TUT-EVENT-{event_id}-{student_number}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
             
             # Insert registration
             cursor.execute("""
-                INSERT INTO event_registrations (event_id, student_id, full_name, email, phone, faculty, 
-                                              dietary_restrictions, special_requirements, registration_date, status)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'Registered')
-            """, (event_id, student_number, full_name, email, phone, faculty, 
-                  dietary_restrictions, special_requirements, datetime.now()))
+                INSERT INTO event_registrations (event_id, student_number, full_name, email, phone, faculty, 
+                                              dietary_restrictions, special_requirements, registration_date, status, qr_code_data)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'Registered', %s)
+            """, (event_id, student_number, first_name, email, phone, faculty, 
+                  dietary_restrictions, special_requirements, datetime.now(), qr_data))
             
             # Get event details for confirmation
             cursor.execute("""
-                SELECT title, event_date, event_time, location 
+                SELECT title, event_date, event_time, location, faculty
                 FROM events WHERE event_id = %s
             """, (event_id,))
             event_details = cursor.fetchone()
             
             conn.commit()
             
+            # Generate QR code
+            qr = qrcode.QRCode(version=1, box_size=10, border=5)
+            qr.add_data(qr_data)
+            qr.make(fit=True)
+            qr_img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Convert QR code to base64 for embedding in HTML
+            buffer = io.BytesIO()
+            qr_img.save(buffer, format='PNG')
+            qr_base64 = base64.b64encode(buffer.getvalue()).decode()
+            
+              # Helper function to format date/time for JSON serialization
+            def format_for_json(obj):
+                if hasattr(obj, 'strftime'):
+                    if hasattr(obj, 'hour'):  # time object
+                        return obj.strftime('%I:%M %p')
+                    else:  # date object
+                        return obj.strftime('%A, %B %d, %Y')
+                return str(obj) if obj is not None else ""
+            
             # Store registration details in session for confirmation page
             session['registration_details'] = {
                 'event_title': event_details[0],
-                'event_date': event_details[1],
-                'event_time': event_details[2],
+                'event_date': format_date(event_details[1]),  # Format date properly
+                'event_time': format_time(event_details[2]),  # Format time properly
                 'event_location': event_details[3],
-                'student_name': full_name,
+                'event_faculty': event_details[4],
+                'student_name': first_name,
                 'student_number': student_number,
                 'email': email,
-                'confirmation_code': f"TUT-{event_id}-{student_number[-4:]}"
+                'phone': phone,
+                'faculty': faculty,
+                'dietary_restrictions': dietary_restrictions,
+                'special_requirements': special_requirements,
+                'confirmation_code': f"TUT-{event_id}-{student_number[-4:]}",
+                'qr_code': qr_base64,
+                'qr_data': qr_data
             }
+            
+            # Send notifications (you'll need to implement these)
+            send_email_confirmation(session['registration_details'])
+            send_whatsapp_notification(session['registration_details'])
             
             return redirect(url_for('registration_confirmation'))
             
@@ -558,6 +735,39 @@ def submit_registration():
             if conn:
                 conn.close()
 
+def format_date(date_obj):
+    """Format date object for JSON serialization"""
+    if hasattr(date_obj, 'strftime'):
+        return date_obj.strftime('%A, %B %d, %Y')
+    return str(date_obj)
+
+def format_time(time_obj):
+    """Format time object for JSON serialization"""
+    if hasattr(time_obj, 'strftime'):
+        return time_obj.strftime('%I:%M %p')
+    return str(time_obj)            
+def send_email_confirmation(registration_details):
+    """Send email confirmation to student"""
+    try:
+        # Implement your email sending logic here
+        # You can use Flask-Mail, SMTPLib, or any email service
+        print(f"Email sent to {registration_details['email']} for event {registration_details['event_title']}")
+        return True
+    except Exception as e:
+        print(f"Error sending email: {e}")
+        return False
+
+def send_whatsapp_notification(registration_details):
+    """Send WhatsApp notification to student"""
+    try:
+        # Implement your WhatsApp API integration here
+        # You can use Twilio, WhatsApp Business API, etc.
+        print(f"WhatsApp notification sent to {registration_details['phone']} for event {registration_details['event_title']}")
+        return True
+    except Exception as e:
+        print(f"Error sending WhatsApp message: {e}")
+        return False
+                    
 @app.route('/registration_confirmation')
 def registration_confirmation():
     registration_details = session.get('registration_details')

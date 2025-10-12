@@ -577,18 +577,72 @@
       </div>
       <!-- Organizers Tab -->
       <div x-show="currentTab === 'organizers'" class="animate-fade-in">
+        {% if organizers %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {% for organizer in organizers %}
+          <!-- Organizer Card -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <!-- Icon/Avatar -->
+            <div class="flex justify-center mb-4">
+              <div class="w-20 h-20 bg-tut-blue rounded-full flex items-center justify-center">
+                <i class="fas fa-user-tie text-3xl text-white"></i>
+              </div>
+            </div>
+
+            <!-- Organizer Name -->
+            <h3 class="font-bold text-xl text-center mb-2 text-gray-800 dark:text-white">
+              {{ organizer.name }}
+            </h3>
+
+            <!-- Department -->
+            <p class="text-center text-gray-600 dark:text-gray-300 text-sm mb-4">
+              {{ organizer.department }}
+            </p>
+
+            <!-- Stats Badge -->
+            <div class="flex justify-center mb-4">
+              <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-semibold">
+                {{ organizer.events_organized }} Events Organized
+              </span>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="space-y-2 mb-4">
+              <div class="flex items-center text-gray-600 dark:text-gray-300 text-sm">
+                <i class="fas fa-envelope w-5 mr-2"></i>
+                <a href="mailto:{{ organizer.email }}" class="hover:text-tut-blue">
+                  {{ organizer.email }}
+                </a>
+              </div>
+              <div class="flex items-center text-gray-600 dark:text-gray-300 text-sm">
+                <i class="fas fa-phone w-5 mr-2"></i>
+                <span>{{ organizer.phone }}</span>
+              </div>
+            </div>
+
+            <!-- Contact Button -->
+            <button class="btn btn-primary w-full">
+              <i class="fas fa-paper-plane mr-2"></i>
+              Contact Organizer
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+
+        {% else %}
+        <!-- No Organizers State -->
         <div class="text-center py-16">
           <i class="fas fa-users text-6xl text-gray-400 mb-6"></i>
           <h3 class="text-2xl font-semibold mb-4 text-gray-600">
             Event Organizers
           </h3>
           <p class="text-gray-500 mb-8">
-            Connect with event organizers and departments across TUT
-            campuses.
+            Connect with event organizers and departments across TUT campuses.
           </p>
           <button class="btn btn-secondary">View Organizers</button>
         </div>
-      </div>
+        {% endif %}
       </div>
     </section>
 

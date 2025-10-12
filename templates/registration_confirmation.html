@@ -339,6 +339,10 @@
                                     <span class="font-semibold text-right">{{ registration.event_title }}</span>
                                 </div>
                                 <div class="flex justify-between border-b pb-3">
+                                    <span class="text-gray-600 font-medium">Faculty:</span>
+                                    <span class="font-semibold text-right">{{ registration.event_faculty }}</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-3">
                                     <span class="text-gray-600 font-medium">Date & Time:</span>
                                     <span class="font-semibold text-right">{{ registration.event_date }}, {{
                                         registration.event_time }}</span>
@@ -354,6 +358,10 @@
                                 <div class="flex justify-between border-b pb-3">
                                     <span class="text-gray-600 font-medium">Student Number:</span>
                                     <span class="font-semibold text-right">{{ registration.student_number }}</span>
+                                </div>
+                                <div class="flex justify-between border-b pb-3">
+                                    <span class="text-gray-600 font-medium">Email:</span>
+                                    <span class="font-semibold text-right">{{ registration.email }}</span>
                                 </div>
                                 <div class="flex justify-between border-b pb-3">
                                     <span class="text-gray-600 font-medium">Confirmation Code:</span>
@@ -402,29 +410,28 @@
 
                         <div class="ticket-qr">
                             <h3 class="text-xl font-semibold mb-6 text-center">Your Digital Ticket</h3>
-                            <div class="qr-placeholder mb-6">
+                            <div class="qr-code mb-6">
                                 <div class="text-center">
+                                    {% if registration.qr_code %}
+                                    <img src="data:image/png;base64,{{ registration.qr_code }}"
+                                        alt="QR Code for event registration"
+                                        class="w-48 h-48 mx-auto border-2 border-gray-300 rounded-lg">
+                                    {% else %}
                                     <div
-                                        class="w-40 h-40 bg-white mx-auto flex items-center justify-center border-2 border-gray-300 rounded-lg">
+                                        class="w-48 h-48 bg-white mx-auto flex items-center justify-center border-2 border-gray-300 rounded-lg">
                                         <span class="text-gray-500 text-sm">QR Code</span>
                                     </div>
-                                    <p class="text-xs text-gray-500 mt-2">Present at registration</p>
+                                    {% endif %}
+                                    <p class="text-xs text-gray-500 mt-2">Present this QR code at registration</p>
+                                    <p class="text-xs text-gray-400 mt-1">Confirmation: {{ registration.qr_data }}</p>
                                 </div>
                             </div>
 
-                            <div class="space-y-4">
-                                <button class="btn btn-primary w-full">
-                                    <i class="fas fa-download mr-2"></i> Download Ticket
+                            <div class="text-center">
+                                <button onclick="window.print()" class="btn btn-secondary mr-4">
+                                    <i class="fas fa-print mr-2"></i> Print Ticket
                                 </button>
-                                <button class="btn btn-secondary w-full">
-                                    <i class="fas fa-calendar-plus mr-2"></i> Add to Calendar
-                                </button>
-                                <a href="{{ url_for('upcoming_events') }}"
-                                    class="btn btn-accent w-full text-center block">
-                                    <i class="fas fa-search mr-2"></i> Browse More Events
-                                </a>
-                                <a href="{{ url_for('index') }}"
-                                    class="btn w-full text-center block bg-gray-100 hover:bg-gray-200">
+                                <a href="{{ url_for('index') }}" class="btn btn-primary">
                                     <i class="fas fa-home mr-2"></i> Back to Home
                                 </a>
                             </div>
@@ -433,6 +440,26 @@
                 </div>
             </div>
         </div>
+    </main>
+    <div class="space-y-4">
+        <button class="btn btn-primary w-full">
+            <i class="fas fa-download mr-2"></i> Download Ticket
+        </button>
+        <button class="btn btn-secondary w-full">
+            <i class="fas fa-calendar-plus mr-2"></i> Add to Calendar
+        </button>
+        <a href="{{ url_for('upcoming_events') }}" class="btn btn-accent w-full text-center block">
+            <i class="fas fa-search mr-2"></i> Browse More Events
+        </a>
+        <a href="{{ url_for('index') }}" class="btn w-full text-center block bg-gray-100 hover:bg-gray-200">
+            <i class="fas fa-home mr-2"></i> Back to Home
+        </a>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
     </main>
 
     <!-- Add your footer from index.html -->
