@@ -12,7 +12,7 @@ import os
 
 
 app = Flask(__name__)
-app.secret_key = "abcd1234"  # Change this to a secure random key in production
+app.secret_key = "abcd1234"
 
 # Email Configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # or your email provider
@@ -56,6 +56,10 @@ def get_db_connection():
 @app.route('/admin/')
 def admin_index():
     return render_template('admin/admin_login.html')
+
+@app.route('/admin/')
+def organiser_dashboard():
+    return render_template('admin/organiser_dashboard.html')
 	
 @app.route('/admin/login')
 def admin_login():

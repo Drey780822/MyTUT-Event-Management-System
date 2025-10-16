@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon"
         type="image/vnd.microsoft.icon" />
-    <title>Admin Login - MyTUT Events</title>
+    <title>Admin & Organizer Login - MyTUT Events</title>
 
     <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -24,6 +24,7 @@
                         "tut-blue": "#0A2463",
                         "tut-red": "#990000",
                         "tut-yellow": "#E6A817",
+                        "tut-green": "#10B981",
                         "dark-bg": "#121212",
                         "dark-card": "#1E1E1E",
                     },
@@ -43,6 +44,7 @@
             --blue-primary: #4322b9;
             --red-primary: #b92222;
             --yellow-primary: #dbca05;
+            --green-primary: #4322b9;
         }
 
         body {
@@ -160,7 +162,7 @@
         }
 
         .toast.success {
-            background-color: #2ecc71;
+            background-color: #4322b9;
         }
 
         .toast.error {
@@ -272,10 +274,89 @@
         .floating {
             animation: float 6s ease-in-out infinite;
         }
+
+        /* Role Toggle Switch */
+        .role-toggle {
+            display: flex;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .role-option {
+            flex: 1;
+            padding: 12px 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            z-index: 1;
+            position: relative;
+        }
+
+        .role-option.active {
+            color: white;
+        }
+
+        .role-slider {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            width: calc(50% - 8px);
+            background: var(--blue-primary);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            z-index: 0;
+        }
+
+        .role-slider.organizer {
+            transform: translateX(100%);
+            background: var(--green-primary);
+        }
+
+        .admin-features,
+        .organizer-features {
+            display: none;
+        }
+
+        .admin-features.active,
+        .organizer-features.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .feature-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(230, 168, 23, 0.1);
+            color: #8B5A00;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .feature-badge.admin {
+            background: rgba(10, 36, 99, 0.1);
+            color: #0A2463;
+        }
+
+        .feature-badge.organizer {
+            background: rgba(16, 185, 129, 0.1);
+            color: #065F46;
+        }
     </style>
 </head>
 
-<body x-data="{ mobileMenuOpen: false }" class="auth-container relative overflow-x-hidden">
+<body x-data="{ 
+    mobileMenuOpen: false,
+    userType: 'admin',
+    isLoading: false 
+}" class="auth-container relative overflow-x-hidden">
     <!-- Header -->
     <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
         <div class="container mx-auto px-4">
@@ -337,24 +418,46 @@
                     <p class="mt-2 text-blue-200">Tshwane University of Technology</p>
                 </div>
 
-                <div class="mt-8 space-y-4">
+                <!-- Dynamic Features based on User Type -->
+                <div x-show="userType === 'admin'" class="mt-8 space-y-4 animate-fade-in">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-calendar-check text-tut-yellow"></i>
+                            <i class="fas fa-shield-alt text-tut-yellow"></i>
                         </div>
-                        <p>Manage university events</p>
+                        <p>Full system administration</p>
                     </div>
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-users text-tut-yellow"></i>
+                            <i class="fas fa-users-cog text-tut-yellow"></i>
                         </div>
-                        <p>Track attendance & engagement</p>
+                        <p>Manage all events & organizers</p>
                     </div>
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-chart-line text-tut-yellow"></i>
+                            <i class="fas fa-chart-bar text-tut-yellow"></i>
                         </div>
-                        <p>Analyze event performance</p>
+                        <p>System analytics & reports</p>
+                    </div>
+                </div>
+
+                <div x-show="userType === 'organizer'" class="mt-8 space-y-4 animate-fade-in">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-chart-bar text-tut-yellow"></i>
+                        </div>
+                        <p>Create and manage your events</p>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-user-friends text-tut-yellow"></i>
+                        </div>
+                        <p>Track event registrations</p>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-tut-yellow/20 rounded-full flex items-center justify-center mr-4">
+                            <i class="fas fa-qrcode text-tut-yellow"></i>
+                        </div>
+                        <p>Check-in attendees</p>
                     </div>
                 </div>
 
@@ -366,22 +469,45 @@
 
             <!-- Right side - Login Form -->
             <div class="w-full md:w-3/5 bg-white p-8 md:p-10">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">Admin Login</h2>
-                <p class="text-gray-600 mb-8">Sign in to manage events and registrations</p>
+                <div class="text-center mb-2">
+                    <h2 class="text-2xl font-bold text-gray-800"
+                        x-text="userType === 'admin' ? 'Admin Portal' : 'Organizer Portal'"></h2>
+                    <p class="text-gray-600"
+                        x-text="userType === 'admin' ? 'System Administration' : 'Event Management'"></p>
+                </div>
+
+                <!-- Role Toggle Switch -->
+                <div class="role-toggle mb-8">
+                    <div class="role-slider" :class="{ 'organizer': userType === 'organizer' }"></div>
+                    <div class="role-option" :class="{ 'active': userType === 'admin' }" @click="userType = 'admin'">
+                        <i class="fas fa-shield-alt mr-2"></i>Admin
+                    </div>
+                    <div class="role-option" :class="{ 'active': userType === 'organizer' }"
+                        @click="userType = 'organizer'">
+                        <i class="fas fa-calendar-check mr-2"></i>Organizer
+                    </div>
+                </div>
 
                 <form id="loginForm" class="space-y-5">
+                    <!-- Hidden input to send user type -->
+                    <input type="hidden" name="user_type" x-model="userType">
+
+                    <!-- Username/Email Field -->
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Staff ID</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                            x-text="userType === 'admin' ? 'Staff ID' : 'Email Address'"></label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-user text-gray-400"></i>
+                                <i class="fas"
+                                    :class="userType === 'admin' ? 'fa-id-card text-gray-400' : 'fa-envelope text-gray-400'"></i>
                             </div>
                             <input type="text" required id="username" name="username"
                                 class="input-field w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-tut-yellow/50 focus:border-tut-yellow"
-                                placeholder="Enter your Staff ID">
+                                :placeholder="userType === 'admin' ? 'Enter your Staff ID' : 'Enter your Email'">
                         </div>
                     </div>
 
+                    <!-- Password Field -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <div class="relative">
@@ -406,14 +532,35 @@
                         </div>
                     </div>
 
+                    <!-- Submit Button -->
                     <div class="pt-2">
-                        <button type="submit"
-                            class="w-full bg-tut-blue hover:bg-blue-800 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg">
-                            Sign In
+                        <button type="submit" :disabled="isLoading"
+                            class="w-full flex items-center justify-center gap-2 font-semibold py-3 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg"
+                            :class="userType === 'admin' 
+                                ? 'bg-tut-blue hover:bg-blue-800 text-white' 
+                                : 'bg-tut-blue hover:bg-emerald-700 text-white'">
+                            <i class="fas"
+                                :class="isLoading ? 'fa-spinner fa-spin' : (userType === 'admin' ? 'fa-shield-alt' : 'fa-calendar-check')"></i>
+                            <span
+                                x-text="isLoading ? 'Signing In...' : (userType === 'admin' ? 'Admin Sign In' : 'Organizer Sign In')"></span>
                         </button>
                     </div>
+
+                    <!-- Error Message -->
                     <div id="errorMessage"
                         class="hidden bg-red-500/20 border border-red-500 text-red-700 px-4 py-3 rounded-lg text-sm">
+                    </div>
+
+                    <!-- Help Text -->
+                    <div class="text-center text-sm text-gray-600 mt-4">
+                        <p x-show="userType === 'admin'">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            For administrative access only
+                        </p>
+                        <p x-show="userType === 'organizer'">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            Contact admin to create organizer account
+                        </p>
                     </div>
                 </form>
             </div>
@@ -450,7 +597,14 @@
             // Login form submission
             document.getElementById('loginForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
+
                 const formData = new FormData(this);
+                const userType = formData.get('user_type');
+                const submitButton = this.querySelector('button[type="submit"]');
+
+                // Set loading state
+                Alpine.data().isLoading = true;
+                submitButton.disabled = true;
 
                 try {
                     const response = await fetch('/admin/login', {
@@ -458,7 +612,6 @@
                         body: formData
                     });
                     const result = await response.json();
-
 
                     const errorMessage = document.getElementById('errorMessage');
                     if (result.success) {
@@ -478,7 +631,23 @@
                     errorMessage.textContent = 'An error occurred. Please try again.';
                     errorMessage.classList.remove('hidden');
                     showToast('An error occurred. Please try again.', 'error');
+                } finally {
+                    // Reset loading state
+                    Alpine.data().isLoading = false;
+                    submitButton.disabled = false;
                 }
+            });
+
+            // Add some interactive effects
+            const inputs = document.querySelectorAll('.input-field');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function () {
+                    this.parentElement.classList.add('ring-2', 'ring-tut-yellow/30');
+                });
+
+                input.addEventListener('blur', function () {
+                    this.parentElement.classList.remove('ring-2', 'ring-tut-yellow/30');
+                });
             });
         });
     </script>

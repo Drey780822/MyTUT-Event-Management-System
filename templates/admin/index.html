@@ -4,7 +4,6 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
     <title>MyTUT Events - Tshwane University of Technology Event Platform</title>
 
     <!-- Fonts and Icons -->
@@ -23,8 +22,6 @@
                         "tut-blue": "#0A2463",
                         "tut-red": "#990000",
                         "tut-yellow": "#E6A817",
-                        "dark-bg": "#121212",
-                        "dark-card": "#1E1E1E",
                     },
                     fontFamily: {
                         sans: ["Poppins", "sans-serif"],
@@ -38,13 +35,6 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
-        /* Consolidated Styles */
-        :root {
-            --blue-primary: #4322b9;
-            --red-primary: #b92222;
-            --yellow-primary: #dbca05;
-        }
-
         body {
             font-family: "Poppins", sans-serif;
             color: #333;
@@ -52,172 +42,61 @@
             overflow-x: hidden;
         }
 
-        .btn {
-            font-weight: 500;
-            padding: 10px 20px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background-color: var(--yellow-primary);
-            color: #333;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-primary:hover {
-            background-color: #c4b504;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .btn-secondary {
-            background-color: var(--blue-primary);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #3a1ea0;
-        }
-
-        .btn-accent {
-            background-color: var(--yellow-primary);
-            color: #333;
-            font-weight: 600;
-            padding: 12px 24px;
-            border-radius: 8px;
-        }
-
-        .btn-accent:hover {
-            background-color: #c4b504;
-            transform: translateY(-2px);
-        }
-
-        .btn-danger {
-            background-color: var(--red-primary);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #a31e1e;
-        }
-
         .header {
             background-color: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .footer {
-            background-color: var(--blue-primary);
-            color: white;
-        }
-
-        .card,
-        .event-card {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
-            background: white;
         }
 
-        .card:hover,
-        .event-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        .header.scrolled {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
-        .tab-active {
-            color: var(--blue-primary) !important;
-            border-bottom: 3px solid var(--blue-primary);
-            font-weight: 600;
-        }
-
-        .landing-banner {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6),
-                    rgba(0, 0, 0, 0.6)),
-                url("https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80");
-            background-size: cover;
-            background-position: center;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            border-radius: 6px;
-            color: white;
-            font-weight: 500;
-            z-index: 1001;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
-            max-width: 300px;
-        }
-
-        .toast.success {
-            background-color: #2ecc71;
-        }
-
-        .toast.error {
-            background-color: var(--red-primary);
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-            }
-
-            to {
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
-
-        /* Mobile Menu */
-        .mobile-menu {
-            display: none;
-        }
-
-        .mobile-menu.active {
-            display: block;
-        }
-
-        /* Landing Page Specific Styles */
         .hero-section {
             background: linear-gradient(135deg, #0A2463 0%, #1a365d 100%);
             color: white;
             position: relative;
             overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(230, 168, 23, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(153, 0, 0, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.5;
+            }
         }
 
         .floating-element {
@@ -237,9 +116,47 @@
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #0A2463, #E6A817, #990000);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            padding: 24px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
         }
 
         .feature-icon {
@@ -250,109 +167,292 @@
             align-items: center;
             justify-content: center;
             margin: 0 auto 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: rotateY(360deg);
+        }
+
+        .event-category {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .event-category:hover {
+            border-color: #E6A817;
+            transform: scale(1.08);
+            box-shadow: 0 10px 30px rgba(230, 168, 23, 0.2);
         }
 
         .testimonial-card {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 120px;
+            color: rgba(230, 168, 23, 0.1);
+            font-family: Georgia, serif;
         }
 
         .testimonial-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-12px) rotate(-1deg);
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.15);
         }
 
         .cta-section {
             background: linear-gradient(135deg, #E6A817 0%, #d4b300 100%);
             color: #333;
+            position: relative;
+            overflow: hidden;
         }
 
-        .event-category {
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .quick-action-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #0A2463, #E6A817);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .quick-action-card:hover::after {
+            transform: scaleX(1);
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #E6A817 0%, #d4b300 100%);
+            color: #333;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 50px;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(230, 168, 23, 0.3);
         }
 
-        .event-category:hover {
-            border-color: #E6A817;
-            transform: scale(1.05);
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(230, 168, 23, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #0A2463 0%, #1a365d 100%);
+            color: white;
+            font-weight: 600;
+            padding: 12px 28px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(10, 36, 99, 0.3);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(10, 36, 99, 0.4);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #E6A817 0%, #990000 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #990000 0%, #cc0000 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(153, 0, 0, 0.3);
+        }
+
+        .organizer-badge {
+            background: linear-gradient(135deg, #0A2463 0%, #1a365d 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(10, 36, 99, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .stagger-1 {
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+
+        .stagger-2 {
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .stagger-3 {
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .stagger-4 {
+            animation-delay: 0.4s;
+            opacity: 0;
         }
     </style>
 </head>
 
 <body x-data="{
-  currentTab: 'upcoming',
-  isLoggedIn: false,
-  userRole: 'student',
-  showLoginModal: false,
-  showSignupModal: false,
   mobileMenuOpen: false,
-  activeTestimonial: 0,
   stats: {
     events: 256,
     attendees: 12459,
     organizers: 347
-  }
-}">
+  },
+  scrolled: false
+}" x-init="window.addEventListener('scroll', () => scrolled = window.scrollY > 50)">
+
     <!-- Header -->
-    <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
+    <header class="header sticky top-0 z-50" :class="{ 'scrolled': scrolled }">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between py-4">
                 <!-- Logo -->
-                <a href="index.html" class="flex items-center">
-                    <img src="/Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3" />
+                <a href="#" class="flex items-center group">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-br from-tut-blue to-tut-red rounded-lg flex items-center justify-center mr-3 transition-transform group-hover:rotate-12">
+                        <i class="fas fa-calendar-alt text-white text-xl"></i>
+                    </div>
                     <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
                 </a>
 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:block">
                     <ul class="flex items-center space-x-8">
-                        <li><a href="index.html"
+                        <li><a href="#home"
                                 class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Home</a>
                         </li>
-                        <li>
-                            <a href="about.html"
+                        <li><a href="#features"
                                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
-                                About
+                                Features
                                 <span
                                     class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="upcoming_events.html"
+                            </a></li>
+                        <li><a href="#categories"
                                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
-                                Upcoming Events
+                                Categories
                                 <span
                                     class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="past_events.html"
+                            </a></li>
+                        <li><a href="#testimonials"
                                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
-                                Past Events
+                                Testimonials
                                 <span
                                     class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="gallery.html"
-                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
-                                Gallery
-                                <span
-                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
-                            </a>
-                        </li>
+                            </a></li>
                         <li>
                             <div class="flex items-center space-x-3">
-                                <button onclick="window.location.href='login.html'"
+                                <button
                                     class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 flex items-center gap-2">
                                     <i class="fas fa-sign-in-alt"></i> Login
                                 </button>
-                                <button onclick="window.location.href='signup.html'"
+                                <button
                                     class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
-                                    <i class="fas fa-rocket"></i>
-                                    Join Now
+                                    <i class="fas fa-rocket"></i> Join Now
                                 </button>
                             </div>
                         </li>
@@ -360,8 +460,9 @@
                 </nav>
 
                 <!-- Mobile Menu Button -->
-                <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
-                    <i class="fas fa-bars text-gray-600 text-xl"></i>
+                <button @click="mobileMenuOpen = !mobileMenuOpen"
+                    class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <i class="fas" :class="mobileMenuOpen ? 'fa-times' : 'fa-bars'" class="text-gray-600 text-xl"></i>
                 </button>
             </div>
         </div>
@@ -373,26 +474,23 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100 transform translate-y-0"
             x-transition:leave-end="opacity-0 transform -translate-y-4"
-            class="mobile-menu md:hidden bg-white border-t border-gray-200 shadow-lg">
+            class="md:hidden bg-white border-t border-gray-200 shadow-lg">
             <div class="container mx-auto px-4 py-4">
                 <ul class="space-y-3">
-                    <li><a href="index.html" class="block py-2 text-tut-blue font-semibold">Home</a></li>
-                    <li><a href="about.html" class="block py-2 text-gray-700 hover:text-tut-blue">About</a></li>
-                    <li><a href="upcoming_events.html" class="block py-2 text-gray-700 hover:text-tut-blue">Upcoming
-                            Events</a></li>
-                    <li><a href="past_events.html" class="block py-2 text-gray-700 hover:text-tut-blue">Past Events</a>
+                    <li><a href="#home" class="block py-2 text-tut-blue font-semibold">Home</a></li>
+                    <li><a href="#features" class="block py-2 text-gray-700 hover:text-tut-blue">Features</a></li>
+                    <li><a href="#categories" class="block py-2 text-gray-700 hover:text-tut-blue">Categories</a></li>
+                    <li><a href="#testimonials" class="block py-2 text-gray-700 hover:text-tut-blue">Testimonials</a>
                     </li>
-                    <li><a href="gallery.html" class="block py-2 text-gray-700 hover:text-tut-blue">Gallery</a></li>
                     <li class="pt-2 border-t border-gray-200">
                         <div class="flex flex-col space-y-3">
-                            <button onclick="window.location.href='login.html'"
+                            <button
                                 class="w-full text-left py-2 text-gray-700 hover:text-tut-blue flex items-center gap-2">
                                 <i class="fas fa-sign-in-alt"></i> Login
                             </button>
-                            <button onclick="window.location.href='signup.html'"
+                            <button
                                 class="w-full bg-tut-yellow text-gray-900 font-semibold py-2.5 px-4 rounded-full flex items-center justify-center gap-2">
-                                <i class="fas fa-rocket"></i>
-                                Join Now
+                                <i class="fas fa-rocket"></i> Join Now
                             </button>
                         </div>
                     </li>
@@ -402,204 +500,274 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero-section py-20">
+    <section id="home" class="hero-section py-24 relative">
         <div class="container mx-auto px-4 relative z-10">
-            <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-10 md:mb-0">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-6 animate-fade-in">Discover & Manage <span
-                            class="text-tut-yellow">TUT Events</span> in One Place</h1>
-                    <p class="text-xl text-blue-100 mb-8 animate-fade-in">The official event management platform for
-                        Tshwane University of Technology. Find, attend, and organize events with ease.</p>
-                    <div class="flex flex-col sm:flex-row gap-4 animate-fade-in">
-                        <button onclick="window.location.href='signup.html'"
-                            class="bg-tut-yellow hover:bg-yellow-600 text-gray-900 font-semibold py-3 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2">
-                            <i class="fas fa-calendar-plus"></i>
-                            Get Started
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <div class="flex gap-3 mb-6 animate-fade-in stagger-1">
+                        <span class="admin-badge">
+                            <i class="fas fa-user-shield"></i>
+                            For Admins
+                        </span>
+                        <span class="organizer-badge">
+                            <i class="fas fa-users-cog"></i>
+                            For Organizers
+                        </span>
+                    </div>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in stagger-2">
+                        Manage & Organize <span class="gradient-text">TUT Events</span> Effortlessly
+                    </h1>
+                    <p class="text-xl text-blue-100 mb-8 animate-fade-in stagger-3">
+                        Comprehensive event management platform designed for administrators and organizers.
+                        Create, track, and manage events with powerful analytics and automation tools.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 animate-fade-in stagger-4">
+                        <button class="btn-primary flex items-center justify-center gap-2">
+                            <i class="fas fa-shield-alt"></i>
+                            Admin Dashboard
                         </button>
-                        <button onclick="window.location.href='upcoming_events.html'"
-                            class="bg-transparent border-2 border-white hover:bg-white/10 text-white font-semibold py-3 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2">
-                            <i class="fas fa-search"></i>
-                            Browse Events
+                        <button class="btn-secondary flex items-center justify-center gap-2">
+                            <i class="fas fa-plus-circle"></i>
+                            Create Event
                         </button>
                     </div>
                 </div>
                 <div class="md:w-1/2 flex justify-center">
                     <div class="relative">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                            alt="Event illustration" class="rounded-2xl shadow-2xl w-full max-w-md floating-element">
-                        <div class="absolute -top-5 -right-5 bg-tut-yellow rounded-xl p-4 shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1551818255-e6e10975bc17?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                            alt="Event management" class="rounded-2xl shadow-2xl w-full max-w-md floating-element">
+                        <div class="absolute -top-5 -right-5 bg-tut-yellow rounded-xl p-4 shadow-xl">
                             <div class="text-center">
-                                <p class="text-2xl font-bold">120+</p>
-                                <p class="text-sm">Events This Month</p>
+                                <p class="text-3xl font-bold">98%</p>
+                                <p class="text-sm font-semibold">Success Rate</p>
                             </div>
                         </div>
-                        <div class="absolute -bottom-5 -left-5 bg-tut-red text-white rounded-xl p-4 shadow-lg">
+                        <div class="absolute -bottom-5 -left-5 bg-tut-red text-white rounded-xl p-4 shadow-xl">
                             <div class="text-center">
-                                <p class="text-2xl font-bold">98%</p>
-                                <p class="text-sm">Satisfaction Rate</p>
+                                <p class="text-3xl font-bold">24/7</p>
+                                <p class="text-sm font-semibold">Support</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="absolute bottom-0 left-0 w-full h-16 bg-white/10 backdrop-blur-sm"></div>
+        <div class="scroll-indicator text-white text-2xl opacity-60">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Quick Management Actions</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Access powerful tools to manage your events and
+                    platform</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="quick-action-card text-center">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-tut-blue to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-plus-circle text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Create Event</h3>
+                    <p class="text-gray-600 text-sm mb-4">Launch new events in minutes</p>
+                    <button class="text-tut-blue font-semibold text-sm hover:underline">Get Started →</button>
+                </div>
+
+                <div class="quick-action-card text-center">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-tut-red to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-chart-line text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Analytics</h3>
+                    <p class="text-gray-600 text-sm mb-4">View detailed insights</p>
+                    <button class="text-tut-red font-semibold text-sm hover:underline">View Reports →</button>
+                </div>
+
+                <div class="quick-action-card text-center">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-tut-yellow to-yellow-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Manage Users</h3>
+                    <p class="text-gray-600 text-sm mb-4">Control user access</p>
+                    <button class="text-tut-yellow font-semibold text-sm hover:underline">Manage →</button>
+                </div>
+
+                <div class="quick-action-card text-center">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-cog text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Settings</h3>
+                    <p class="text-gray-600 text-sm mb-4">Configure platform</p>
+                    <button class="text-green-600 font-semibold text-sm hover:underline">Configure →</button>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Stats Section -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-20 bg-white">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="stat-card bg-white rounded-2xl p-6 text-center shadow-lg">
-                    <div class="text-tut-blue text-5xl font-bold mb-2" x-text="stats.events"></div>
-                    <h3 class="text-xl font-semibold text-gray-800">Events Created</h3>
-                    <p class="text-gray-600">Discover academic, social, and sports events</p>
+                <div class="stat-card text-center">
+                    <div class="text-tut-blue text-6xl font-bold mb-2" x-text="stats.events"></div>
+                    <h3 class="text-xl font-semibold text-gray-800">Events Managed</h3>
+                    <p class="text-gray-600 mt-2">Successfully organized and tracked</p>
                 </div>
-                <div class="stat-card bg-white rounded-2xl p-6 text-center shadow-lg">
-                    <div class="text-tut-blue text-5xl font-bold mb-2" x-text="stats.attendees.toLocaleString()"></div>
-                    <h3 class="text-xl font-semibold text-gray-800">Active Students</h3>
-                    <p class="text-gray-600">Joined our vibrant community</p>
+                <div class="stat-card text-center">
+                    <div class="text-tut-red text-6xl font-bold mb-2" x-text="stats.attendees.toLocaleString()"></div>
+                    <h3 class="text-xl font-semibold text-gray-800">Total Attendees</h3>
+                    <p class="text-gray-600 mt-2">Across all events</p>
                 </div>
-                <div class="stat-card bg-white rounded-2xl p-6 text-center shadow-lg">
-                    <div class="text-tut-blue text-5xl font-bold mb-2" x-text="stats.organizers"></div>
-                    <h3 class="text-xl font-semibold text-gray-800">Event Organizers</h3>
-                    <p class="text-gray-600">Creating amazing experiences</p>
+                <div class="stat-card text-center">
+                    <div class="text-tut-yellow text-6xl font-bold mb-2" x-text="stats.organizers"></div>
+                    <h3 class="text-xl font-semibold text-gray-800">Active Organizers</h3>
+                    <p class="text-gray-600 mt-2">Managing events daily</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="py-20">
+    <section id="features" class="py-20 bg-gradient-to-br from-blue-50 to-gray-50">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Why Choose MyTUT Events?</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Our platform offers everything you need to discover,
-                    attend, and manage university events</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Powerful Management Features</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Everything you need to run successful events</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="feature-card text-center p-6">
+                <div class="feature-card text-center">
                     <div class="feature-icon bg-blue-100 text-tut-blue mx-auto">
-                        <i class="fas fa-calendar-alt text-2xl"></i>
+                        <i class="fas fa-tachometer-alt text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Easy Event Discovery</h3>
-                    <p class="text-gray-600">Browse through hundreds of events filtered by category, date, and location.
-                    </p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Admin Dashboard</h3>
+                    <p class="text-gray-600">Comprehensive overview of all platform activities and metrics.</p>
                 </div>
 
-                <div class="feature-card text-center p-6">
+                <div class="feature-card text-center">
                     <div class="feature-icon bg-yellow-100 text-tut-yellow mx-auto">
-                        <i class="fas fa-ticket-alt text-2xl"></i>
+                        <i class="fas fa-chart-bar text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Quick Registration</h3>
-                    <p class="text-gray-600">Register for events with a single click and receive digital tickets
-                        instantly.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Advanced Analytics</h3>
+                    <p class="text-gray-600">Real-time insights with detailed attendance and engagement metrics.</p>
                 </div>
 
-                <div class="feature-card text-center p-6">
+                <div class="feature-card text-center">
                     <div class="feature-icon bg-red-100 text-tut-red mx-auto">
-                        <i class="fas fa-chart-pie text-2xl"></i>
+                        <i class="fas fa-shield-alt text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Event Analytics</h3>
-                    <p class="text-gray-600">Track attendance and engagement metrics for your organized events.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Role Management</h3>
+                    <p class="text-gray-600">Granular permissions control for admins and organizers.</p>
                 </div>
 
-                <div class="feature-card text-center p-6">
+                <div class="feature-card text-center">
                     <div class="feature-icon bg-blue-100 text-tut-blue mx-auto">
                         <i class="fas fa-qrcode text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">QR Check-in</h3>
-                    <p class="text-gray-600">Fast and secure event check-in using QR code technology.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">QR Check-in System</h3>
+                    <p class="text-gray-600">Instant attendee verification with secure QR codes.</p>
                 </div>
 
-                <div class="feature-card text-center p-6">
+                <div class="feature-card text-center">
                     <div class="feature-icon bg-yellow-100 text-tut-yellow mx-auto">
-                        <i class="fas fa-bell text-2xl"></i>
+                        <i class="fas fa-envelope text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Smart Reminders</h3>
-                    <p class="text-gray-600">Get timely notifications about upcoming events and registration deadlines.
-                    </p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Automated Notifications</h3>
+                    <p class="text-gray-600">Smart email and SMS reminders for organizers and attendees.</p>
                 </div>
 
-                <div class="feature-card text-center p-6">
+                <div class="feature-card text-center">
                     <div class="feature-icon bg-red-100 text-tut-red mx-auto">
-                        <i class="fas fa-users text-2xl"></i>
+                        <i class="fas fa-file-export text-2xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Community Building</h3>
-                    <p class="text-gray-600">Connect with other students and build your university network.</p>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Export Reports</h3>
+                    <p class="text-gray-600">Generate comprehensive reports in multiple formats.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Event Categories -->
-    <section class="py-20 bg-gray-50">
+    <section id="categories" class="py-20 bg-white">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Explore Event Categories</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Find events that match your interests and passions
-                </p>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Manage All Event Types</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Organize events across multiple categories</p>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="event-category bg-white rounded-2xl p-6 text-center shadow-md cursor-pointer">
+                <div class="event-category bg-gray-50 rounded-2xl p-6 text-center shadow-md">
                     <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-graduation-cap text-tut-blue text-2xl"></i>
                     </div>
                     <h3 class="font-semibold text-gray-800">Academic</h3>
                     <p class="text-sm text-gray-600 mt-1">Workshops, Seminars</p>
+                    <div class="mt-4 text-tut-blue font-bold text-2xl">43</div>
+                    <p class="text-xs text-gray-500">Active Events</p>
                 </div>
 
-                <div class="event-category bg-white rounded-2xl p-6 text-center shadow-md cursor-pointer">
+                <div class="event-category bg-gray-50 rounded-2xl p-6 text-center shadow-md">
                     <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-music text-tut-red text-2xl"></i>
                     </div>
                     <h3 class="font-semibold text-gray-800">Social</h3>
                     <p class="text-sm text-gray-600 mt-1">Parties, Gatherings</p>
+                    <div class="mt-4 text-tut-red font-bold text-2xl">28</div>
+                    <p class="text-xs text-gray-500">Active Events</p>
                 </div>
 
-                <div class="event-category bg-white rounded-2xl p-6 text-center shadow-md cursor-pointer">
+                <div class="event-category bg-gray-50 rounded-2xl p-6 text-center shadow-md">
                     <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-futbol text-tut-yellow text-2xl"></i>
                     </div>
                     <h3 class="font-semibold text-gray-800">Sports</h3>
                     <p class="text-sm text-gray-600 mt-1">Games, Tournaments</p>
+                    <div class="mt-4 text-tut-yellow font-bold text-2xl">35</div>
+                    <p class="text-xs text-gray-500">Active Events</p>
                 </div>
 
-                <div class="event-category bg-white rounded-2xl p-6 text-center shadow-md cursor-pointer">
+                <div class="event-category bg-gray-50 rounded-2xl p-6 text-center shadow-md">
                     <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-theater-masks text-green-600 text-2xl"></i>
                     </div>
                     <h3 class="font-semibold text-gray-800">Cultural</h3>
                     <p class="text-sm text-gray-600 mt-1">Arts, Performances</p>
+                    <div class="mt-4 text-green-600 font-bold text-2xl">22</div>
+                    <p class="text-xs text-gray-500">Active Events</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Testimonials -->
-    <section class="py-20">
+    <section id="testimonials" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">What Our Users Say</h2>
-                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Hear from students and organizers who use our
-                    platform</p>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Trusted by Event Professionals</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">See what admins and organizers say about our platform
+                </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="testimonial-card p-6">
                     <div class="flex items-center mb-4">
                         <div
-                            class="w-12 h-12 bg-tut-blue rounded-full flex items-center justify-center text-white font-bold mr-4">
-                            SJ</div>
+                            class="w-12 h-12 bg-gradient-to-br from-tut-blue to-blue-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            TM
+                        </div>
                         <div>
-                            <h4 class="font-semibold">Sarah Johnson</h4>
-                            <p class="text-sm text-gray-600">Final Year Student</p>
+                            <h4 class="font-semibold">Thabo Mokwena</h4>
+                            <p class="text-sm text-gray-600">Platform Administrator</p>
                         </div>
                     </div>
-                    <p class="text-gray-700">"MyTUT Events has made it so easy to find relevant academic workshops. I've
-                        attended three this semester alone!"</p>
+                    <p class="text-gray-700">"The admin dashboard gives me complete control over all events. Analytics
+                        help us make data-driven decisions for better event planning."</p>
                     <div class="flex text-tut-yellow mt-4">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -612,15 +780,16 @@
                 <div class="testimonial-card p-6">
                     <div class="flex items-center mb-4">
                         <div
-                            class="w-12 h-12 bg-tut-red rounded-full flex items-center justify-center text-white font-bold mr-4">
-                            MK</div>
+                            class="w-12 h-12 bg-gradient-to-br from-tut-red to-red-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            PN
+                        </div>
                         <div>
-                            <h4 class="font-semibold">Mike Khoza</h4>
-                            <p class="text-sm text-gray-600">Event Organizer</p>
+                            <h4 class="font-semibold">Palesa Nkosi</h4>
+                            <p class="text-sm text-gray-600">Senior Event Organizer</p>
                         </div>
                     </div>
-                    <p class="text-gray-700">"The analytics tools have helped me understand attendance patterns and
-                        improve my events. The QR check-in system is flawless."</p>
+                    <p class="text-gray-700">"Managing multiple events simultaneously has never been easier. The QR
+                        check-in system saves us hours during event execution."</p>
                     <div class="flex text-tut-yellow mt-4">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -633,15 +802,16 @@
                 <div class="testimonial-card p-6">
                     <div class="flex items-center mb-4">
                         <div
-                            class="w-12 h-12 bg-tut-yellow rounded-full flex items-center justify-center text-white font-bold mr-4">
-                            LN</div>
+                            class="w-12 h-12 bg-gradient-to-br from-tut-yellow to-yellow-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                            SM
+                        </div>
                         <div>
-                            <h4 class="font-semibold">Lisa Ndlovu</h4>
-                            <p class="text-sm text-gray-600">Second Year Student</p>
+                            <h4 class="font-semibold">Sipho Mabunda</h4>
+                            <p class="text-sm text-gray-600">Department Head</p>
                         </div>
                     </div>
-                    <p class="text-gray-700">"I've met so many amazing people through events I found on this platform.
-                        It's completely transformed my university experience!"</p>
+                    <p class="text-gray-700">"Automated notifications and real-time reporting have streamlined our
+                        entire event management process. Highly recommended!"</p>
                     <div class="flex text-tut-yellow mt-4">
                         <i class="fas fa-star"></i>
                         <i class="fas fa-star"></i>
@@ -655,65 +825,96 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section py-20">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Explore TUT Events?</h2>
-            <p class="text-xl mb-10 max-w-3xl mx-auto">Join thousands of students and organizers already using our
-                platform to discover and create amazing events.</p>
+    <section class="cta-section py-20 relative">
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h2 class="text-3xl md:text-5xl font-bold mb-6">Ready to Elevate Your Event Management?</h2>
+            <p class="text-xl mb-10 max-w-3xl mx-auto">Join the leading event management platform trusted by TUT
+                administrators and organizers.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onclick="window.location.href='signup.html'"
-                    class="bg-tut-blue hover:bg-blue-900 text-white font-semibold py-3 px-8 rounded-full transition-all duration-200 flex items-center justify-center gap-2">
-                    <i class="fas fa-user-plus"></i>
-                    Create Account
+                <button
+                    class="bg-tut-blue hover:bg-blue-900 text-white font-semibold py-4 px-10 rounded-full transition-all duration-200 flex items-center justify-center gap-2 shadow-2xl transform hover:scale-105">
+                    <i class="fas fa-rocket"></i>
+                    Get Started Now
                 </button>
-                <button onclick="window.location.href='upcoming_events.html'"
-                    class="bg-white hover:bg-gray-100 text-gray-900 font-semibold py-3 px-8 rounded-full transition-all duration-200 flex items-center justify-center gap-2">
-                    <i class="fas fa-calendar"></i>
-                    Browse Events
+                <button
+                    class="bg-white hover:bg-gray-100 text-gray-900 font-semibold py-4 px-10 rounded-full transition-all duration-200 flex items-center justify-center gap-2 shadow-2xl transform hover:scale-105">
+                    <i class="fas fa-phone"></i>
+                    Request Demo
                 </button>
+            </div>
+            <div class="mt-8 flex items-center justify-center gap-8 text-gray-800 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-check-circle text-2xl"></i>
+                    <span class="font-semibold">No Credit Card Required</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-check-circle text-2xl"></i>
+                    <span class="font-semibold">Free Training Included</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-check-circle text-2xl"></i>
+                    <span class="font-semibold">24/7 Support</span>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-tut-blue text-white py-10">
+    <footer class="bg-tut-blue text-white py-12">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-xl font-bold mb-4">MyTUT Events</h3>
+                    <div class="flex items-center mb-4">
+                        <div
+                            class="w-10 h-10 bg-gradient-to-br from-tut-yellow to-tut-red rounded-lg flex items-center justify-center mr-3">
+                            <i class="fas fa-calendar-alt text-white text-xl"></i>
+                        </div>
+                        <span class="text-white text-xl font-bold">MyTUT<span
+                                class="text-tut-yellow">Events</span></span>
+                    </div>
                     <p class="text-gray-300 mb-4">
-                        The official event management platform for Tshwane University of
-                        Technology.
+                        The official event management platform for Tshwane University of Technology.
                     </p>
                     <div class="flex space-x-4">
-                        <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i
-                                class="fab fa-facebook-f"></i></a>
-                        <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i
-                                class="fab fa-twitter"></i></a>
-                        <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i
-                                class="fab fa-instagram"></i></a>
-                        <a href="javascript:void(0)" class="text-gray-300 hover:text-white"><i
-                                class="fab fa-linkedin-in"></i></a>
+                        <a href="#"
+                            class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-colors">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
                     </div>
                 </div>
                 <div>
                     <h3 class="text-xl font-bold mb-4">Quick Links</h3>
                     <ul class="space-y-2 text-gray-300">
-                        <li><a href="index.html" class="hover:text-white">Home</a></li>
-                        <li>
-                            <a href="upcoming_events.html" class="hover:text-white">Upcoming Events</a>
-                        </li>
-                        <li>
-                            <a href="past_events.html" class="hover:text-white">Past Events</a>
-                        </li>
-                        <li>
-                            <a href="contact_us.html" class="hover:text-white">Contact Us</a>
-                        </li>
+                        <li><a href="#" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#categories" class="hover:text-white transition-colors">Categories</a></li>
+                        <li><a href="#testimonials" class="hover:text-white transition-colors">Testimonials</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4">For Admins</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><a href="#" class="hover:text-white transition-colors">Admin Dashboard</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">User Management</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Analytics</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Settings</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-xl font-bold mb-4">Contact</h3>
-                    <ul class="space-y-2 text-gray-300">
+                    <ul class="space-y-3 text-gray-300">
                         <li class="flex items-start">
                             <i class="fas fa-map-marker-alt mt-1 mr-3"></i>
                             <span>Mandela St, eMalahleni, Witbank, 1034</span>
@@ -730,22 +931,21 @@
                 </div>
             </div>
             <div class="border-t border-blue-800 mt-8 pt-8 text-center text-gray-300">
-                <p>&copy; 2025 MyTUT Events. All rights reserved.</p>
+                <p>&copy; 2025 MyTUT Events. All rights reserved. | <a href="#" class="hover:text-white">Privacy
+                        Policy</a> | <a href="#" class="hover:text-white">Terms of Service</a></p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Simple counter animation for stats
+        // Animated counter for stats
         document.addEventListener('DOMContentLoaded', function () {
-            const counters = document.querySelectorAll('.stat-card .text-5xl');
+            const counters = document.querySelectorAll('.stat-card .text-6xl');
             const speed = 200;
 
-            counters.forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-target') || counter.innerText);
+            const animateCounter = (counter) => {
+                const target = parseInt(counter.getAttribute('x-text').match(/\d+/)[0]);
                 let count = 0;
-
-                // Reset for animation
                 counter.innerText = '0';
 
                 const updateCount = () => {
@@ -759,7 +959,6 @@
                     }
                 };
 
-                // Start animation when element is in viewport
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
@@ -767,9 +966,25 @@
                             observer.unobserve(entry.target);
                         }
                     });
-                });
+                }, { threshold: 0.5 });
 
                 observer.observe(counter);
+            };
+
+            counters.forEach(counter => animateCounter(counter));
+
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
             });
         });
     </script>

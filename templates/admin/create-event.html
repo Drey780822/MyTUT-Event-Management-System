@@ -1,81 +1,592 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TUT Emalahleni Events - Create Event</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="{{ url_for('static', filename='images/favicon.ico') }}" rel="shortcut icon"
+    type="image/vnd.microsoft.icon" />
+  <title>Organizer Dashboard - MyTUT Events</title>
+
+  <!-- Fonts and Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "tut-blue": "#0A2463",
+            "tut-red": "#990000",
+            "tut-yellow": "#E6A817",
+            "tut-green": "#10B981",
+            "dark-bg": "#121212",
+            "dark-card": "#1E1E1E",
+          },
+          fontFamily: {
+            sans: ["Poppins", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    :root {
+      --blue-primary: #0A2463;
+      --red-primary: #990000;
+      --yellow-primary: #E6A817;
+      --green-primary: #10B981;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f8fafc;
+    }
+
+    .sidebar {
+      background: linear-gradient(135deg, var(--green-primary) 0%, #059669 100%);
+      color: white;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-item {
+      transition: all 0.3s ease;
+      border-radius: 8px;
+    }
+
+    .sidebar-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(5px);
+    }
+
+    .sidebar-item.active {
+      background: white;
+      color: var(--green-primary);
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--green-primary);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card.registrations {
+      border-left-color: var(--green-primary);
+    }
+
+    .stat-card.attendance {
+      border-left-color: var(--yellow-primary);
+    }
+
+    .stat-card.revenue {
+      border-left-color: var(--blue-primary);
+    }
+
+    .dashboard-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .dashboard-card:hover {
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary {
+      background: var(--green-primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: #059669;
+    }
+
+    .btn-secondary {
+      background: var(--blue-primary);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #081e4a;
+    }
+
+    .notification-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      background: var(--red-primary);
+      border-radius: 50%;
+    }
+
+    .table-row:hover {
+      background: #f8fafc;
+    }
+
+    .badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-success {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--green-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .event-card {
+      border-left: 4px solid var(--green-primary);
+    }
+  </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>TUT Emalahleni Events</h1>
-      <p id="user-info">Welcome, Guest (student)</p>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="create-event.html" id="create-event-link" style="display: none;">Create Event</a>
-        <a href="login.html">Login</a>
-      </nav>
+
+<body x-data="{
+    sidebarOpen: false,
+    currentView: 'overview',
+    notifications: [
+        { id: 1, title: 'New registration', message: '5 new registrations for Tech Summit', time: '10 min ago', read: false },
+        { id: 2, title: 'Event reminder', message: 'Your event starts in 3 days', time: '1 hour ago', read: false },
+        { id: 3, title: 'Feedback received', message: 'New feedback from attendees', time: '2 hours ago', read: true }
+    ],
+    stats: {
+        totalEvents: 8,
+        activeEvents: 3,
+        totalRegistrations: 450,
+        attendanceRate: 85,
+        pendingTasks: 5,
+        revenue: 12500
+    },
+    myEvents: [
+        { id: 1, name: 'Tech Innovation Summit', date: '2024-03-15', registrations: 450, capacity: 500, status: 'active' },
+        { id: 2, name: 'AI Workshop', date: '2024-03-22', registrations: 120, capacity: 150, status: 'active' },
+        { id: 3, name: 'Startup Pitch Competition', date: '2024-04-05', registrations: 25, capacity: 100, status: 'upcoming' },
+        { id: 4, name: 'Hackathon 2024', date: '2024-02-20', registrations: 300, capacity: 300, status: 'completed' }
+    ],
+    recentRegistrations: [
+        { id: 1, name: 'John Smith', studentNo: '221234567', email: 'john.smith@tut4life.ac.za', event: 'Tech Summit', date: '2024-03-10' },
+        { id: 2, name: 'Sarah Johnson', studentNo: '221234568', email: 'sarah.j@tut4life.ac.za', event: 'AI Workshop', date: '2024-03-09' },
+        { id: 3, name: 'Mike Brown', studentNo: '221234569', email: 'mike.b@tut4life.ac.za', event: 'Tech Summit', date: '2024-03-08' }
+    ]
+}">
+  <!-- Mobile Sidebar Backdrop -->
+  <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden">
+  </div>
+
+  <!-- Sidebar -->
+  <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+    class="sidebar fixed inset-y-0 left-0 z-50 w-64 transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0">
+    <div class="flex items-center justify-between p-6 border-b border-green-600">
+      <div class="flex items-center">
+        <img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="Logo" class="h-8 w-8 mr-3">
+        <span class="text-xl font-bold">MyTUT<span class="text-white">Events</span></span>
+      </div>
+      <button @click="sidebarOpen = false" class="lg:hidden text-white">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
 
-    <div class="event-form">
-      <h2>Create Event</h2>
-      <form id="event-form">
-        <label for="title">Title</label>
-        <input type="text" id="title" required>
-        <label for="date">Date</label>
-        <input type="date" id="date" required>
-        <label for="time">Time</label>
-        <input type="time" id="time" required>
-        <label for="venue">Venue</label>
-        <input type="text" id="venue" required>
-        <label for="category">Category</label>
-        <select id="category">
-          <option value="academic">Academic</option>
-          <option value="social">Social</option>
-          <option value="sports">Sports</option>
-          <option value="career">Career</option>
-        </select>
-        <label for="capacity">Capacity</label>
-        <input type="number" id="capacity" min="1" required>
-        <label for="description">Description</label>
-        <textarea id="description"></textarea>
-        <label for="image">Event Image (URL)</label>
-        <input type="url" id="image">
-        <button type="submit">Create Event</button>
-      </form>
+    <!-- User Info -->
+    <div class="p-6 border-b border-green-600">
+      <div class="flex items-center">
+        <div class="user-avatar mr-3">SJ</div>
+        <div>
+          <p class="font-semibold">Sarah Johnson</p>
+          <p class="text-green-200 text-sm">Event Organizer</p>
+        </div>
+      </div>
     </div>
+
+    <!-- Navigation -->
+    <nav class="p-4 space-y-2">
+      <a @click="currentView = 'overview'" :class="currentView === 'overview' ? 'sidebar-item active' : 'sidebar-item'"
+        class="flex items-center px-4 py-3 text-white cursor-pointer">
+        <i class="fas fa-chart-pie mr-3"></i>
+        <span>Event Overview</span>
+      </a>
+      <a @click="currentView = 'myevents'" :class="currentView === 'myevents' ? 'sidebar-item active' : 'sidebar-item'"
+        class="flex items-center px-4 py-3 text-white cursor-pointer">
+        <i class="fas fa-calendar-alt mr-3"></i>
+        <span>My Events</span>
+      </a>
+      <a @click="currentView = 'registrations'"
+        :class="currentView === 'registrations' ? 'sidebar-item active' : 'sidebar-item'"
+        class="flex items-center px-4 py-3 text-white cursor-pointer">
+        <i class="fas fa-users mr-3"></i>
+        <span>Registrations</span>
+      </a>
+      <a @click="currentView = 'checkin'" :class="currentView === 'checkin' ? 'sidebar-item active' : 'sidebar-item'"
+        class="flex items-center px-4 py-3 text-white cursor-pointer">
+        <i class="fas fa-qrcode mr-3"></i>
+        <span>Check-in</span>
+      </a>
+      <a @click="currentView = 'analytics'"
+        :class="currentView === 'analytics' ? 'sidebar-item active' : 'sidebar-item'"
+        class="flex items-center px-4 py-3 text-white cursor-pointer">
+        <i class="fas fa-chart-bar mr-3"></i>
+        <span>Event Analytics</span>
+      </a>
+      <a @click="currentView = 'settings'" :class="currentView === 'settings' ? 'sidebar-item active' : 'sidebar-item'"
+        class="flex items-center px-4 py-3 text-white cursor-pointer">
+        <i class="fas fa-cog mr-3"></i>
+        <span>Organizer Settings</span>
+      </a>
+    </nav>
+
+    <!-- Quick Stats -->
+    <div class="p-4 mt-8">
+      <div class="bg-green-600/50 rounded-lg p-4">
+        <p class="text-green-200 text-sm mb-2">Organizer Rating</p>
+        <div class="flex items-center">
+          <div class="flex text-yellow-400 mr-2">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+          </div>
+          <span class="text-sm">4.5/5.0</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64">
+    <!-- Top Bar -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+      <div class="flex items-center justify-between px-6 py-4">
+        <div class="flex items-center">
+          <button @click="sidebarOpen = true" class="lg:hidden text-gray-600 mr-4">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+          <h1 x-text="currentView.charAt(0).toUpperCase() + currentView.slice(1) + ' - Organizer Portal'"
+            class="text-2xl font-bold text-tut-green"></h1>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <!-- Search -->
+          <div class="relative">
+            <input type="text" placeholder="Search events..."
+              class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-tut-green focus:border-transparent">
+            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+          </div>
+
+          <!-- Notifications -->
+          <div class="relative">
+            <button class="p-2 text-gray-600 hover:text-tut-green relative">
+              <i class="fas fa-bell text-xl"></i>
+              <span class="notification-dot"></span>
+            </button>
+          </div>
+
+          <!-- Create Event Button -->
+          <button class="btn-primary px-4 py-2 rounded-lg flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Create Event
+          </button>
+
+          <!-- User Menu -->
+          <div class="relative">
+            <button class="flex items-center space-x-3">
+              <div class="user-avatar">SJ</div>
+              <span class="text-gray-700 font-medium">Sarah Johnson</span>
+              <i class="fas fa-chevron-down text-gray-400"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="p-6">
+      <!-- Overview Dashboard -->
+      <div x-show="currentView === 'overview'" class="space-y-6">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="stat-card p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 text-sm">My Events</p>
+                <p class="text-3xl font-bold text-gray-800" x-text="stats.totalEvents"></p>
+              </div>
+              <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-calendar-alt text-tut-green text-xl"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <span class="text-green-600 text-sm font-medium">
+                <i class="fas fa-arrow-up mr-1"></i>2 new this month
+              </span>
+            </div>
+          </div>
+
+          <div class="stat-card registrations p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 text-sm">Total Registrations</p>
+                <p class="text-3xl font-bold text-gray-800" x-text="stats.totalRegistrations"></p>
+              </div>
+              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-users text-tut-blue text-xl"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <span class="text-green-600 text-sm font-medium">
+                <i class="fas fa-arrow-up mr-1"></i>15% increase
+              </span>
+            </div>
+          </div>
+
+          <div class="stat-card attendance p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 text-sm">Attendance Rate</p>
+                <p class="text-3xl font-bold text-gray-800" x-text="stats.attendanceRate + '%'"></p>
+              </div>
+              <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-user-check text-tut-yellow text-xl"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <span class="text-green-600 text-sm font-medium">
+                <i class="fas fa-chart-line mr-1"></i>Excellent
+              </span>
+            </div>
+          </div>
+
+          <div class="stat-card revenue p-6">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-gray-600 text-sm">Event Revenue</p>
+                <p class="text-3xl font-bold text-gray-800">R<span x-text="stats.revenue.toLocaleString()"></span></p>
+              </div>
+              <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-money-bill-wave text-purple-600 text-xl"></i>
+              </div>
+            </div>
+            <div class="mt-4">
+              <span class="text-green-600 text-sm font-medium">
+                <i class="fas fa-arrow-up mr-1"></i>12% growth
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Events and Quick Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- My Events -->
+          <div class="dashboard-card p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-semibold text-gray-800">My Events</h3>
+              <button class="text-tut-green text-sm font-medium">View All</button>
+            </div>
+            <div class="space-y-4">
+              <template x-for="event in myEvents" :key="event.id">
+                <div class="event-card bg-white border border-gray-200 rounded-lg p-4">
+                  <div class="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 class="font-semibold text-gray-800" x-text="event.name"></h4>
+                      <p class="text-sm text-gray-600" x-text="new Date(event.date).toLocaleDateString()"></p>
+                    </div>
+                    <span class="badge" :class="{
+                                                  'badge-success': event.status === 'active',
+                                                  'badge-warning': event.status === 'upcoming',
+                                                  'badge-danger': event.status === 'completed'
+                                              }"
+                      x-text="event.status.charAt(0).toUpperCase() + event.status.slice(1)"></span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div class="bg-tut-green h-2 rounded-full"
+                        :style="'width: ' + (event.registrations / event.capacity * 100) + '%'"></div>
+                    </div>
+                    <span class="text-sm text-gray-600 ml-3" x-text="event.registrations + '/' + event.capacity"></span>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Quick Actions and Recent Registrations -->
+          <div class="space-y-6">
+            <!-- Quick Actions -->
+            <div class="dashboard-card p-6">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4">Quick Actions</h3>
+              <div class="grid grid-cols-2 gap-4">
+                <button class="p-4 border border-gray-200 rounded-lg text-center hover:bg-gray-50 transition-colors">
+                  <i class="fas fa-plus-circle text-tut-green text-2xl mb-2"></i>
+                  <p class="font-medium text-gray-800">New Event</p>
+                </button>
+                <button class="p-4 border border-gray-200 rounded-lg text-center hover:bg-gray-50 transition-colors">
+                  <i class="fas fa-qrcode text-tut-blue text-2xl mb-2"></i>
+                  <p class="font-medium text-gray-800">Check-in</p>
+                </button>
+                <button class="p-4 border border-gray-200 rounded-lg text-center hover:bg-gray-50 transition-colors">
+                  <i class="fas fa-chart-bar text-tut-yellow text-2xl mb-2"></i>
+                  <p class="font-medium text-gray-800">Reports</p>
+                </button>
+                <button class="p-4 border border-gray-200 rounded-lg text-center hover:bg-gray-50 transition-colors">
+                  <i class="fas fa-envelope text-gray-600 text-2xl mb-2"></i>
+                  <p class="font-medium text-gray-800">Message</p>
+                </button>
+              </div>
+            </div>
+
+            <!-- Recent Registrations -->
+            <div class="dashboard-card p-6">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Recent Registrations</h3>
+                <button class="text-tut-green text-sm font-medium">View All</button>
+              </div>
+              <div class="space-y-3">
+                <template x-for="registration in recentRegistrations" :key="registration.id">
+                  <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                    <div>
+                      <p class="font-medium text-gray-800" x-text="registration.name"></p>
+                      <p class="text-sm text-gray-600" x-text="registration.studentNo"></p>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-sm font-medium text-gray-800" x-text="registration.event"></p>
+                      <p class="text-xs text-gray-600" x-text="registration.date"></p>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Performance -->
+        <div class="dashboard-card p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Event Performance</h3>
+          <canvas id="performanceChart" height="120"></canvas>
+        </div>
+      </div>
+
+      <!-- Other Views would go here -->
+      <div x-show="currentView !== 'overview'" class="text-center py-12">
+        <i class="fas fa-calendar-check text-6xl text-gray-400 mb-4"></i>
+        <h3 class="text-2xl font-semibold text-gray-600 mb-2"
+          x-text="currentView.charAt(0).toUpperCase() + currentView.slice(1) + ' View'"></h3>
+        <p class="text-gray-500">This section is under development</p>
+      </div>
+    </main>
   </div>
-  <script src="scripts.js"></script>
+
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      updateUserInfo();
-      if (!isOrganizerOrAdmin()) {
-        window.location.href = 'index.html';
-      }
-      document.getElementById('event-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const newEvent = {
-          id: events.length + 1,
-          title: document.getElementById('title').value,
-          date: document.getElementById('date').value,
-          time: document.getElementById('time').value,
-          venue: document.getElementById('venue').value,
-          category: document.getElementById('category').value,
-          capacity: parseInt(document.getElementById('capacity').value),
-          description: document.getElementById('description').value,
-          image: document.getElementById('image').value || 'https://via.placeholder.com/300',
-          registered: 0,
-          attendees: []
-        };
-        events.push(newEvent);
-        // Simulate WhatsApp notification
-        console.log(`Sending WhatsApp notification for ${newEvent.title}`);
-        e.target.reset();
-        window.location.href = 'index.html';
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize Performance Chart
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      const performanceChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Tech Summit', 'AI Workshop', 'Startup Pitch', 'Hackathon', 'Career Talk', 'Networking'],
+          datasets: [{
+            label: 'Registrations',
+            data: [450, 120, 25, 300, 180, 90],
+            backgroundColor: '#10B981',
+            borderColor: '#059669',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                drawBorder: false
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
       });
+
+      // Animate stats on page load
+      function animateValue(obj, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          obj.innerHTML = Math.floor(progress * (end - start) + start);
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
+        };
+        window.requestAnimationFrame(step);
+      }
+
+      // Animate stats
+      setTimeout(() => {
+        const stats = Alpine.data().stats;
+        const statElements = document.querySelectorAll('.stat-card .text-3xl');
+        const values = [stats.totalEvents, stats.totalRegistrations, stats.attendanceRate, stats.revenue];
+
+        statElements.forEach((el, index) => {
+          if (index === 2) { // Attendance rate
+            animateValue(el, 0, values[index], 2000);
+          } else {
+            animateValue(el, 0, values[index], 2000);
+          }
+        });
+      }, 500);
     });
   </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
+
 </html>

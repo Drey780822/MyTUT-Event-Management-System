@@ -335,14 +335,14 @@
                                     </div>
                                     <div>
                                         <h4 class="font-medium text-gray-800">{{ event[1] }}</h4>
-                                        <p class="text-sm text-gray-600">{{ event[2]|datetimeformat }} • {{
-                                            event[2]|timeformat }}</p>
+                                        <p class="text-sm text-gray-600">{{ event[2]}} {{
+                                            event[2]}}</p>
                                     </div>
                                 </div>
                                 <div class="text-right">
                                     <p class="text-sm font-medium text-gray-800">{{ event[4] }} Registered</p>
                                     <p class="text-xs text-gray-600">Max: {{ event[3] }} attendees</p>
-                                    <button onclick="deleteEvent({{ event[0] }})"
+                                    <button onclick="deleteEvent('{{ event[0] }}')"
                                         class="text-tut-red text-sm hover:underline mt-2">Delete</button>
                                 </div>
                             </div>
@@ -397,7 +397,7 @@
                                             </div>
                                         </td>
                                         <td class="py-3 text-sm">{{ reg[3] }}</td>
-                                        <td class="py-3 text-sm">{{ reg[4]|datetimeformat }}</td>
+                                        <td class="py-3 text-sm">{{ reg[4]}}</td>
                                         <td class="py-3">
                                             <span class="px-2 py-1 text-xs rounded-full
                                                     {% if reg[5] == 'Approved' %}bg-green-100 text-green-800
