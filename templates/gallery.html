@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="/Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+  <link href="{{url_for('static', filename='Images/favicon.ico')}}" rel="shortcut icon"
+    type="image/vnd.microsoft.icon" />
   <title>Gallery - myTUT Events</title>
 
   <!-- Fonts and Icons -->
@@ -440,7 +441,8 @@
       <div class="flex items-center justify-between py-4">
         <!-- Logo -->
         <a href="index.html" class="flex items-center">
-          <img src="/Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3">
+          <img src="{{url_for('static', filename='Images/favicon.ico')}}" alt="myTUT Events Logo"
+            class="h-10 w-10 mr-3">
           <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
         </a>
 
@@ -461,13 +463,13 @@
                 <span
                   class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
               </a></li>
-            <li><a href="upcoming_events.html"
+            <li><a href=""
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 Upcoming Events
                 <span
                   class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
               </a></li>
-            <li><a href="past_events.html"
+            <li><a href="{{url_for('past_events')}}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 Past Events
                 <span
