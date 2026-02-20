@@ -35,10 +35,10 @@ mail = Mail(app)
 twilio_client = Client(app.config['TWILIO_ACCOUNT_SID'], app.config['TWILIO_AUTH_TOKEN'])
 
 # Database configuration
-DB_HOST = "dpg-d6cacjrnv86c73cvero0-a"
-DB_NAME = "mytutevents_db_6eeu"
-DB_USER = "mytutevents_db_6eeu_user"
-DB_PASS = "jWOcSUFaXpu7xeGJJ4FgwxaTGJZXsASG"
+DB_HOST = "dpg-d6cak94tgctc738su620-a"
+DB_NAME = "mytutevents_db_fr6p"
+DB_USER = "mytutevents"
+DB_PASS = "57cXLCVjAGGYTX456q4yo7NQyRlJdZLU"
 
 def get_db_connection():
     try:
