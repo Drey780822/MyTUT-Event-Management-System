@@ -4,7 +4,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="/Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+  <link href="{{ url_for('static', filename='Images/favicon.ico') }}" rel="shortcut icon"
+    type="image/vnd.microsoft.icon" />
   <title>Past Events - myTUT Events</title>
 
   <!-- Fonts and Icons -->
@@ -374,37 +375,38 @@
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between py-4">
         <!-- Logo -->
-        <a href="index.html" class="flex items-center">
-          <img src="/Images/favicon.ico" alt="myTUT Events Logo" class="h-10 w-10 mr-3">
+        <a href="{{ url_for('index') }}" class="flex items-center">
+          <img src="{{ url_for('static', filename='Images/favicon.ico') }}" alt="myTUT Events Logo"
+            class="h-10 w-10 mr-3">
           <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
         </a>
         <!-- Desktop Navigation -->
         <nav class="hidden md:block">
           <ul class="flex items-center space-x-8">
             <li>
-              <a href="index.html"
+              <a href="{{ url_for('index') }}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 Home
                 <span
                   class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
               </a>
             </li>
-            <li><a href="about.html"
+            <li><a href="{{ url_for('about') }}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 About
                 <span
                   class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
               </a></li>
-            <li><a href="upcoming.html"
+            <li><a href="{{ url_for('upcoming_events') }}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 Upcoming Events
                 <span
                   class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
               </a></li>
-            <li><a href="past.html"
+            <li><a href="{{ url_for('past_events') }}"
                 class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Past
                 Events</a></li>
-            <li><a href="gallery.html"
+            <li><a href="{{ url_for('gallery') }}"
                 class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                 Gallery
                 <span
@@ -440,18 +442,19 @@
         x-transition:leave-end="opacity-0 transform -translate-y-4"
         class="md:hidden bg-white border-t border-gray-200 shadow-lg">
         <div class="py-4 space-y-1">
-          <a href="about.html"
+          <a href="{{ url_for('about') }}"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-info-circle mr-3 w-5"></i>About
           </a>
-          <a href="upcoming.html"
+          <a href="{{ url_for('upcoming_events') }}"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-calendar-alt mr-3 w-5"></i>Upcoming Events
           </a>
-          <a href="past.html" class="flex items-center px-4 py-3 text-tut-blue font-semibold bg-blue-50">
+          <a href="{{ url_for('past_events') }}"
+            class="flex items-center px-4 py-3 text-tut-blue font-semibold bg-blue-50">
             <i class="fas fa-history mr-3 w-5"></i>Past Events
           </a>
-          <a href="gallery.html"
+          <a href="{{ url_for('gallery') }}"
             class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
             <i class="fas fa-images mr-3 w-5"></i>Gallery
           </a>
@@ -705,7 +708,7 @@
       <p class="text-xl max-w-2xl mx-auto mb-8">Join MyTUT Events to stay updated on upcoming events and be part of
         creating more memorable moments.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="upcoming.html"
+        <a href="{{ url_for('upcoming_events') }}"
           class="bg-tut-yellow text-gray-900 font-semibold px-8 py-3 rounded-full hover:bg-yellow-500 transition-all duration-300 flex items-center justify-center gap-2">
           <i class="fas fa-calendar-alt"></i>
           View Upcoming Events
@@ -736,10 +739,10 @@
         <div>
           <h3 class="text-xl font-bold mb-4">Quick Links</h3>
           <ul class="space-y-2 text-gray-300">
-            <li><a href="index.html" class="hover:text-white">Home</a></li>
-            <li><a href="about.html" class="hover:text-white">About</a></li>
-            <li><a href="upcoming.html" class="hover:text-white">Upcoming Events</a></li>
-            <li><a href="gallery.html" class="hover:text-white">Gallery</a></li>
+            <li><a href="{{ url_for('index') }}" class="hover:text-white">Home</a></li>
+            <li><a href="{{ url_for('about') }}" class="hover:text-white">About</a></li>
+            <li><a href="{{ url_for('upcoming_events') }}" class="hover:text-white">Upcoming Events</a></li>
+            <li><a href="{{ url_for('gallery') }}" class="hover:text-white">Gallery</a></li>
           </ul>
         </div>
         <div>

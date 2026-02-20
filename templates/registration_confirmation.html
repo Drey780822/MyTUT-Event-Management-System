@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Confirmation - MyTUT Events</title>
 
-    <!-- Fonts and Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -37,7 +35,6 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
-        /* Consolidated Styles */
         :root {
             --blue-primary: #4322b9;
             --red-primary: #b92222;
@@ -115,8 +112,7 @@
             color: white;
         }
 
-        .card,
-        .event-card {
+        .card {
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -124,8 +120,7 @@
             background: white;
         }
 
-        .card:hover,
-        .event-card:hover {
+        .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
         }
@@ -137,9 +132,8 @@
         }
 
         .landing-banner {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.6),
-                rgba(0, 0, 0, 0.6)),
-            url("{{ url_for('static', filename='Images/EMACAMPUSV3.jpg') }}");
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+                url("{{ url_for('static', filename='Images/EMACAMPUSV3.jpg') }}");
             background-size: cover;
             background-position: center;
         }
@@ -175,7 +169,6 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -186,7 +179,6 @@
             from {
                 transform: translateX(100%);
             }
-
             to {
                 transform: translateX(0);
             }
@@ -196,32 +188,22 @@
             from {
                 opacity: 1;
             }
-
             to {
                 opacity: 0;
             }
         }
-
-        /* Mobile Menu */
-        .mobile-menu {
-            display: none;
-        }
-
-        .mobile-menu.active {
-            display: block;
-        }
     </style>
 </head>
-
 <body>
-    <!-- Header -->
-    <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200">
+    <!-- Header with Alpine.js mobile menu -->
+    <header class="header sticky top-0 z-50 backdrop-blur-md bg-white/95 border-b border-gray-200"
+            x-data="{ mobileMenuOpen: false }">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between py-4">
                 <!-- Logo -->
                 <a href="{{ url_for('index') }}" class="flex items-center">
                     <img src="{{ url_for('static', filename='Images/favicon.ico') }}" alt="myTUT Events Logo"
-                        class="h-10 w-10 mr-3" />
+                         class="h-10 w-10 mr-3">
                     <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
                 </a>
 
@@ -229,46 +211,39 @@
                 <nav class="hidden md:block">
                     <ul class="flex items-center space-x-8">
                         <li><a href="{{ url_for('index') }}"
-                                class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Home</a>
-                        </li>
+                               class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Home</a></li>
                         <li>
                             <a href="{{ url_for('about') }}"
-                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                               class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                                 About
-                                <span
-                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ url_for('upcoming_events') }}"
-                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                               class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                                 Upcoming Events
-                                <span
-                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ url_for('past_events') }}"
-                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                               class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                                 Past Events
-                                <span
-                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ url_for('gallery') }}"
-                                class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
+                               class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 relative group">
                                 Gallery
-                                <span
-                                    class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-tut-blue group-hover:w-full transition-all duration-300"></span>
                             </a>
                         </li>
                         <li>
                             <div class="flex items-center space-x-3">
-                                <button id="loginbtn"
-                                    class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
-                                    <i class="fas fa-rocket"></i>
-                                    Join Now
+                                <button class="bg-gradient-to-r from-tut-yellow to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
+                                    <i class="fas fa-rocket"></i> Join Now
                                 </button>
                             </div>
                         </li>
@@ -277,60 +252,60 @@
 
                 <!-- Mobile Menu Button -->
                 <button @click="mobileMenuOpen = !mobileMenuOpen"
-                    class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors">
                     <i class="fas fa-bars text-xl text-gray-700" x-show="!mobileMenuOpen"></i>
                     <i class="fas fa-times text-xl text-gray-700" x-show="mobileMenuOpen"></i>
                 </button>
             </div>
 
-            <!-- Enhanced Mobile Menu -->
+            <!-- Mobile Menu Dropdown -->
             <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 transform -translate-y-4"
-                x-transition:enter-end="opacity-100 transform translate-y-0"
-                x-transition:leave="transition ease-in duration-200"
-                x-transition:leave-start="opacity-100 transform translate-y-0"
-                x-transition:leave-end="opacity-0 transform -translate-y-4"
-                class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+                 x-transition:enter-start="opacity-0 transform -translate-y-4"
+                 x-transition:enter-end="opacity-100 transform translate-y-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 transform translate-y-0"
+                 x-transition:leave-end="opacity-0 transform -translate-y-4"
+                 class="md:hidden bg-white border-t border-gray-200 shadow-lg">
                 <div class="py-4 space-y-1">
                     <a href="{{ url_for('about') }}"
-                        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+                       class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
                         <i class="fas fa-info-circle mr-3 w-5"></i>About
                     </a>
                     <a href="{{ url_for('upcoming_events') }}"
-                        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+                       class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
                         <i class="fas fa-calendar-alt mr-3 w-5"></i>Upcoming Events
                     </a>
                     <a href="{{ url_for('past_events') }}"
-                        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+                       class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
                         <i class="fas fa-history mr-3 w-5"></i>Past Events
                     </a>
                     <a href="{{ url_for('gallery') }}"
-                        class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
+                       class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-tut-blue transition-colors">
                         <i class="fas fa-images mr-3 w-5"></i>Gallery
                     </a>
-                    <hr class="my-2" />
-
-                    <button id="loginbtn"
-                        class="mx-4 my-2 w-auto bg-gradient-to-r from-tut-yellow to-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2">
-                        <i class="fas fa-rocket"></i>Join Now
+                    <hr class="my-2">
+                    <button class="mx-4 my-2 w-auto bg-gradient-to-r from-tut-yellow to-yellow-500 text-gray-900 font-semibold px-6 py-3 rounded-full shadow-lg flex items-center justify-center gap-2">
+                        <i class="fas fa-rocket"></i> Join Now
                     </button>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- Main Content -->
     <main class="py-12">
         <div class="container mx-auto px-4 max-w-4xl">
             <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <!-- Success Banner -->
                 <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-8 text-white text-center">
                     <i class="fas fa-check-circle text-5xl mb-4"></i>
                     <h1 class="text-3xl font-bold mb-2">Registration Successful!</h1>
-                    <p class="text-xl opacity-90">You've successfully registered for <strong>{{ registration.event_title
-                            }}</strong></p>
+                    <p class="text-xl opacity-90">You've successfully registered for <strong>{{ registration.event_title }}</strong></p>
                 </div>
 
                 <div class="p-8">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Left Column: Registration Details -->
                         <div>
                             <h2 class="text-2xl font-semibold text-tut-blue mb-6">Registration Details</h2>
                             <div class="space-y-4">
@@ -344,8 +319,7 @@
                                 </div>
                                 <div class="flex justify-between border-b pb-3">
                                     <span class="text-gray-600 font-medium">Date & Time:</span>
-                                    <span class="font-semibold text-right">{{ registration.event_date }}, {{
-                                        registration.event_time }}</span>
+                                    <span class="font-semibold text-right">{{ registration.event_date }}, {{ registration.event_time }}</span>
                                 </div>
                                 <div class="flex justify-between border-b pb-3">
                                     <span class="text-gray-600 font-medium">Location:</span>
@@ -365,8 +339,7 @@
                                 </div>
                                 <div class="flex justify-between border-b pb-3">
                                     <span class="text-gray-600 font-medium">Confirmation Code:</span>
-                                    <span class="font-semibold text-tut-blue text-right">{{
-                                        registration.confirmation_code }}</span>
+                                    <span class="font-semibold text-tut-blue text-right">{{ registration.confirmation_code }}</span>
                                 </div>
                             </div>
 
@@ -378,47 +351,35 @@
                                 <div class="space-y-3 text-blue-700">
                                     <div class="flex items-start">
                                         <i class="fas fa-envelope mt-1 mr-3 text-blue-600"></i>
-                                        <div>
-                                            <strong>Check Your Email:</strong> Your e-ticket has been sent to {{
-                                            registration.email }}
-                                        </div>
+                                        <div><strong>Check Your Email:</strong> Your e-ticket has been sent to {{ registration.email }}</div>
                                     </div>
                                     <div class="flex items-start">
                                         <i class="fab fa-whatsapp mt-1 mr-3 text-green-600"></i>
-                                        <div>
-                                            <strong>WhatsApp:</strong> You will receive your e-ticket via WhatsApp
-                                            shortly
-                                        </div>
+                                        <div><strong>WhatsApp:</strong> You will receive your e-ticket via WhatsApp shortly</div>
                                     </div>
                                     <div class="flex items-start">
                                         <i class="fas fa-id-card mt-1 mr-3 text-tut-blue"></i>
-                                        <div>
-                                            <strong>Bring Student ID:</strong> Please bring your student ID card to the
-                                            event
-                                        </div>
+                                        <div><strong>Bring Student ID:</strong> Please bring your student ID card to the event</div>
                                     </div>
                                     <div class="flex items-start">
                                         <i class="fas fa-clock mt-1 mr-3 text-orange-600"></i>
-                                        <div>
-                                            <strong>Arrive Early:</strong> Please arrive 15 minutes before the event
-                                            starts
-                                        </div>
+                                        <div><strong>Arrive Early:</strong> Please arrive 15 minutes before the event starts</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="ticket-qr">
+                        <!-- Right Column: Digital Ticket -->
+                        <div>
                             <h3 class="text-xl font-semibold mb-6 text-center">Your Digital Ticket</h3>
                             <div class="qr-code mb-6">
                                 <div class="text-center">
                                     {% if registration.qr_code %}
                                     <img src="data:image/png;base64,{{ registration.qr_code }}"
-                                        alt="QR Code for event registration"
-                                        class="w-48 h-48 mx-auto border-2 border-gray-300 rounded-lg">
+                                         alt="QR Code for event registration"
+                                         class="w-48 h-48 mx-auto border-2 border-gray-300 rounded-lg">
                                     {% else %}
-                                    <div
-                                        class="w-48 h-48 bg-white mx-auto flex items-center justify-center border-2 border-gray-300 rounded-lg">
+                                    <div class="w-48 h-48 bg-white mx-auto flex items-center justify-center border-2 border-gray-300 rounded-lg">
                                         <span class="text-gray-500 text-sm">QR Code</span>
                                     </div>
                                     {% endif %}
@@ -427,11 +388,23 @@
                                 </div>
                             </div>
 
-                            <div class="text-center">
-                                <button onclick="window.print()" class="btn btn-secondary mr-4">
-                                    <i class="fas fa-print mr-2"></i> Print Ticket
+                            <!-- Action Buttons (combined and enhanced) -->
+                            <div class="space-y-4">
+                                <button class="btn btn-primary w-full">
+                                    <i class="fas fa-download mr-2"></i> Download Ticket
                                 </button>
-                                <a href="{{ url_for('index') }}" class="btn btn-primary">
+                                <button class="btn btn-secondary w-full">
+                                    <i class="fas fa-calendar-plus mr-2"></i> Add to Calendar
+                                </button>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <button onclick="window.print()" class="btn btn-secondary">
+                                        <i class="fas fa-print mr-2"></i> Print
+                                    </button>
+                                    <a href="{{ url_for('upcoming_events') }}" class="btn btn-accent text-center block">
+                                        <i class="fas fa-search mr-2"></i> Browse
+                                    </a>
+                                </div>
+                                <a href="{{ url_for('index') }}" class="btn w-full text-center block bg-gray-100 hover:bg-gray-200">
                                     <i class="fas fa-home mr-2"></i> Back to Home
                                 </a>
                             </div>
@@ -441,28 +414,13 @@
             </div>
         </div>
     </main>
-    <div class="space-y-4">
-        <button class="btn btn-primary w-full">
-            <i class="fas fa-download mr-2"></i> Download Ticket
-        </button>
-        <button class="btn btn-secondary w-full">
-            <i class="fas fa-calendar-plus mr-2"></i> Add to Calendar
-        </button>
-        <a href="{{ url_for('upcoming_events') }}" class="btn btn-accent w-full text-center block">
-            <i class="fas fa-search mr-2"></i> Browse More Events
-        </a>
-        <a href="{{ url_for('index') }}" class="btn w-full text-center block bg-gray-100 hover:bg-gray-200">
-            <i class="fas fa-home mr-2"></i> Back to Home
-        </a>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </main>
 
-    <!-- Add your footer from index.html -->
+    <!-- Footer (replace with your actual footer from index.html) -->
+    <footer class="footer py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-white">&copy; 2025 MyTUT Events. All rights reserved.</p>
+            <p class="text-sm text-gray-200 mt-2">Tshwane University of Technology</p>
+        </div>
+    </footer>
 </body>
-
 </html>

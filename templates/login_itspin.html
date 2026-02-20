@@ -247,7 +247,7 @@
         <!-- Register Link -->
         <div class="mt-6 text-center text-white/80">
           <p>Don't have an account?
-            <a href="/register" class="text-tut-yellow hover:underline font-semibold">Register here</a>
+            <a href="{{ url_for('register_student') }}" class="text-tut-yellow hover:underline font-semibold">Register here</a>
           </p>
         </div>
       </div>
@@ -270,9 +270,9 @@
         <div>
           <h3 class="font-semibold mb-3 text-tut-yellow">Quick Links</h3>
           <ul class="space-y-2 text-sm text-gray-300">
-            <li><a href="/about" class="hover:text-tut-yellow">About Us</a></li>
-            <li><a href="/events" class="hover:text-tut-yellow">Events</a></li>
-            <li><a href="/contact" class="hover:text-tut-yellow">Contact</a></li>
+            <li><a href="{{ url_for('about') }}" class="hover:text-tut-yellow">About Us</a></li>
+            <li><a href="{{ url_for('upcoming_events') }}" class="hover:text-tut-yellow">Events</a></li>
+            <li><a href="{{ url_for('contact') }}" class="hover:text-tut-yellow">Contact</a></li>
           </ul>
         </div>
         <div>

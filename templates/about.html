@@ -221,7 +221,7 @@
     <div class="container mx-auto px-4">
       <div class="flex items-center justify-between py-4">
         <!-- Logo -->
-        <a href="index.html" class="flex items-center">
+        <a href="{{ url_for('index') }}" class="flex items-center">
           <img src="{{ url_for('static', filename='Images/favicon.ico') }}" alt="myTUT Events Logo"
             class="h-10 w-10 mr-3" />
           <span class="text-tut-blue text-2xl font-bold">MyTUT<span class="text-tut-red">Events</span></span>
@@ -708,7 +708,7 @@
             Start discovering amazing events happening across all TUT
             campuses.
           </p>
-          <button onclick="window.location.href='student_signup.html'"
+          <button onclick="window.location.href='{{ url_for('login_itspin') }}'"
             class="bg-white text-tut-blue font-semibold px-8 py-3 rounded-full hover:bg-gray-100 transition-all duration-300 inline-flex items-center gap-2">
             <i class="fas fa-rocket"></i>
             Get Started Now
@@ -738,15 +738,15 @@
         <div>
           <h3 class="text-xl font-bold mb-4">Quick Links</h3>
           <ul class="space-y-2 text-gray-300">
-            <li><a href="index.html" class="hover:text-white">Home</a></li>
+            <li><a href="{{ url_for('index') }}" class="hover:text-white">Home</a></li>
             <li>
-              <a href="upcoming_events.html" class="hover:text-white">Upcoming Events</a>
+              <a href="{{ url_for('upcoming_events') }}" class="hover:text-white">Upcoming Events</a>
             </li>
             <li>
-              <a href="past_events.html" class="hover:text-white">Past Events</a>
+              <a href="{{ url_for('past_events') }}" class="hover:text-white">Past Events</a>
             </li>
             <li>
-              <a href="gallery.html" class="hover:text-white">Gallery</a>
+              <a href="{{ url_for('gallery') }}" class="hover:text-white">Gallery</a>
             </li>
           </ul>
         </div>

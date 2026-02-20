@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login - myTUT Events</title>
-    <link href="/Images/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+    <link href="{{ url_for('static', filename='Images/favicon.ico') }}" rel="shortcut icon"
+        type="image/vnd.microsoft.icon" />
 
     <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -128,28 +129,29 @@
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between py-4">
                 <!-- Logo -->
-                <a href="index.html" class="flex items-center">
-                    <img src="/Images/favicon.ico" alt="myTUT Events Logo" class="h-12 w-12 mr-3" />
+                <a href="{{ url_for('index') }}" class="flex items-center">
+                    <img src="{{ url_for('static', filename='Images/favicon.ico') }}" alt="myTUT Events Logo"
+                        class="h-12 w-12 mr-3" />
                     <span class="text-white text-2xl font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
                 </a>
 
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:block">
                     <ul class="flex items-center space-x-8">
-                        <li><a href="index.html"
+                        <li><a href="{{ url_for('index') }}"
                                 class="text-white hover:text-tut-yellow font-medium transition-colors duration-200">Home</a>
                         </li>
-                        <li><a href="about.html"
+                        <li><a href="{{ url_for('about') }}"
                                 class="text-white hover:text-tut-yellow font-medium transition-colors duration-200">About</a>
                         </li>
-                        <li><a href="upcoming_events.html"
+                        <li><a href="{{ url_for('upcoming_events') }}"
                                 class="text-white hover:text-tut-yellow font-medium transition-colors duration-200">Events</a>
                         </li>
-                        <li><a href="gallery.html"
+                        <li><a href="{{ url_for('gallery') }}"
                                 class="text-white hover:text-tut-yellow font-medium transition-colors duration-200">Gallery</a>
                         </li>
                         <li>
-                            <a href="login_itspin.html"
+                            <a href="{{ url_for('login_itspin') }}"
                                 class="bg-tut-yellow text-gray-900 font-semibold px-6 py-2.5 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2">
                                 <i class="fas fa-user-plus"></i>ITS Login
                             </a>
@@ -208,7 +210,7 @@
 
                 <!-- Tab System -->
                 <div class="flex glassmorphism rounded-xl p-1 mb-6">
-                    <a href="login_itspin.html"
+                    <a href="{{ url_for('login_itspin') }}"
                         class="flex-1 py-2 px-4 text-white/80 hover:text-white hover:bg-white/20 rounded-lg text-center transition-all duration-200">ITS
                         Login
                         Account</a>
@@ -291,7 +293,8 @@
             <div class="grid md:grid-cols-3 gap-6">
                 <div>
                     <div class="flex items-center mb-3">
-                        <img src="/Images/favicon.ico" alt="Logo" class="h-8 w-8 mr-2" />
+                        <img src="{{ url_for('static', filename='Images/favicon.ico') }}" alt="Logo"
+                            class="h-8 w-8 mr-2" />
                         <span class="text-lg font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
                     </div>
                     <p class="text-gray-300 text-sm">Join the TUT community and never miss an event!</p>
@@ -299,9 +302,9 @@
                 <div>
                     <h3 class="font-semibold mb-3 text-tut-yellow">Quick Links</h3>
                     <ul class="space-y-2 text-sm text-gray-300">
-                        <li><a href="#" class="hover:text-tut-yellow">About Us</a></li>
-                        <li><a href="#" class="hover:text-tut-yellow">Events</a></li>
-                        <li><a href="#" class="hover:text-tut-yellow">Contact</a></li>
+                        <li><a href="{{ url_for('about') }}" class="hover:text-tut-yellow">About Us</a></li>
+                        <li><a href="{{ url_for('upcoming_events') }}" class="hover:text-tut-yellow">Events</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="hover:text-tut-yellow">Contact</a></li>
                     </ul>
                 </div>
                 <div>

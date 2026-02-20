@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard - MyTUT Events</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "tut-blue": "#0A2463",
+                        "tut-red": "#990000",
+                        "tut-yellow": "#E6A817",
+                        "tut-green": "#10B981",
+                    },
+                    fontFamily: { sans: ["Poppins", "sans-serif"] },
+                },
+            },
+        };
+    </script>
+    <style>
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-card {
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: auto;
+            padding: 1.5rem;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 1001;
+            animation: slideIn 0.3s;
+        }
+
+        .toast.success {
+            background: #10B981;
+        }
+
+        .toast.error {
+            background: #EF4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #E6A817;
+        }
+
+        .qr-reader {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans" x-data="{ sidebarOpen: true, currentView: 'dashboard' }">
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <div class="bg-tut-blue text-white w-64 flex-shrink-0 hidden md:block">
+            <div class="p-6 border-b border-blue-800">
+                <div class="flex items-center">
+                    <img src="{{ url_for('static', filename='images/favicon.ico') }}" alt="Logo" class="h-8 w-8 mr-3">
+                    <span class="text-xl font-bold">MyTUT<span class="text-tut-yellow">Events</span></span>
+                </div>
+                <p class="text-sm text-blue-300 mt-2">Organizer Dashboard</p>
+            </div>
+            <nav class="mt-6">
+                <div class="px-4 mb-6">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" @click.prevent="currentView = 'dashboard'"
+                                class="nav-item flex items-center px-4 py-3 text-white rounded-lg transition-all duration-200 hover:bg-blue-700"
+                                :class="{ 'active': currentView === 'dashboard' }">
+                                <i class="fas fa-home mr-3 w-5"></i> Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" @click.prevent="currentView = 'events'"
+                                class="nav-item flex items-center px-4 py-3 text-white rounded-lg transition-all duration-200 hover:bg-blue-700"
+                                :class="{ 'active': currentView === 'events' }">
+                                <i class="fas fa-calendar-alt mr-3 w-5"></i> My Events
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" @click.prevent="currentView = 'registrations'"
+                                class="nav-item flex items-center px-4 py-3 text-white rounded-lg transition-all duration-200 hover:bg-blue-700"
+                                :class="{ 'active': currentView === 'registrations' }">
+                                <i class="fas fa-users mr-3 w-5"></i> Registrations
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" @click.prevent="currentView = 'checkin'"
+                                class="nav-item flex items-center px-4 py-3 text-white rounded-lg transition-all duration-200 hover:bg-blue-700"
+                                :class="{ 'active': currentView === 'checkin' }">
+                                <i class="fas fa-qrcode mr-3 w-5"></i> Check-In
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" @click.prevent="currentView = 'settings'"
+                                class="nav-item flex items-center px-4 py-3 text-white rounded-lg transition-all duration-200 hover:bg-blue-700"
+                                :class="{ 'active': currentView === 'settings' }">
+                                <i class="fas fa-cog mr-3 w-5"></i> Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="absolute bottom-0 w-64 p-4 border-t border-blue-800">
+                <a href="{{ url_for('logout') }}" class="flex items-center text-white hover:text-tut-yellow">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+                <button @click="sidebarOpen = !sidebarOpen" class="md:hidden text-gray-600"><i
+                        class="fas fa-bars"></i></button>
+                <h1 class="text-xl font-semibold" x-text="
+                    currentView === 'dashboard' ? 'Dashboard' :
+                    currentView === 'events' ? 'My Events' :
+                    currentView === 'registrations' ? 'Registrations' :
+                    currentView === 'checkin' ? 'Check-In' :
+                    currentView === 'settings' ? 'Settings' : ''
+                "></h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span
+                            class="absolute -top-1 -right-1 bg-tut-red text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                    </div>
+                    <div class="w-8 h-8 bg-tut-blue rounded-full flex items-center justify-center text-white font-bold">
+                        {{ organizer_name[:2]|upper }}
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dynamic Content Area -->
+            <main class="p-6 overflow-y-auto">
+                <!-- Dashboard View -->
+                <div x-show="currentView === 'dashboard'" x-transition:enter="transition ease-out duration-300">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow p-6 stat-card">
+                            <div class="flex justify-between">
+                                <div>
+                                    <p class="text-gray-500">My Events</p>
+                                    <h3 class="text-3xl font-bold" id="statMyEvents">0</h3>
+                                </div>
+                                <div
+                                    class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                                    <i class="fas fa-calendar text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow p-6 stat-card">
+                            <div class="flex justify-between">
+                                <div>
+                                    <p class="text-gray-500">Total Registrations</p>
+                                    <h3 class="text-3xl font-bold" id="statRegistrations">0</h3>
+                                </div>
+                                <div
+                                    class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+                                    <i class="fas fa-user-check text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow p-6 stat-card">
+                            <div class="flex justify-between">
+                                <div>
+                                    <p class="text-gray-500">Upcoming Events</p>
+                                    <h3 class="text-3xl font-bold" id="statUpcoming">0</h3>
+                                </div>
+                                <div
+                                    class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center text-yellow-600">
+                                    <i class="fas fa-clock text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Events & Registrations -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <!-- Recent Events -->
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg font-semibold">Recent Events</h2>
+                                <button @click="currentView = 'events'"
+                                    class="text-tut-blue text-sm hover:underline">View All</button>
+                            </div>
+                            <div id="recentEventsList" class="space-y-3">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                        <!-- Recent Registrations -->
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg font-semibold">Recent Registrations</h2>
+                                <button @click="currentView = 'registrations'"
+                                    class="text-tut-blue text-sm hover:underline">View All</button>
+                            </div>
+                            <div id="recentRegistrationsList" class="space-y-3">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-gradient-to-br from-tut-blue to-blue-800 rounded-xl shadow p-6 text-white">
+                        <h3 class="text-lg font-semibold mb-3">Quick Actions</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <button onclick="showCreateEventModal()"
+                                class="bg-white/20 hover:bg-white/30 p-4 rounded-lg transition">
+                                <i class="fas fa-plus mb-2"></i>
+                                <p class="text-sm">New Event</p>
+                            </button>
+                            <button onclick="window.location.hash='checkin'"
+                                class="bg-white/20 hover:bg-white/30 p-4 rounded-lg transition">
+                                <i class="fas fa-qrcode mb-2"></i>
+                                <p class="text-sm">Scan QR</p>
+                            </button>
+                            <button onclick="loadRegistrations()"
+                                class="bg-white/20 hover:bg-white/30 p-4 rounded-lg transition">
+                                <i class="fas fa-list mb-2"></i>
+                                <p class="text-sm">Registrations</p>
+                            </button>
+                            <button onclick="exportReport()"
+                                class="bg-white/20 hover:bg-white/30 p-4 rounded-lg transition">
+                                <i class="fas fa-download mb-2"></i>
+                                <p class="text-sm">Export</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Events View -->
+                <div x-show="currentView === 'events'" x-transition:enter="transition ease-out duration-300">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-lg font-semibold">My Events</h2>
+                            <button onclick="showCreateEventModal()"
+                                class="bg-tut-green text-white px-4 py-2 rounded-lg text-sm hover:bg-emerald-600">
+                                <i class="fas fa-plus mr-1"></i> Create Event
+                            </button>
+                        </div>
+                        <div id="eventsTableContainer" class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-sm text-gray-600 border-b">
+                                        <th class="pb-3">Title</th>
+                                        <th class="pb-3">Date</th>
+                                        <th class="pb-3">Location</th>
+                                        <th class="pb-3">Registered</th>
+                                        <th class="pb-3">Max</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="eventsTableBody" class="divide-y divide-gray-200">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registrations View -->
+                <div x-show="currentView === 'registrations'" x-transition:enter="transition ease-out duration-300">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-lg font-semibold mb-6">Registration Requests</h2>
+                        <div class="mb-4 flex gap-2">
+                            <select id="filterEvent" class="p-2 border rounded-lg text-sm">
+                                <option value="">All Events</option>
+                            </select>
+                            <select id="filterStatus" class="p-2 border rounded-lg text-sm">
+                                <option value="">All Status</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Rejected">Rejected</option>
+                                <option value="Attended">Attended</option>
+                            </select>
+                            <button onclick="loadRegistrations()"
+                                class="px-4 py-2 bg-tut-blue text-white rounded-lg text-sm">Apply</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-sm text-gray-600 border-b">
+                                        <th class="pb-3">Student</th>
+                                        <th class="pb-3">Event</th>
+                                        <th class="pb-3">Date</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="registrationsTableBody" class="divide-y divide-gray-200">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+<br>
+                <!-- Check-In View -->
+                <div x-show="currentView === 'checkin'" x-transition:enter="transition ease-out duration-300">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Manual Check-In -->
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-lg font-semibold mb-4">Manual Check-In</h2>
+                            <form id="manualCheckinForm" class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Select Event</label>
+                                    <select id="checkinEvent" name="event_id" class="w-full p-2 border rounded-lg"
+                                        required>
+                                        <option value="">Choose event</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1">Student Number</label>
+                                    <input type="text" name="student_number" placeholder="e.g. 220123456"
+                                        class="w-full p-2 border rounded-lg" required>
+                                </div>
+                                <button type="submit"
+                                    class="w-full bg-tut-green text-white py-2 rounded-lg hover:bg-emerald-600">
+                                    Mark as Attended
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- QR Scanner (simulated) -->
+                        <div class="bg-white rounded-xl shadow p-6">
+                            <h2 class="text-lg font-semibold mb-4">Scan QR Code</h2>
+                            <div class="text-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
+                                <i class="fas fa-camera text-4xl text-gray-400 mb-4"></i>
+                                <p class="text-gray-600 mb-4">Position QR code in front of camera</p>
+                                <button onclick="simulateQRScan()"
+                                    class="bg-tut-blue text-white px-6 py-2 rounded-lg hover:bg-blue-800">
+                                    Simulate Scan
+                                </button>
+                                <p class="text-xs text-gray-500 mt-4">(In production, use a real QR scanner library)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recently Checked In -->
+                    <div class="bg-white rounded-xl shadow p-6 mt-6">
+                        <h2 class="text-lg font-semibold mb-4">Recently Checked In</h2>
+                        <div id="recentCheckins" class="space-y-2">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings View -->
+                <div x-show="currentView === 'settings'" x-transition:enter="transition ease-out duration-300">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h2 class="text-lg font-semibold mb-6">Profile Settings</h2>
+                        <form id="profileForm" class="space-y-4 max-w-md">
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Name</label>
+                                <input type="text" id="profileName" name="name" class="w-full p-2 border rounded-lg"
+                                    required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Email</label>
+                                <input type="email" id="profileEmail" name="email" class="w-full p-2 border rounded-lg"
+                                    required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Phone</label>
+                                <input type="text" id="profilePhone" name="phone" class="w-full p-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">Department</label>
+                                <input type="text" id="profileDept" name="department"
+                                    class="w-full p-2 border rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-1">New Password (leave blank to keep)</label>
+                                <input type="password" name="password" class="w-full p-2 border rounded-lg">
+                            </div>
+                            <button type="submit"
+                                class="bg-tut-blue text-white px-6 py-2 rounded-lg hover:bg-blue-800">Update
+                                Profile</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Create/Edit Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-4">
+                <h2 id="eventModalTitle" class="text-lg font-semibold">Create Event</h2>
+                <button onclick="closeEventModal()" class="text-gray-500 hover:text-gray-700"><i
+                        class="fas fa-times"></i></button>
+            </div>
+            <form id="eventForm" class="space-y-4">
+                <input type="hidden" id="eventId" name="event_id">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Title</label>
+                    <input type="text" name="title" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Description</label>
+                    <textarea name="description" rows="3" class="w-full p-2 border rounded-lg"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Date & Time</label>
+                    <input type="datetime-local" name="event_date" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Location</label>
+                    <input type="text" name="location" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Max Attendees</label>
+                    <input type="number" name="max_attendees" min="1" required class="w-full p-2 border rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Category</label>
+                    <select name="category" class="w-full p-2 border rounded-lg">
+                        <option value="Academic">Academic</option>
+                        <option value="Social">Social</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Workshop">Workshop</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Faculty</label>
+                    <input type="text" name="faculty" class="w-full p-2 border rounded-lg">
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="closeEventModal()"
+                        class="px-4 py-2 bg-gray-200 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-tut-green text-white rounded-lg">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast container (for JS) -->
+    <div id="toastContainer"></div>
+
+    <script>
+        // ========== Helper Functions ==========
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ========== Data Loading ==========
+        async function loadDashboardStats() {
+            try {
+                const res = await fetch('/organizer/stats');
+                const data = await res.json();
+                document.getElementById('statMyEvents').innerText = data.my_events || 0;
+                document.getElementById('statRegistrations').innerText = data.total_registrations || 0;
+                document.getElementById('statUpcoming').innerText = data.upcoming_events || 0;
+            } catch (err) {
+                showToast('Error loading stats', 'error');
+            }
+        }
+
+        async function loadRecentEvents() {
+            try {
+                const res = await fetch('/organizer/events?limit=3');
+                const events = await res.json();
+                const container = document.getElementById('recentEventsList');
+                container.innerHTML = '';
+                events.forEach(e => {
+                    container.innerHTML += `
+                        <div class="flex items-center justify-between p-3 border rounded-lg">
+                            <div>
+                                <h4 class="font-medium">${e.title}</h4>
+                                <p class="text-sm text-gray-600">${e.event_date} · ${e.registered}/${e.max_attendees}</p>
+                            </div>
+                            <button onclick="viewEvent(${e.event_id})" class="text-tut-blue text-sm">View</button>
+                        </div>
+                    `;
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadRecentRegistrations() {
+            try {
+                const res = await fetch('/organizer/registrations?limit=3');
+                const regs = await res.json();
+                const container = document.getElementById('recentRegistrationsList');
+                container.innerHTML = '';
+                regs.forEach(r => {
+                    container.innerHTML += `
+                        <div class="flex items-center justify-between p-3 border rounded-lg">
+                            <div>
+                                <h4 class="font-medium">${r.student_name}</h4>
+                                <p class="text-sm text-gray-600">${r.event_title}</p>
+                            </div>
+                            <span class="px-2 py-1 text-xs rounded-full ${r.status === 'Approved' ? 'bg-green-100 text-green-800' : r.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">${r.status}</span>
+                        </div>
+                    `;
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadEventsTable() {
+            try {
+                const res = await fetch('/organizer/events');
+                const events = await res.json();
+                const tbody = document.getElementById('eventsTableBody');
+                tbody.innerHTML = '';
+                events.forEach(e => {
+                    const status = new Date(e.event_date) > new Date() ? 'Upcoming' : 'Past';
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="py-3">${e.title}</td>
+                            <td class="py-3">${e.event_date}</td>
+                            <td class="py-3">${e.location || '-'}</td>
+                            <td class="py-3">${e.registered}</td>
+                            <td class="py-3">${e.max_attendees}</td>
+                            <td class="py-3"><span class="px-2 py-1 text-xs rounded-full ${status === 'Upcoming' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}">${status}</span></td>
+                            <td class="py-3">
+                                <button onclick="editEvent(${e.event_id})" class="text-tut-blue text-sm hover:underline mr-2"><i class="fas fa-edit"></i> Edit</button>
+                                <button onclick="deleteEvent(${e.event_id})" class="text-tut-red text-sm hover:underline"><i class="fas fa-trash"></i> Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) { showToast('Error loading events', 'error'); }
+        }
+
+        async function loadRegistrations() {
+            try {
+                const eventFilter = document.getElementById('filterEvent')?.value || '';
+                const statusFilter = document.getElementById('filterStatus')?.value || '';
+                let url = '/organizer/registrations';
+                const params = new URLSearchParams();
+                if (eventFilter) params.append('event_id', eventFilter);
+                if (statusFilter) params.append('status', statusFilter);
+                if (params.toString()) url += '?' + params.toString();
+
+                const res = await fetch(url);
+                const regs = await res.json();
+                const tbody = document.getElementById('registrationsTableBody');
+                tbody.innerHTML = '';
+                regs.forEach(r => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="py-3">${r.student_name}<br><span class="text-xs text-gray-500">${r.student_number}</span></td>
+                            <td class="py-3">${r.event_title}</td>
+                            <td class="py-3">${r.registration_date}</td>
+                            <td class="py-3"><span class="px-2 py-1 text-xs rounded-full ${r.status === 'Approved' ? 'bg-green-100 text-green-800' : r.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}">${r.status}</span></td>
+                            <td class="py-3">
+                                ${r.status === 'Pending' ? `
+                                    <button onclick="updateRegistration(${r.registration_id}, 'Approved')" class="text-green-600 text-sm hover:underline mr-2">Approve</button>
+                                    <button onclick="updateRegistration(${r.registration_id}, 'Rejected')" class="text-red-600 text-sm hover:underline">Reject</button>
+                                ` : ''}
+                                ${r.status !== 'Attended' ? `
+                                    <button onclick="checkInAttendee(${r.registration_id})" class="text-tut-blue text-sm hover:underline">Check-In</button>
+                                ` : ''}
+                            </td>
+                        </tr>
+                    `;
+                });
+                // Populate filter dropdown with events
+                const eventsRes = await fetch('/organizer/events');
+                const events = await eventsRes.json();
+                const filterSelect = document.getElementById('filterEvent');
+                if (filterSelect) {
+                    filterSelect.innerHTML = '<option value="">All Events</option>';
+                    events.forEach(e => {
+                        filterSelect.innerHTML += `<option value="${e.event_id}">${e.title}</option>`;
+                    });
+                }
+            } catch (err) { showToast('Error loading registrations', 'error'); }
+        }
+
+        async function loadCheckinEvents() {
+            try {
+                const res = await fetch('/organizer/events');
+                const events = await res.json();
+                const select = document.getElementById('checkinEvent');
+                if (select) {
+                    select.innerHTML = '<option value="">Select event</option>';
+                    events.forEach(e => {
+                        select.innerHTML += `<option value="${e.event_id}">${e.title} (${e.event_date})</option>`;
+                    });
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function loadProfile() {
+            try {
+                const res = await fetch('/organizer/profile');
+                const data = await res.json();
+                document.getElementById('profileName').value = data.name || '';
+                document.getElementById('profileEmail').value = data.email || '';
+                document.getElementById('profilePhone').value = data.phone || '';
+                document.getElementById('profileDept').value = data.department || '';
+            } catch (err) { showToast('Error loading profile', 'error'); }
+        }
+
+        // ========== Event CRUD ==========
+        function showCreateEventModal() {
+            document.getElementById('eventModalTitle').innerText = 'Create Event';
+            document.getElementById('eventForm').reset();
+            document.getElementById('eventId').value = '';
+            document.getElementById('eventModal').classList.add('show');
+        }
+
+        async function editEvent(id) {
+            try {
+                const res = await fetch(`/organizer/events/${id}`);
+                const event = await res.json();
+                document.getElementById('eventModalTitle').innerText = 'Edit Event';
+                document.getElementById('eventId').value = event.event_id;
+                document.getElementById('eventForm').querySelector('[name="title"]').value = event.title;
+                document.getElementById('eventForm').querySelector('[name="description"]').value = event.description || '';
+                // Convert date to datetime-local format
+                if (event.event_date) {
+                    const d = new Date(event.event_date);
+                    const year = d.getFullYear();
+                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                    const day = String(d.getDate()).padStart(2, '0');
+                    const hours = String(d.getHours()).padStart(2, '0');
+                    const mins = String(d.getMinutes()).padStart(2, '0');
+                    document.getElementById('eventForm').querySelector('[name="event_date"]').value = `${year}-${month}-${day}T${hours}:${mins}`;
+                }
+                document.getElementById('eventForm').querySelector('[name="location"]').value = event.location || '';
+                document.getElementById('eventForm').querySelector('[name="max_attendees"]').value = event.max_attendees;
+                document.getElementById('eventForm').querySelector('[name="category"]').value = event.category || 'Academic';
+                document.getElementById('eventForm').querySelector('[name="faculty"]').value = event.faculty || '';
+                document.getElementById('eventModal').classList.add('show');
+            } catch (err) {
+                showToast('Error loading event', 'error');
+            }
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.remove('show');
+        }
+
+        document.getElementById('eventForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const id = formData.get('event_id');
+            const url = id ? `/organizer/events/${id}` : '/organizer/events';
+            const method = id ? 'PUT' : 'POST';
+            try {
+                const res = await fetch(url, { method, body: formData });
+                const result = await res.json();
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    closeEventModal();
+                    loadEventsTable();
+                    loadRecentEvents();
+                    loadDashboardStats();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Error saving event', 'error');
+            }
+        });
+
+        async function deleteEvent(id) {
+            if (!confirm('Delete this event?')) return;
+            try {
+                const res = await fetch(`/organizer/events/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    loadEventsTable();
+                    loadRecentEvents();
+                    loadDashboardStats();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Error deleting event', 'error');
+            }
+        }
+
+        // ========== Registration Actions ==========
+        async function updateRegistration(regId, status) {
+            try {
+                const res = await fetch(`/organizer/registrations/${regId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast(`Registration ${status}`, 'success');
+                    loadRegistrations();
+                    loadRecentRegistrations();
+                    loadDashboardStats();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Error updating registration', 'error');
+            }
+        }
+
+        // ========== Check-In ==========
+        document.getElementById('manualCheckinForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                const res = await fetch('/organizer/checkin', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('Check-in successful', 'success');
+                    e.target.reset();
+                    // Add to recent list
+                    const recent = document.getElementById('recentCheckins');
+                    recent.innerHTML = `<div class="p-2 border rounded">${result.student_name} checked into ${result.event_title}</div>` + recent.innerHTML;
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Check-in failed', 'error');
+            }
+        });
+
+        function simulateQRScan() {
+            // Simulate a successful scan (prompt for student number)
+            const student = prompt('Enter student number (simulated scan):');
+            if (!student) return;
+            const eventSelect = document.getElementById('checkinEvent');
+            const eventId = eventSelect.value;
+            if (!eventId) {
+                alert('Please select an event first');
+                return;
+            }
+            // Simulate check-in via API
+            fetch('/organizer/checkin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ event_id: eventId, student_number: student })
+            })
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        showToast('Check-in successful', 'success');
+                    } else {
+                        showToast(result.message, 'error');
+                    }
+                })
+                .catch(() => showToast('Check-in failed', 'error'));
+        }
+
+        // ========== Profile Update ==========
+        document.getElementById('profileForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            try {
+                const res = await fetch('/organizer/profile', {
+                    method: 'PUT',
+                    body: formData
+                });
+                const result = await res.json();
+                if (result.success) {
+                    showToast('Profile updated', 'success');
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Error updating profile', 'error');
+            }
+        });
+
+        // ========== Export (placeholder) ==========
+        function exportReport() {
+            alert('Export functionality coming soon');
+        }
+
+        // ========== Initial Load ==========
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load data for dashboard view
+            loadDashboardStats();
+            loadRecentEvents();
+            loadRecentRegistrations();
+
+            // Preload other data (for other views)
+            loadEventsTable();
+            loadRegistrations();
+            loadCheckinEvents();
+            loadProfile();
+
+            // Set up event filter listeners
+            document.getElementById('filterEvent')?.addEventListener('change', loadRegistrations);
+            document.getElementById('filterStatus')?.addEventListener('change', loadRegistrations);
+        });
+    </script>
+</body>
+
+</html>

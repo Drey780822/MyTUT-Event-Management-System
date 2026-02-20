@@ -187,7 +187,7 @@
                 <p class="text-xs uppercase text-blue-400 tracking-wider mb-3">Administration</p>
                 <ul class="space-y-2">
                     <li>
-                        <a href="#"
+                        <a href="{{ url_for('all_organizers') }}"
                             class="nav-item flex items-center px-4 py-3 text-white rounded-lg transition-all duration-200 hover:bg-blue-700">
                             <i class="fas fa-user-cog mr-3 w-5"></i>
                             <span>Organizers</span>
@@ -359,7 +359,7 @@
                     <!-- Recent Registrations -->
                     <div class="bg-white rounded-xl shadow-sm p-6">
                         <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-gray-800">Recent Registrations</h2>
+                            <h2 class="text-lg font-semibold text-gray-800">Recent Event Registrations</h2>
                             <a href="#" class="text-sm text-tut-blue hover:underline">View All</a>
                         </div>
 
@@ -428,6 +428,65 @@
                             </table>
                         </div>
                     </div>
+                    <!-- Organizer Management -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mt-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-semibold text-gray-800">Organizer Management</h2>
+                            <button onclick="showOrganizerModal()"
+                                class="bg-tut-blue text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-800">
+                                <i class="fas fa-plus mr-1"></i> Add Organizer
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-sm text-gray-600 border-b">
+                                        <th class="pb-3">ID</th>
+                                        <th class="pb-3">Name</th>
+                                        <th class="pb-3">Email</th>
+                                        <th class="pb-3">Phone</th>
+                                        <th class="pb-3">Department</th>
+                                        <th class="pb-3">Events Organized</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="organizersTableBody" class="divide-y divide-gray-200">
+                                    <!-- Will be populated via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Student Management -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 mt-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-semibold text-gray-800">Student Management</h2>
+                            <button onclick="showStudentModal()"
+                                class="bg-tut-blue text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-800">
+                                <i class="fas fa-plus mr-1"></i> Add Student
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-sm text-gray-600 border-b">
+                                        <th class="pb-3">Student Number</th>
+                                        <th class="pb-3">Name</th>
+                                        <th class="pb-3">Email</th>
+                                        <th class="pb-3">Phone</th>
+                                        <th class="pb-3">Faculty</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="studentsTableBody" class="divide-y divide-gray-200">
+                                    <!-- Will be populated via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Right Column -->
@@ -554,6 +613,125 @@
                     <button type="submit"
                         class="px-4 py-2 bg-tut-blue hover:bg-blue-800 text-white rounded-lg transition-colors">Create
                         Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Organizer Modal (Add/Edit) -->
+    <div id="organizerModal" class="modal">
+        <div class="modal-content p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 id="organizerModalTitle" class="text-lg font-semibold text-gray-800">Add Organizer</h2>
+                <button onclick="closeOrganizerModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="organizerForm" class="space-y-4">
+                <input type="hidden" id="organizerId" name="organizer_id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="organizerName" name="name" required
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="organizerEmail" name="email" required
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input type="text" id="organizerPhone" name="phone"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Department</label>
+                    <input type="text" id="organizerDepartment" name="department"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <input type="password" id="organizerPassword" name="password" required
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">Leave blank to keep current password when editing</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select id="organizerStatus" name="status"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeOrganizerModal()"
+                        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">Cancel</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-tut-blue hover:bg-blue-800 text-white rounded-lg transition-colors">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Student Modal (Add/Edit) -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h2 id="studentModalTitle" class="text-lg font-semibold text-gray-800">Add Student</h2>
+                <button onclick="closeStudentModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="studentForm" class="space-y-4">
+                <input type="hidden" id="studentNumber" name="student_number">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Student Number</label>
+                    <input type="text" id="studentId" name="student_number" required
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                    <input type="text" id="studentFirstName" name="first_name" required
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                    <input type="text" id="studentLastName" name="last_name" required
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="studentEmail" name="email" required
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                    <input type="text" id="studentPhone" name="phone"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Faculty</label>
+                    <input type="text" id="studentFaculty" name="faculty"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">PIN (for login)</label>
+                    <input type="password" id="studentPin" name="pin" required
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">Leave blank to keep current PIN when editing</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <select id="studentStatus" name="is_active"
+                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tut-blue focus:border-transparent">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" onclick="closeStudentModal()"
+                        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg transition-colors">Cancel</button>
+                    <button type="submit"
+                        class="px-4 py-2 bg-tut-blue hover:bg-blue-800 text-white rounded-lg transition-colors">Save</button>
                 </div>
             </form>
         </div>
@@ -703,6 +881,220 @@
                 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
                 dateInput.min = now.toISOString().slice(0, 16);
             }
+        });
+        // ========== Organizers CRUD ==========
+        async function loadOrganizers() {
+            try {
+                const res = await fetch('/admin/organizers');
+                const data = await res.json();
+                const tbody = document.getElementById('organizersTableBody');
+                tbody.innerHTML = '';
+                data.forEach(org => {
+                    tbody.innerHTML += `
+                <tr>
+                    <td class="py-3">${org.organizer_id}</td>
+                    <td class="py-3">${org.name}</td>
+                    <td class="py-3">${org.email}</td>
+                    <td class="py-3">${org.phone || '-'}</td>
+                    <td class="py-3">${org.department || '-'}</td>
+                    <td class="py-3">${org.events_organized || 0}</td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 text-xs rounded-full ${org.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}">
+                            ${org.status}
+                        </span>
+                    </td>
+                    <td class="py-3">
+                        <button onclick="editOrganizer(${org.organizer_id})" class="text-tut-blue text-sm hover:underline mr-2">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button onclick="deleteOrganizer(${org.organizer_id})" class="text-tut-red text-sm hover:underline">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+                });
+            } catch (err) {
+                showToast('Error loading organizers', 'error');
+            }
+        }
+
+        function showOrganizerModal() {
+            document.getElementById('organizerModalTitle').innerText = 'Add Organizer';
+            document.getElementById('organizerForm').reset();
+            document.getElementById('organizerId').value = '';
+            document.getElementById('organizerPassword').required = true;
+            document.getElementById('organizerModal').classList.add('show');
+        }
+
+        async function editOrganizer(id) {
+            try {
+                const res = await fetch(`/admin/organizers/${id}`);
+                const org = await res.json();
+                document.getElementById('organizerModalTitle').innerText = 'Edit Organizer';
+                document.getElementById('organizerId').value = org.organizer_id;
+                document.getElementById('organizerName').value = org.name;
+                document.getElementById('organizerEmail').value = org.email;
+                document.getElementById('organizerPhone').value = org.phone || '';
+                document.getElementById('organizerDepartment').value = org.department || '';
+                document.getElementById('organizerStatus').value = org.status;
+                document.getElementById('organizerPassword').required = false;
+                document.getElementById('organizerModal').classList.add('show');
+            } catch (err) {
+                showToast('Error loading organizer', 'error');
+            }
+        }
+
+        function closeOrganizerModal() {
+            document.getElementById('organizerModal').classList.remove('show');
+        }
+
+        document.getElementById('organizerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const id = formData.get('organizer_id');
+            const url = id ? `/admin/organizers/${id}` : '/admin/organizers';
+            const method = id ? 'PUT' : 'POST';
+            try {
+                const res = await fetch(url, { method, body: formData });
+                const result = await res.json();
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    closeOrganizerModal();
+                    loadOrganizers();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Error saving organizer', 'error');
+            }
+        });
+
+        async function deleteOrganizer(id) {
+            if (!confirm('Delete this organizer?')) return;
+            try {
+                const res = await fetch(`/admin/organizers/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    loadOrganizers();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Error deleting organizer', 'error');
+            }
+        }
+
+        // ========== Students CRUD ==========
+        async function loadStudents() {
+            try {
+                const res = await fetch('/admin/students');
+                const data = await res.json();
+                const tbody = document.getElementById('studentsTableBody');
+                tbody.innerHTML = '';
+                data.forEach(student => {
+                    tbody.innerHTML += `
+                <tr>
+                    <td class="py-3">${student.student_number}</td>
+                    <td class="py-3">${student.first_name} ${student.last_name}</td>
+                    <td class="py-3">${student.email}</td>
+                    <td class="py-3">${student.phone || '-'}</td>
+                    <td class="py-3">${student.faculty || '-'}</td>
+                    <td class="py-3">
+                        <span class="px-2 py-1 text-xs rounded-full ${student.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}">
+                            ${student.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td class="py-3">
+                        <button onclick="editStudent('${student.student_number}')" class="text-tut-blue text-sm hover:underline mr-2">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button onclick="deleteStudent('${student.student_number}')" class="text-tut-red text-sm hover:underline">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
+                });
+            } catch (err) {
+                showToast('Error loading students', 'error');
+            }
+        }
+
+        function showStudentModal() {
+            document.getElementById('studentModalTitle').innerText = 'Add Student';
+            document.getElementById('studentForm').reset();
+            document.getElementById('studentNumber').value = '';
+            document.getElementById('studentPin').required = true;
+            document.getElementById('studentModal').classList.add('show');
+        }
+
+        async function editStudent(id) {
+            try {
+                const res = await fetch(`/admin/students/${id}`);
+                const student = await res.json();
+                document.getElementById('studentModalTitle').innerText = 'Edit Student';
+                document.getElementById('studentNumber').value = student.student_number;
+                document.getElementById('studentId').value = student.student_number;
+                document.getElementById('studentFirstName').value = student.first_name;
+                document.getElementById('studentLastName').value = student.last_name;
+                document.getElementById('studentEmail').value = student.email;
+                document.getElementById('studentPhone').value = student.phone || '';
+                document.getElementById('studentFaculty').value = student.faculty || '';
+                document.getElementById('studentStatus').value = student.is_active ? 'true' : 'false';
+                document.getElementById('studentPin').required = false;
+                document.getElementById('studentModal').classList.add('show');
+            } catch (err) {
+                showToast('Error loading student', 'error');
+            }
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentModal').classList.remove('show');
+        }
+
+        document.getElementById('studentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const id = formData.get('student_number');
+            const url = id ? `/admin/students/${id}` : '/admin/students';
+            const method = id ? 'PUT' : 'POST';
+            try {
+                const res = await fetch(url, { method, body: formData });
+                const result = await res.json();
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    closeStudentModal();
+                    loadStudents();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Error saving student', 'error');
+            }
+        });
+
+        async function deleteStudent(id) {
+            if (!confirm('Delete this student?')) return;
+            try {
+                const res = await fetch(`/admin/students/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.success) {
+                    showToast(result.message, 'success');
+                    loadStudents();
+                } else {
+                    showToast(result.message, 'error');
+                }
+            } catch (err) {
+                showToast('Error deleting student', 'error');
+            }
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadOrganizers();
+            loadStudents();
         });
     </script>
 </body>

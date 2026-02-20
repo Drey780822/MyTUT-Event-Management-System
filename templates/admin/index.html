@@ -423,7 +423,7 @@
                 <!-- Desktop Navigation -->
                 <nav class="hidden md:block">
                     <ul class="flex items-center space-x-8">
-                        <li><a href="#home"
+                        <li><a href="{{ url_for('admin_index') }}"
                                 class="text-tut-blue font-semibold border-b-2 border-tut-blue transition-colors duration-200">Home</a>
                         </li>
                         <li><a href="#features"
@@ -446,7 +446,7 @@
                             </a></li>
                         <li>
                             <div class="flex items-center space-x-3">
-                                <button
+                                <button onclick="window.location.href='{{ url_for('admin_login') }}'"
                                     class="text-gray-700 hover:text-tut-blue font-medium transition-colors duration-200 flex items-center gap-2">
                                     <i class="fas fa-sign-in-alt"></i> Login
                                 </button>
