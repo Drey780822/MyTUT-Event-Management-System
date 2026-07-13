@@ -124,7 +124,7 @@
 # sse-starlette==3.0.2
 # starlette==0.48.0
 # tenacity==8.5.0
-# twilio==9.8.3
+# 
 # typing-inspection==0.4.2
 # typing_extensions==4.15.0
 # tzdata==2025.2
@@ -165,3 +165,4 @@ qrcode==8.2
 reportlab==4.4.4
 
 PyJWT==2.10.1
+twilio==9.8.3
