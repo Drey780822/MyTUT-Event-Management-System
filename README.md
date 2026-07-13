@@ -3,7 +3,7 @@
 A comprehensive web-based platform developed by **TriTech Solutions** for the **Tshwane University of Technology (TUT)**.  
 The system enables organizers to easily create and manage university events, while students can explore, register, and attend events using secure **QR-code eTickets**.
 
-🔗 **Live Demo:** [mytut-event-management-system.onrender.com](https://mytut-event-management-system.onrender.com)
+🔗 **Live Demo:** [https://mytutevents.vercel.app/](https://mytutevents.vercel.app/)
 
 ---
 
