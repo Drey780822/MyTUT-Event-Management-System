@@ -1,18 +1,18 @@
 # 🎓 TUT Event Management System
 
-A web-based platform built by **TriTech Solutions** to fix how Tshwane University of Technology (TUT) runs its campus events — replacing flyers, WhatsApp groups, and Google Forms with a proper system. Organizers create and manage events; students discover, register, and check in with secure **QR-code eTickets**.
+A web-based platform built by **TriTech Solutions** to fix how Tshwane University of Technology (TUT) runs its campus events replacing flyers, WhatsApp groups, and Google Forms with a proper system. Organizers create and manage events; students discover, register, and check in with secure **QR-code eTickets**.
 
-> 📚 Independent side project, started after graduating from TUT — Jun 2025 – Nov 2025
+> 📚 Independent side project, started after Finishing my theoretical studies from TUT Jun 2025 Nov 2025
 
-🔗 **Live Demo:** [mytutevents.vercel.app](https://mytutevents.vercel.app/)
+🔗 **Live here:** [mytutevents.vercel.app](https://mytutevents.vercel.app/)
 
 ---
 
 ## 📖 The Problem I Set Out to Solve
 
-I built this right after finishing my final year, during recess. TUT — my own campus — was still running events the old way: paper forms, flyers, WhatsApp groups, and the occasional Google Form. There was no single place to see what was actually happening on campus that week, so most students simply missed events. Ticketing had no real structure, and organizers had no clean way to manage capacity or keep track of event photos afterward.
+I built this right after finishing my final year, during recess. TUT, my own campus was still running events the old way: paper forms, flyers, WhatsApp groups, and the occasional Google Form. There was no single place to see what was actually happening on campus that week, so most students simply missed events. Ticketing had no real structure, and organizers had no clean way to manage capacity or keep track of event photos afterward.
 
-I brought the idea to two friends, we formed a team of three, and — since there were three of us — called ourselves **TriTech Solutions**. This project also became my way into backend development: I taught myself **Python and Flask** from scratch specifically to build it.
+I brought the idea to two friends, we formed a team of three, and since there were three of us called ourselves **TriTech Solutions**. This project also became my way into backend development: I taught myself **Python and Flask** from scratch specifically to build it.
 
 The result is a platform where organizers publish and manage real events with proper details, and students register and get a scannable **QR-code ticket** instead of relying on a forwarded flyer and hoping they remember.
 
@@ -59,7 +59,7 @@ The result is a platform where organizers publish and manage real events with pr
 
 ## 👥 Developers — *TriTech Solutions*
 
-- **Thabang Dikotope** — Team Lead & Backend Developer — identified the problem, proposed the solution, and led development
+- **Thabang Dikotope** — Team Lead & Backend Developer, identified the problem, proposed the solution, and led development
 - **Pholosho Mashabela** — UI Developer
 - **Bongani Mathe** — Database Developer
 
